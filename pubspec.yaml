@@ -1,0 +1,59 @@
+name: multi
+description: "A new Flutter project."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.3 <4.0.0'
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.6
+  cached_network_image: ^3.3.1
+  flutter_svg: ^2.0.10+1
+  get: ^4.6.6
+  carousel_slider: ^4.2.1
+  expandable_bottom_sheet: ^1.1.1+1
+  flutter_bloc: ^8.1.5
+  equatable: ^2.0.5
+  geolocator: ^11.0.0
+  app_settings: ^5.1.1
+  animated_fractionally_sized_box: ^2.0.1
+  shared_preferences: ^2.2.3
+  http: ^1.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/images/Category/
+
+
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/font/Roboto-Regular.ttf
+          weight: 400
+        - asset: assets/font/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/font/Roboto-Bold.ttf
+          weight: 700
+        - asset: assets/font/Roboto-Black.ttf
+          weight: 900
