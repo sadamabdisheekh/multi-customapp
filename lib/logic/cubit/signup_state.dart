@@ -18,6 +18,6 @@ final class SignupErrorState extends SignupState {
 }
 
 final class SignupLoadedState extends SignupState {
-  final dynamic response;
-  const SignupLoadedState({required this.response});
+  final UserModel user;
+  const SignupLoadedState({required this.user});
 }

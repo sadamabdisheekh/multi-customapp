@@ -100,14 +100,19 @@ class NetworkParser {
   }
 
   static String parsingDoseNotExist(String body) {
-    final errorsMap = json.decode(body);
     try {
-       if (errorsMap['error'] != null) {
-        return errorsMap['error'].toString();
+      Map<String, dynamic> jsonMap = json.decode(body);
+      if (jsonMap.containsKey('message')) {
+        dynamic message = jsonMap['message'];
+        if (message is List) {
+          return message.first;
+        } else {
+          return message;
+        }
       }
     } catch (e) {
       log(e.toString(), name: _className);
     }
-    return 'Credentials does not match';
+    return 'uknown error';
   }
 }

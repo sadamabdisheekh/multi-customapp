@@ -30,6 +30,7 @@ dependencies:
   animated_fractionally_sized_box: ^2.0.1
   shared_preferences: ^2.2.3
   http: ^1.2.1
+  dartz: ^0.10.1
 
 dev_dependencies:
   flutter_test:

@@ -1,18 +1,23 @@
 part of 'signin_cubit.dart';
 
-
-
 class SigninState extends Equatable {
-  const SigninState({required this.siginStateType,required this.customError});
-  final NetworkStateType siginStateType;
-  final CustomError? customError; 
-
-  factory SigninState.initial() {
-    return const SigninState(siginStateType: NetworkStateType.initial,customError: null);
-  }
-
+  const SigninState();
   @override
   List<Object> get props => [];
 }
 
+class SigninInitialState extends SigninState {}
 
+class SigninLoadingState extends SigninState {}
+
+class SigninErrorState extends SigninState {
+  final CustomError error;
+
+  const SigninErrorState({required this.error});
+}
+
+class SigninLoadedState extends SigninState {
+  final UserModel user;
+
+  const SigninLoadedState({required this.user});
+}

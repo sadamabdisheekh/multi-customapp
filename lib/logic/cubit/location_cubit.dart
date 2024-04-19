@@ -7,7 +7,7 @@ part 'location_state.dart';
 
 class LocationCubit extends Cubit<LocationState> {
   LocationCubit() : super(LocationInitial()) {
-    getUserCurrentLocation();
+    // getUserCurrentLocation();
   }
 
   Position? userCurrentLocationPossion;
@@ -17,10 +17,8 @@ class LocationCubit extends Cubit<LocationState> {
     UserLocation.getCurrentPosition().then((value) {
       userCurrentLocationPossion = value;
       emit(LocationLoaded(position: value));
-
     }).catchError((error) {
       emit(LocationError(code: 100, message: error.toString()));
     });
   }
-  
-  }
+}
