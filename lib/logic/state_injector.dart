@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:multi/data/repository/auth_repository.dart';
+import 'package:multi/logic/cubit/home_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/providers/datasources/local_data_source.dart';
@@ -55,6 +56,10 @@ class StateInjector {
     BlocProvider<SignupCubit>(
       create: (context) => SignupCubit(
         authRepository: context.read<AuthRepository>()
+      ),
+    ),
+    BlocProvider<HomeCubit>(
+      create: (context) => HomeCubit(
       ),
     ),
   ];
