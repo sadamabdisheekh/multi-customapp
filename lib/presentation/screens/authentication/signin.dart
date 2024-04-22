@@ -30,6 +30,9 @@ class _SigninScreenState extends State<SigninScreen> {
           Utils.closeDialog(context);
           Utils.showSnackBar(context, state.error.message);
         }
+        if (state is SigninLoadedState) {
+          Navigator.pushReplacementNamed(context, RouteNames.homeScreen);
+        }
       },
       child: Scaffold(
         body: Center(

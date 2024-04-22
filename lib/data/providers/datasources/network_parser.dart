@@ -55,6 +55,9 @@ class NetworkParser {
         throw const UnauthorisedException('Request not found', 404);
       case 405:
         throw const UnauthorisedException('Method not allowed', 405);
+      case 406:
+        final errorMsg = parsingDoseNotExist(response.body);
+        throw UnauthorisedException(errorMsg, 406);
       case 408:
 
         ///408 Request Timeout

@@ -36,6 +36,7 @@ class AuthRepositoryImp extends AuthRepository {
       final resp =
           await remoteDataSource.httpPost(url: RemoteUrls.signup, body: body);
       final result = UserModel.fromMap(resp);
+       localDataSource.cacheUserResponse(result);
       return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, e.statusCode));

@@ -49,7 +49,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       print(uri);
     }
 
-    final clientMethod = http.get(uri, headers: headers);
+    final clientMethod =  http.get(uri, headers: headers).timeout(const Duration(seconds: 59));
     final responseJsonBody =
         await NetworkParser.callClientWithCatchException(() => clientMethod);
     return responseJsonBody;

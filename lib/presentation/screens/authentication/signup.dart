@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:multi/data/router_names.dart';
 import 'package:multi/logic/cubit/signup_cubit.dart';
 import 'package:multi/presentation/widgets/custom_textfield.dart';
 import '../../../constants/dimensions.dart';
@@ -28,6 +29,9 @@ class _SignupScreenState extends State<SignupScreen> {
       listener: (context, state) {
         if (state is SignupErrorState) {
           Utils.showSnackBar(context, state.error.message);
+        }
+        if (state is SignupLoadedState) {
+          Navigator.pushReplacementNamed(context, RouteNames.homeScreen);
         }
         
       },
