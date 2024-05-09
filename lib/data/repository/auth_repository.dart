@@ -7,6 +7,7 @@ import '../providers/error/failure.dart';
 import '../remote_urls.dart';
 
 abstract class AuthRepository {
+  Either<Failure, UserModel> getCashedUserInfo();
   Future<Either<Failure, UserModel>> login(Map<String, dynamic> body);
   Future<Either<Failure, UserModel>> signup(Map<String, dynamic> body);
 }
@@ -16,6 +17,16 @@ class AuthRepositoryImp extends AuthRepository {
   final LocalDataSource localDataSource;
   AuthRepositoryImp(
       {required this.remoteDataSource, required this.localDataSource});
+
+  @override
+  Either<Failure, UserModel> getCashedUserInfo() {
+    try {
+      final result = localDataSource.getUserResponseModel();
+      return Right(result);
+    } on DatabaseException catch (e) {
+      return Left(DatabaseFailure(e.message));
+    }
+  }
 
   @override
   Future<Either<Failure, UserModel>> login(Map<String, dynamic> body) async {
@@ -30,13 +41,13 @@ class AuthRepositoryImp extends AuthRepository {
     }
   }
 
-   @override
+  @override
   Future<Either<Failure, UserModel>> signup(Map<String, dynamic> body) async {
     try {
       final resp =
           await remoteDataSource.httpPost(url: RemoteUrls.signup, body: body);
       final result = UserModel.fromMap(resp);
-       localDataSource.cacheUserResponse(result);
+      localDataSource.cacheUserResponse(result);
       return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, e.statusCode));

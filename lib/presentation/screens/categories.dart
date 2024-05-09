@@ -79,7 +79,6 @@ class CategoryScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-              
               ],
             ),
           ),

@@ -24,8 +24,7 @@ class StoreWidget extends StatelessWidget {
               border: Border.all(
                   color: Theme.of(context).disabledColor.withOpacity(0.1)),
               boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.1), blurRadius: 10)
+                BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10)
               ]),
           padding: const EdgeInsets.all(1),
           child: Column(
@@ -68,17 +67,14 @@ class StoreWidget extends StatelessWidget {
                       ),
                       child: Row(children: [
                         Icon(Icons.star,
-                            size: 15,
-                            color: Theme.of(context).primaryColor),
-                        const SizedBox(
-                            width: Dimensions.paddingSizeExtraSmall),
+                            size: 15, color: Theme.of(context).primaryColor),
+                        const SizedBox(width: Dimensions.paddingSizeExtraSmall),
                         Text(
                           '5,4',
                           style: robotoMedium.copyWith(
                               fontSize: Dimensions.fontSizeExtraSmall),
                         ),
-                        const SizedBox(
-                            width: Dimensions.paddingSizeExtraSmall),
+                        const SizedBox(width: Dimensions.paddingSizeExtraSmall),
                         Text(
                           '(1)',
                           style: robotoMedium.copyWith(
@@ -90,49 +86,56 @@ class StoreWidget extends StatelessWidget {
                   ),
                 ],
               ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeSmall),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
-                    SizedBox(
-                      width: context.width * 0.7,
-                      child: Text(
-                        'Salaam Restaurent',
-                        style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault),
-                        maxLines: 1, overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-                
-                    Row(children: [
-                      Icon(Icons.location_on_outlined, size: 15, color: Theme.of(context).primaryColor),
-                      const SizedBox(width: Dimensions.paddingSizeExtraSmall),
-                
-                      Flexible(
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: Dimensions.paddingSizeSmall),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: context.width * 0.7,
                         child: Text(
-                          'Mogadisho Somalia',
-                          style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
-                          maxLines: 1, overflow: TextOverflow.ellipsis,
+                          'Salaam Restaurent',
+                          style: robotoMedium.copyWith(
+                              fontSize: Dimensions.fontSizeDefault),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                    ]),
-                    const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-                
-                    Row(children: [
-                     
-                
+                      const SizedBox(height: Dimensions.paddingSizeExtraSmall),
                       Row(children: [
-                        Icon(Icons.timer, size: 15, color: Theme.of(context).primaryColor),
+                        Icon(Icons.location_on_outlined,
+                            size: 15, color: Theme.of(context).primaryColor),
                         const SizedBox(width: Dimensions.paddingSizeExtraSmall),
-                
-                        Text(
-                          '30-40 min',
-                          style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+                        Flexible(
+                          child: Text(
+                            'Mogadisho Somalia',
+                            style: robotoMedium.copyWith(
+                                fontSize: Dimensions.fontSizeSmall,
+                                color: Theme.of(context).disabledColor),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ]),
+                      const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                      Row(children: [
+                        Row(children: [
+                          Icon(Icons.timer,
+                              size: 15, color: Theme.of(context).primaryColor),
+                          const SizedBox(
+                              width: Dimensions.paddingSizeExtraSmall),
+                          Text(
+                            '30-40 min',
+                            style: robotoMedium.copyWith(
+                                fontSize: Dimensions.fontSizeSmall,
+                                color: Theme.of(context).disabledColor),
+                          ),
+                        ]),
+                      ]),
                     ]),
-                  ]),
-                ),
-         
+              ),
             ],
           ),
         )

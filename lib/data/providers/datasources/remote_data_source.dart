@@ -1,10 +1,8 @@
-
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'network_parser.dart';
-
 
 abstract class RemoteDataSource {
   Future<dynamic> httpGet({required String url});
@@ -49,7 +47,8 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       print(uri);
     }
 
-    final clientMethod =  http.get(uri, headers: headers).timeout(const Duration(seconds: 59));
+    final clientMethod =
+        http.get(uri, headers: headers).timeout(const Duration(seconds: 59));
     final responseJsonBody =
         await NetworkParser.callClientWithCatchException(() => clientMethod);
     return responseJsonBody;

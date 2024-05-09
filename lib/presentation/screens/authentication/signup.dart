@@ -33,7 +33,6 @@ class _SignupScreenState extends State<SignupScreen> {
         if (state is SignupLoadedState) {
           Navigator.pushReplacementNamed(context, RouteNames.homeScreen);
         }
-        
       },
       child: Scaffold(
         body: SafeArea(
@@ -139,7 +138,7 @@ class _SignupScreenState extends State<SignupScreen> {
       return Utils.showSnackBar(context, 'password is required');
     }
     Utils.closeKeyBoard(context);
-    Map<String,dynamic> body = {
+    Map<String, dynamic> body = {
       "mobile": phoneController.text.trim(),
       "firstName": firstNameController.text.trim(),
       "middleName": middleNameController.text.trim(),

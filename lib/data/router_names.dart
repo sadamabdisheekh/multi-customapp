@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:multi/presentation/screens/authentication/signup.dart';
 import 'package:multi/presentation/screens/categories.dart';
@@ -18,7 +16,7 @@ class RouteNames {
   static const String sampleAccountScreen = '/sampleAccountScreen';
   static const String homeScreen = '/homeScreen';
   static const String categoryScreen = '/categoryScreen';
-    static const String itemScreen = '/itemScreen';
+  static const String itemScreen = '/itemScreen';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -35,12 +33,13 @@ class RouteNames {
         return MaterialPageRoute(
             settings: settings, builder: (_) => const HomeScreen());
       case RouteNames.categoryScreen:
-      final category = settings.arguments as dynamic;
+        final category = settings.arguments as dynamic;
         return MaterialPageRoute(
-            settings: settings, builder: (_) =>  CategoryScreen(category: category));
+            settings: settings,
+            builder: (_) => CategoryScreen(category: category));
       case RouteNames.itemScreen:
         return MaterialPageRoute(
-            settings: settings, builder: (_) =>  const ItemScreen());
+            settings: settings, builder: (_) => const ItemScreen());
 
       // case RouteNames.dahabScreen:
       //  final invoiceId = settings.arguments as int;

@@ -1,6 +1,1 @@
-enum NetworkStateType {
-  initial,
-  loading,
-  loaded,
-  error
-}
+enum NetworkStateType { initial, loading, loaded, error }

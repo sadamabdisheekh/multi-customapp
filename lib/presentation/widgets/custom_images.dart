@@ -1,22 +1,19 @@
-
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:multi/constants/images.dart';
 
-
 class CustomImage extends StatelessWidget {
-  const CustomImage({
-    super.key,
-    required this.path,
-    this.fit = BoxFit.contain,
-    this.height,
-    this.width,
-    this.color,
-    this.isFile = false,
-    this.placeholder = ''
-  });
+  const CustomImage(
+      {super.key,
+      required this.path,
+      this.fit = BoxFit.contain,
+      this.height,
+      this.width,
+      this.color,
+      this.isFile = false,
+      this.placeholder = ''});
   final String? path;
   final BoxFit fit;
   final double? height, width;
@@ -55,10 +52,21 @@ class CustomImage extends StatelessWidget {
         imagePath.startsWith('https') ||
         imagePath.startsWith('www.')) {
       return CachedNetworkImage(
-      imageUrl: imagePath, height: height, width: width, fit: fit,
-      placeholder: (context, url) => Image.asset(placeholder.isNotEmpty ? placeholder : Kimages.logo, height: height, width: width, fit: fit),
-      errorWidget: (context, url, error) => Image.asset(placeholder.isNotEmpty ? placeholder : Kimages.logo, height: height, width: width, fit: fit),
-    );
+        imageUrl: imagePath,
+        height: height,
+        width: width,
+        fit: fit,
+        placeholder: (context, url) => Image.asset(
+            placeholder.isNotEmpty ? placeholder : Kimages.logo,
+            height: height,
+            width: width,
+            fit: fit),
+        errorWidget: (context, url, error) => Image.asset(
+            placeholder.isNotEmpty ? placeholder : Kimages.logo,
+            height: height,
+            width: width,
+            fit: fit),
+      );
     }
     return Image.asset(
       imagePath,

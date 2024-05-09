@@ -75,8 +75,14 @@ class ItemWidget extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(width: 5,),
-                          Icon(Icons.check_circle,size: Dimensions.fontSizeExtraSmall,color: Theme.of(context).primaryColor,)
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Icon(
+                            Icons.check_circle,
+                            size: Dimensions.fontSizeExtraSmall,
+                            color: Theme.of(context).primaryColor,
+                          )
                         ],
                       ),
                       Row(children: [
@@ -98,10 +104,8 @@ class ItemWidget extends StatelessWidget {
                         ),
                       ]),
                     ],
-                    
                   ))
                 ]),
-                
               ),
               const SizedBox(height: Dimensions.paddingSizeLarge),
             ],

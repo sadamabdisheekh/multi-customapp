@@ -75,8 +75,7 @@ class CustomTextFieldState extends State<CustomTextField> {
                 style:
                     robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall))
             : const SizedBox(),
-        SizedBox(
-            height: widget.showTitle ? Dimensions.paddingSizeSmall : 0),
+        SizedBox(height: widget.showTitle ? Dimensions.paddingSizeSmall : 0),
         TextField(
           maxLines: widget.maxLines,
           controller: widget.controller,
@@ -133,11 +132,16 @@ class CustomTextFieldState extends State<CustomTextField> {
                 fontSize: Dimensions.fontSizeLarge,
                 color: Theme.of(context).hintColor),
             filled: true,
-              prefixIcon: widget.prefixImage != null && widget.prefixIcon == null ? Padding(
-              padding: EdgeInsets.symmetric(horizontal: widget.prefixSize),
-              child: Image.asset(widget.prefixImage!, height: 20, width: 20),
-            ) : widget.prefixImage == null && widget.prefixIcon != null ? Icon(widget.prefixIcon, size: widget.iconSize) : null,
-            
+            prefixIcon: widget.prefixImage != null && widget.prefixIcon == null
+                ? Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: widget.prefixSize),
+                    child:
+                        Image.asset(widget.prefixImage!, height: 20, width: 20),
+                  )
+                : widget.prefixImage == null && widget.prefixIcon != null
+                    ? Icon(widget.prefixIcon, size: widget.iconSize)
+                    : null,
             suffixIcon: widget.isPassword
                 ? IconButton(
                     icon: Icon(

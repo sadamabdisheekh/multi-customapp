@@ -17,7 +17,7 @@ class _SubCategory2State extends State<SubCategory2> {
     return SizedBox(
       height: 35,
       child: ListView.builder(
-        physics: const NeverScrollableScrollPhysics() ,
+        physics: const NeverScrollableScrollPhysics(),
         scrollDirection: Axis.horizontal,
         itemCount: tabs.length,
         itemBuilder: (BuildContext context, int index) {
@@ -33,10 +33,11 @@ class _SubCategory2State extends State<SubCategory2> {
                 children: [
                   Center(
                     child: Text("${tabs[index]}",
-                        textAlign: TextAlign.center,
-                        style: robotoMedium),
+                        textAlign: TextAlign.center, style: robotoMedium),
                   ),
-                  const SizedBox(height: 10,),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   Container(
                     height: Dimensions.paddingSizeExtraSmall,
                     width: width * 0.15,

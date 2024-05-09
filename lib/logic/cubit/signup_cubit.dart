@@ -13,7 +13,7 @@ class SignupCubit extends Cubit<SignupState> {
       : _authRepository = authRepository,
         super(SignupInitialState());
 
-  signUpUsers(Map<String,dynamic> body) async {
+  signUpUsers(Map<String, dynamic> body) async {
     emit(SignupLoadingState());
     final result = await _authRepository.signup(body);
     result.fold(

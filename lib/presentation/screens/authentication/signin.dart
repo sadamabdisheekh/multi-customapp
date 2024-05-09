@@ -25,7 +25,6 @@ class _SigninScreenState extends State<SigninScreen> {
   Widget build(BuildContext context) {
     return BlocListener<SigninCubit, SigninState>(
       listener: (context, state) {
-       
         if (state is SigninErrorState) {
           Utils.closeDialog(context);
           Utils.showSnackBar(context, state.error.message);

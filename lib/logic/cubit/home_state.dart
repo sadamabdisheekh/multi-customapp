@@ -10,15 +10,15 @@ class HomeState extends Equatable {
 final class HomeStateInitial extends HomeState {}
 
 final class HomeLoadingState extends HomeState {}
+
 final class HomeErrorState extends HomeState {
   final CustomError error;
 
   const HomeErrorState({required this.error});
 }
 
-
 final class HomeLoadedState extends HomeState {
-  final dynamic response;
+  final List<ModulesModel> response;
 
   const HomeLoadedState({required this.response});
 }

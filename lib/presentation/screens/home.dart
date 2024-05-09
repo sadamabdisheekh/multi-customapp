@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multi/data/static_data.dart';
 import 'package:multi/logic/cubit/home_cubit.dart';
 import 'package:multi/logic/cubit/location_cubit.dart';
 import '../../constants/dimensions.dart';
@@ -90,29 +89,37 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  return Center(
-                    child: Container(
-                      width: Dimensions.webMaxWidth,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Dimensions.paddingSizeSmall,
+                  if (state is HomeErrorState) {
+                    return Center(
+                      child: Text(state.error.message),
+                    );
+                  }
+                  if (state is HomeLoadedState) {
+                    return Center(
+                      child: Container(
+                        width: Dimensions.webMaxWidth,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Dimensions.paddingSizeSmall,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const BannerView(
+                              isFeatured: false,
+                            ),
+                            const SizedBox(
+                              height: Dimensions.paddingSizeExtraLarge,
+                            ),
+                            ModuleWidget(products: state.response),
+                            const SizedBox(
+                              height: 24,
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const BannerView(
-                            isFeatured: false,
-                          ),
-                          const SizedBox(
-                            height: Dimensions.paddingSizeExtraLarge,
-                          ),
-                          ModuleWidget(products: categoriesList),
-                          const SizedBox(
-                            height: 24,
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                    );
+                  }
+                  return Container();
                 },
               ),
             ),

@@ -19,7 +19,7 @@ class _SubCategoryState extends State<SubCategory> {
     return SizedBox(
       height: 35,
       child: ListView.builder(
-        physics: const NeverScrollableScrollPhysics() ,
+        physics: const NeverScrollableScrollPhysics(),
         scrollDirection: Axis.horizontal,
         itemCount: tabs.length,
         itemBuilder: (BuildContext context, int index) {
@@ -28,11 +28,11 @@ class _SubCategoryState extends State<SubCategory> {
               selectedIndex = index;
               setState(() {});
               showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            builder: (con) => const ItemBottomSheet(),
-          ) ;
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (con) => const ItemBottomSheet(),
+              );
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -48,11 +48,9 @@ class _SubCategoryState extends State<SubCategory> {
                   child: Text("${tabs[index]}",
                       textAlign: TextAlign.center,
                       style: robotoMedium.copyWith(
-                        color: selectedIndex == index
-                            ? Theme.of(context).disabledColor
-                            : Theme.of(context).primaryColor
-                      
-                      )),
+                          color: selectedIndex == index
+                              ? Theme.of(context).disabledColor
+                              : Theme.of(context).primaryColor)),
                 ),
               ),
             ),

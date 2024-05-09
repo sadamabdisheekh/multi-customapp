@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class Utils {
@@ -42,6 +41,7 @@ class Utils {
       },
     );
   }
+
   static void showSnackBar(BuildContext context, String msg) {
     final snackBar = SnackBar(content: Text(msg));
     ScaffoldMessenger.of(context)
