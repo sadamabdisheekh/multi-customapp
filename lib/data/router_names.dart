@@ -6,6 +6,7 @@ import 'package:multi/presentation/screens/item_screen.dart';
 
 import '../presentation/screens/authentication/signin.dart';
 import '../presentation/screens/splash_screen.dart';
+import 'models/modules_model.dart';
 
 class RouteNames {
   static const String splashScreen = '/splash';
@@ -33,7 +34,7 @@ class RouteNames {
         return MaterialPageRoute(
             settings: settings, builder: (_) => const HomeScreen());
       case RouteNames.categoryScreen:
-        final category = settings.arguments as dynamic;
+        final category = settings.arguments as ModulesModel;
         return MaterialPageRoute(
             settings: settings,
             builder: (_) => CategoryScreen(category: category));

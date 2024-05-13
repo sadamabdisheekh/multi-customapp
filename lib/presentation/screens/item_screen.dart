@@ -11,23 +11,22 @@ class ItemScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-              horizontal: Dimensions.paddingSizeSmall, vertical: 50),
-          child: const Column(
-            children: [
-              SubCategory2(),
-              SizedBox(
-                height: 20,
-              ),
-              SubCategory(),
-              SizedBox(
-                height: 20,
-              ),
-              ItemWidget()
-            ],
-          ),
+      appBar: AppBar(),
+      body: Container(
+        padding: const EdgeInsets.symmetric(
+            horizontal: Dimensions.paddingSizeSmall, vertical: 50),
+        child: const Column(
+          children: [
+            if (1== 2 )SubCategory2(),
+            SizedBox(
+              height: 20,
+            ),
+            // SubCategory(),
+            SizedBox(
+              height: 20,
+            ),
+            ItemWidget()
+          ],
         ),
       ),
     );

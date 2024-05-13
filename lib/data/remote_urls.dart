@@ -5,4 +5,5 @@ class RemoteUrls {
   static const login = '$rootUrl/auth/login';
   static const signup = '$rootUrl/users';
   static const modulesList = '$rootUrl/modules';
+  static const category = '$rootUrl/category';
 }

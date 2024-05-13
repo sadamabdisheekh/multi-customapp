@@ -10,4 +10,5 @@ class AppConstants {
   // image url links
 
   static const String modulePath = '${RemoteUrls.rootUrl}/uploads/module/';
+  static const String categoryPath = '${RemoteUrls.rootUrl}/uploads/category/';
 }
