@@ -4,68 +4,6 @@ import 'package:flutter/material.dart';
 import '../../constants/dimensions.dart';
 import '../../constants/styles.dart';
 
-class VariationView extends StatelessWidget {
-  final List item;
-  const VariationView({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: 1,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.only(bottom: item.isNotEmpty ? Dimensions.paddingSizeLarge : 0),
-      itemBuilder: (context, index) {
-        return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Baasto$index', style: robotoMedium),
-          const SizedBox(height: Dimensions.paddingSizeSmall),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-              color: Theme.of(context).cardColor,
-            ),
-            padding: const EdgeInsets.all(Dimensions.paddingSizeDefault),
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
-              itemCount: 3,
-              itemBuilder: (context, i) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: Dimensions.paddingSizeExtraSmall),
-                  child: InkWell(
-                    onTap: () {
-                      // itemController.setCartVariationIndex(index, i, item);
-                    },
-                    child: Row(children: [
-                      Expanded(child: Text(
-                        'me',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: robotoRegular,
-                      )),
-                      const SizedBox(width: Dimensions.paddingSizeSmall),
-                      Radio<int>(
-                        value: i,
-                        groupValue: null,
-                        onChanged: (int? value) {} ,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        activeColor: Theme.of(context).primaryColor,
-                      ),
-                    ]),
-                  ),
-                );
-              },
-            ),
-          ),
-          SizedBox(height: index != item.length - 1 ? Dimensions.paddingSizeLarge : 0),
-        ]);
-      },
-    );
-  }
-}
-
-
 
 class NewVariationView extends StatelessWidget {
   final List item;
