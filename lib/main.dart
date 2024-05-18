@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:multi/constants/app_constants.dart';
 import 'package:multi/data/router_names.dart';
-import 'package:multi/presentation/theme/dark_theme.dart';
+import 'package:multi/presentation/theme/ligth_theme.dart';
 
 import 'logic/state_injector.dart';
 
@@ -25,9 +25,9 @@ class MyApp extends StatelessWidget {
         child: GetMaterialApp(
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,
-          theme: dark(),
+          theme: light(),
           onGenerateRoute: RouteNames.generateRoute,
-          initialRoute: RouteNames.splashScreen,
+          initialRoute: RouteNames.itemScreen,
         ),
       ),
     );
