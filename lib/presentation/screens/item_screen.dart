@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:multi/data/models/category.dart';
 import 'package:multi/presentation/widgets/variation.dart';
 
 import '../../constants/dimensions.dart';
-import '../widgets/categories/sub_category2.dart';
 import '../widgets/items/items.dart';
 
 class ItemScreen extends StatelessWidget {
-  const ItemScreen({super.key});
+  const ItemScreen({super.key, required CategoryModel category});
 
   @override
   Widget build(BuildContext context) {
@@ -19,16 +18,15 @@ class ItemScreen extends StatelessWidget {
         child: const SingleChildScrollView(
           child: Column(
             children: [
-              if (1 == 2) SubCategory2(),
               SizedBox(
                 height: 20,
               ),
-            // SubCategory(),
+              // SubCategory(),
               SizedBox(
                 height: 20,
               ),
               ItemWidget(),
-             
+
               AddonView(item: []),
               NewVariationView(
                   item: [],

@@ -36,6 +36,7 @@ class CategoryScreen extends StatelessWidget {
                     return Center(child: Text(state.error.message));
                   }
                   if (state is CategoryLoaded) {
+                    final list = state.categoryList;
                     return Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: Dimensions.paddingSizeSmall),
@@ -46,16 +47,16 @@ class CategoryScreen extends StatelessWidget {
                             width: MediaQuery.of(context).size.width,
                             child: ListView.builder(
                               padding: EdgeInsets.zero,
-                              itemCount: state.categoryList.length,
+                              itemCount: list.length,
                               scrollDirection: Axis.horizontal,
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (BuildContext context, int index) {
-                                final list = state.categoryList;
+                                
                                 return GestureDetector(
                                   onTap: () {
                                     
                                     Navigator.pushNamed(
-                                        context, RouteNames.itemScreen);
+                                        context, RouteNames.itemScreen,arguments: list[index]);
                                   },
                                   child: Padding(
                                     padding: index == 0

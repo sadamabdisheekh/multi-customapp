@@ -6,4 +6,7 @@ class RemoteUrls {
   static const signup = '$rootUrl/users';
   static const modulesList = '$rootUrl/modules';
   static const category = '$rootUrl/category';
+
+  static String subCategory(int categoryId) =>
+      '$rootUrl/sub-category/findSubCategory/$categoryId';
 }

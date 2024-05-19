@@ -6,6 +6,7 @@ import 'package:multi/data/repository/home_repository.dart';
 import 'package:multi/logic/cubit/category_cubit.dart';
 import 'package:multi/logic/cubit/home_cubit.dart';
 import 'package:multi/logic/cubit/splash_cubit.dart';
+import 'package:multi/logic/cubit/sub_category_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/providers/datasources/local_data_source.dart';
@@ -80,6 +81,9 @@ class StateInjector {
     ),
     BlocProvider<CategoryCubit>(
         create: (context) => CategoryCubit(
+            categoryRepository: context.read<CategoryRepository>())),
+     BlocProvider<SubCategoryCubit>(
+        create: (context) => SubCategoryCubit(
             categoryRepository: context.read<CategoryRepository>())),
   ];
 }

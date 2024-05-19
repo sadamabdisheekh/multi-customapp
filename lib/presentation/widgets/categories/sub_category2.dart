@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:multi/constants/dimensions.dart';
 import 'package:multi/constants/styles.dart';
+import 'package:multi/data/models/sub_category.dart';
 import '../../../data/static_data.dart';
 
 class SubCategory2 extends StatefulWidget {
-  const SubCategory2({super.key});
+  const SubCategory2({super.key, required this.subCategoryList});
+
+  final List<SubCategoryModel> subCategoryList;
 
   @override
   State<SubCategory2> createState() => _SubCategory2State();
@@ -19,7 +22,7 @@ class _SubCategory2State extends State<SubCategory2> {
       child: ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         scrollDirection: Axis.horizontal,
-        itemCount: tabs.length,
+        itemCount: widget.subCategoryList.length,
         itemBuilder: (BuildContext context, int index) {
           double width = MediaQuery.of(context).size.width;
           return InkWell(
@@ -32,7 +35,7 @@ class _SubCategory2State extends State<SubCategory2> {
               child: Column(
                 children: [
                   Center(
-                    child: Text("${tabs[index]}",
+                    child: Text(widget.subCategoryList[index].subCategoryName,
                         textAlign: TextAlign.center, style: robotoMedium),
                   ),
                   const SizedBox(

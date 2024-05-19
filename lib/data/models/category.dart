@@ -9,7 +9,6 @@ class CategoryModel extends Equatable {
   final String image;
   final bool status;
   final String createdAt;
-  final dynamic updatedAt;
   final int priority;
   final List<SubCategory> subCategory;
 
@@ -19,11 +18,9 @@ class CategoryModel extends Equatable {
     required this.image,
     required this.status,
     required this.createdAt,
-    required this.updatedAt,
     required this.priority,
     required this.subCategory,
   });
-
 
   CategoryModel copyWith({
     int? id,
@@ -31,7 +28,6 @@ class CategoryModel extends Equatable {
     String? image,
     bool? status,
     String? createdAt,
-    String? updatedAt,
     int? priority,
     List<SubCategory>? subCategory,
   }) {
@@ -41,7 +37,6 @@ class CategoryModel extends Equatable {
       image: image ?? this.image,
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
       priority: priority ?? this.priority,
       subCategory: subCategory ?? this.subCategory,
     );
@@ -54,9 +49,10 @@ class CategoryModel extends Equatable {
       'image': image,
       'status': status,
       'createdAt': createdAt,
-      'updatedAt': updatedAt,
       'priority': priority,
-      'subCategory': subCategory.map((x) {return x.toMap();}).toList(growable: false),
+      'subCategory': subCategory.map((x) {
+        return x.toMap();
+      }).toList(growable: false),
     };
   }
 
@@ -67,15 +63,21 @@ class CategoryModel extends Equatable {
       image: (map["image"] ?? '') as String,
       status: (map["status"] ?? false) as bool,
       createdAt: (map["createdAt"] ?? '') as String,
-      updatedAt: map["updatedAt"] ?? null as dynamic,
       priority: (map["priority"] ?? 0) as int,
-      subCategory: List<SubCategory>.from(((map['subCategory'] ?? const <SubCategory>[]) as List).map<SubCategory>((x) {return SubCategory.fromMap((x?? Map<String,dynamic>.from({})) as Map<String,dynamic>);}),),
+      subCategory: List<SubCategory>.from(
+        ((map['subCategory'] ?? const <SubCategory>[]) as List)
+            .map<SubCategory>((x) {
+          return SubCategory.fromMap(
+              (x ?? Map<String, dynamic>.from({})) as Map<String, dynamic>);
+        }),
+      ),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory CategoryModel.fromJson(String source) => CategoryModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory CategoryModel.fromJson(String source) =>
+      CategoryModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool get stringify => true;
@@ -88,7 +90,6 @@ class CategoryModel extends Equatable {
       image,
       status,
       createdAt,
-      updatedAt,
       priority,
       subCategory,
     ];

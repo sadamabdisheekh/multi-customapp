@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multi/data/models/category.dart';
 import 'package:multi/presentation/screens/authentication/signup.dart';
 import 'package:multi/presentation/screens/categories.dart';
 import 'package:multi/presentation/screens/home.dart';
@@ -39,8 +40,9 @@ class RouteNames {
             settings: settings,
             builder: (_) => CategoryScreen(category: category));
       case RouteNames.itemScreen:
+      final category = settings.arguments as CategoryModel;
         return MaterialPageRoute(
-            settings: settings, builder: (_) => const ItemScreen());
+            settings: settings, builder: (_) =>  ItemScreen(category: category,));
 
       // case RouteNames.dahabScreen:
       //  final invoiceId = settings.arguments as int;
