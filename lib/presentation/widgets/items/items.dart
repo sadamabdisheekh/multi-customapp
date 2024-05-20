@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multi/constants/images.dart';
-import 'package:multi/logic/utility.dart';
+import 'package:multi/data/models/items_model.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
 import 'package:multi/presentation/widgets/items/item_bottom_sheet.dart';
 import '../../../constants/dimensions.dart';
@@ -8,7 +8,9 @@ import '../../../constants/styles.dart';
 import 'not_available_widet.dart';
 
 class ItemWidget extends StatelessWidget {
-  const ItemWidget({super.key});
+  const ItemWidget({super.key, required this.itemsList});
+
+  final List<ItemsModel> itemsList;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +34,11 @@ class ItemWidget extends StatelessWidget {
           ),
           child: InkWell(
             onTap: () {
-              showModalBottomSheet(context: context, builder: (context) {
-                return ItemBottomSheet();
-              });
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return ItemBottomSheet();
+                  });
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -100,7 +104,8 @@ class ItemWidget extends StatelessWidget {
                                 fontSize: Dimensions.fontSizeSmall),
                             textDirection: TextDirection.ltr,
                           ),
-                          const SizedBox(width: Dimensions.paddingSizeExtraSmall),
+                          const SizedBox(
+                              width: Dimensions.paddingSizeExtraSmall),
                           Text(
                             '\$140',
                             style: robotoMedium.copyWith(

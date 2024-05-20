@@ -9,4 +9,5 @@ class RemoteUrls {
 
   static String subCategory(int categoryId) =>
       '$rootUrl/sub-category/findSubCategory/$categoryId';
+  static const items = '$rootUrl/items/filter';
 }

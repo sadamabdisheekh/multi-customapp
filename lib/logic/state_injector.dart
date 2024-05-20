@@ -3,8 +3,10 @@ import 'package:http/http.dart';
 import 'package:multi/data/repository/auth_repository.dart';
 import 'package:multi/data/repository/category_repository.dart';
 import 'package:multi/data/repository/home_repository.dart';
+import 'package:multi/data/repository/item_repository.dart';
 import 'package:multi/logic/cubit/category_cubit.dart';
 import 'package:multi/logic/cubit/home_cubit.dart';
+import 'package:multi/logic/cubit/items_cubit.dart';
 import 'package:multi/logic/cubit/splash_cubit.dart';
 import 'package:multi/logic/cubit/sub_category_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -57,6 +59,11 @@ class StateInjector {
       create: (context) => CategoryRepositoryImp(
         remoteDataSource: context.read<RemoteDataSource>(),
       ),
+    ),
+    RepositoryProvider<ItemsRepository>(
+      create: (context) => ItemsRepositoryImp(
+        remoteDataSource: context.read<RemoteDataSource>(),
+      ),
     )
   ];
 
@@ -85,5 +92,8 @@ class StateInjector {
      BlocProvider<SubCategoryCubit>(
         create: (context) => SubCategoryCubit(
             categoryRepository: context.read<CategoryRepository>())),
+     BlocProvider<ItemsCubit>(
+        create: (context) => ItemsCubit(
+            itemsRepository: context.read<ItemsRepository>())),
   ];
 }

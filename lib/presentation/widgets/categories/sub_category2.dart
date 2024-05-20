@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/constants/dimensions.dart';
 import 'package:multi/constants/styles.dart';
+import 'package:multi/data/models/category.dart';
 import 'package:multi/data/models/sub_category.dart';
-import '../../../data/static_data.dart';
+import 'package:multi/logic/cubit/items_cubit.dart';
 
 class SubCategory2 extends StatefulWidget {
-  const SubCategory2({super.key, required this.subCategoryList});
+  const SubCategory2(
+      {super.key, required this.subCategoryList, required this.category});
 
   final List<SubCategoryModel> subCategoryList;
+  final CategoryModel category;
 
   @override
   State<SubCategory2> createState() => _SubCategory2State();
@@ -27,6 +31,11 @@ class _SubCategory2State extends State<SubCategory2> {
           double width = MediaQuery.of(context).size.width;
           return InkWell(
             onTap: () {
+              Map<String, dynamic> body = {
+                "categoryId": widget.category.id,
+                // "subCategoryId": widget.subCategoryList[index].id
+              };
+              context.read<ItemsCubit>().getItems(body);
               selectedIndex = index;
               setState(() {});
             },
