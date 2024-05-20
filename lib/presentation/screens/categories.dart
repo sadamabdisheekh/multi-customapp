@@ -25,7 +25,7 @@ class CategoryScreen extends StatelessWidget {
                 elevation: 0,
                 backgroundColor: Theme.of(context).colorScheme.background,
                 centerTitle: false,
-                title:  Text(category.moduleName)),
+                title: Text(category.moduleName)),
             SliverToBoxAdapter(
               child: BlocBuilder<CategoryCubit, CategoryState>(
                 builder: (context, state) {
@@ -43,7 +43,7 @@ class CategoryScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           SizedBox(
-                            height: Get.height * 0.18,
+                            height: 160,
                             width: MediaQuery.of(context).size.width,
                             child: ListView.builder(
                               padding: EdgeInsets.zero,
@@ -51,60 +51,52 @@ class CategoryScreen extends StatelessWidget {
                               scrollDirection: Axis.horizontal,
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (BuildContext context, int index) {
-                                
-                                return GestureDetector(
-                                  onTap: () {
-                                    
-                                    Navigator.pushNamed(
-                                        context, RouteNames.itemScreen,arguments: list[index]);
-                                  },
-                                  child: Padding(
-                                    padding: index == 0
-                                        ? const EdgeInsets.only(right: 12.0)
-                                        : const EdgeInsets.symmetric(
-                                            horizontal: 15.0),
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: Dimensions.paddingSizeDefault,
+                                      right: Dimensions.paddingSizeDefault,
+                                      top: Dimensions.paddingSizeDefault),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                          context, RouteNames.itemScreen,
+                                          arguments: list[index]);
+                                    },
+                                    borderRadius: BorderRadius.circular(
+                                        Dimensions.radiusSmall),
                                     child: SizedBox(
                                       width: 60,
                                       child: Column(
                                         children: [
-                                          Container(
-                                            height: 50,
-                                            width: 50,
-                                            padding: const EdgeInsets.all(8),
-                                            margin: EdgeInsets.only(
-                                              left: index == 0
-                                                  ? 0
-                                                  : Dimensions
-                                                      .paddingSizeExtraSmall,
-                                              right: Dimensions
-                                                  .paddingSizeExtraSmall,
-                                            ),
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: AppConstants.lightGrey),
+                                          ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(100)),
                                             child: CustomImage(
                                               path: AppConstants.categoryPath +
                                                   list[index].image,
-                                              height: 26.82,
-                                              width: 43.54,
+                                              height: 60,
+                                              width: double.infinity,
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
                                           const SizedBox(
-                                            height: 12,
-                                          ),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                                right: index == 0
-                                                    ? Dimensions
-                                                        .paddingSizeExtraSmall
-                                                    : 0),
-                                            child: Text(list[index].name,
-                                                textAlign: TextAlign.center,
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 2,
-                                                style: robotoRegular.copyWith(
-                                                    fontSize: 11)),
-                                          ),
+                                              height:
+                                                  Dimensions.paddingSizeSmall),
+                                          Expanded(
+                                              child: Text(
+                                            list[index].name,
+                                            style: robotoMedium.copyWith(
+                                                fontSize:
+                                                    Dimensions.fontSizeSmall,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium!
+                                                    .color),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center,
+                                          )),
                                         ],
                                       ),
                                     ),
