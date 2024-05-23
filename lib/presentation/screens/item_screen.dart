@@ -7,6 +7,7 @@ import 'package:multi/presentation/widgets/categories/sub_category2.dart';
 import 'package:multi/presentation/widgets/variation.dart';
 
 import '../../constants/dimensions.dart';
+import '../widgets/items/item_section.dart';
 import '../widgets/items/items.dart';
 
 class ItemScreen extends StatefulWidget {
@@ -34,46 +35,30 @@ class _ItemScreenState extends State<ItemScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Container(
-        padding: const EdgeInsets.symmetric(
-            horizontal: Dimensions.paddingSizeSmall, vertical: 12),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              if (isSubCategory) ...[
-                BlocBuilder<SubCategoryCubit, SubCategoryState>(
-                  builder: (context, state) {
-                    if (state is SubCategoryLoaded) {
-                      return SubCategory2(
-                        category: widget.category,
-                          subCategoryList: state.subCategoryList
-                          );
-                    }
-                    return const SizedBox();
-                  },
-                )
-              ],
-              BlocBuilder<ItemsCubit, ItemsState>(
+      body: isSubCategory
+            ? BlocBuilder<SubCategoryCubit, SubCategoryState>(
                 builder: (context, state) {
-                  if (state is ItemsLoaded) {
-                    return Container();
+                  if (state is SubCategoryLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is SubCategoryLoaded) {
+                    return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SubCategory2(
+                            category: widget.category,
+                            subCategoryList: state.subCategoryList,
+                          ),
+                          const ItemsSection(),
+                        ],
+                      ),
+                    );
+                  } else if (state is SubCategoryError) {
+                    return const Center(child: Text('Error loading subcategories'));
                   }
-                  return const SizedBox();
+                  return const SizedBox.shrink();
                 },
-              ),
-              const ItemWidget(
-                itemsList: [],
-              ),
-              const AddonView(item: []),
-              const NewVariationView(
-                  item: [],
-                  discount: 0,
-                  discountType: '',
-                  showOriginalPrice: true),
-            ],
-          ),
-        ),
-      ),
+              )
+            :  const ItemsSection(),
     );
   }
 }

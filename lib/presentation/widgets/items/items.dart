@@ -10,7 +10,7 @@ import 'not_available_widet.dart';
 class ItemWidget extends StatelessWidget {
   const ItemWidget({super.key, required this.itemsList});
 
-  final List<ItemsModel> itemsList;
+  final ItemsModel itemsList;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class ItemWidget extends StatelessWidget {
               showModalBottomSheet(
                   context: context,
                   builder: (context) {
-                    return ItemBottomSheet();
+                    return const ItemBottomSheet();
                   });
             },
             child: Column(
@@ -70,7 +70,7 @@ class ItemWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Item Name',
+                          itemsList.name,
                           style: robotoMedium.copyWith(
                               fontSize: Dimensions.fontSizeSmall),
                           maxLines: 1,
@@ -99,7 +99,7 @@ class ItemWidget extends StatelessWidget {
                         ),
                         Row(children: [
                           Text(
-                            '\$130',
+                            '\$${itemsList.price}',
                             style: robotoMedium.copyWith(
                                 fontSize: Dimensions.fontSizeSmall),
                             textDirection: TextDirection.ltr,

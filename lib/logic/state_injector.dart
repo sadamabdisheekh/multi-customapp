@@ -94,6 +94,11 @@ class StateInjector {
             categoryRepository: context.read<CategoryRepository>())),
      BlocProvider<ItemsCubit>(
         create: (context) => ItemsCubit(
-            itemsRepository: context.read<ItemsRepository>())),
+            itemsRepository: context.read<ItemsRepository>(), 
+            categoryCubit: BlocProvider.of<CategoryCubit>(context), 
+            subCategoryCubit: BlocProvider.of<SubCategoryCubit>(context),
+            ),
+            
+            ),
   ];
 }
