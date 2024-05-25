@@ -3,12 +3,15 @@ import 'package:multi/constants/images.dart';
 
 import '../../../constants/dimensions.dart';
 import '../../../constants/styles.dart';
+import '../../../data/models/items_model.dart';
 import '../custom_button.dart';
 import '../custom_images.dart';
 import 'quantity_button.dart';
 
 class ItemBottomSheet extends StatefulWidget {
-  const ItemBottomSheet({super.key});
+  const ItemBottomSheet({super.key, required this.item});
+
+  final ItemsModel item;
 
   @override
   State<ItemBottomSheet> createState() => _ItemBottomSheetState();
@@ -75,7 +78,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Baasto',
+                                          widget.item.name,
                                           style: robotoMedium.copyWith(
                                               fontSize:
                                                   Dimensions.fontSizeLarge),
@@ -108,7 +111,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                           ),
                                         ),
                                         Text(
-                                          '\$130',
+                                          '\$${widget.item.price}',
                                           style: robotoMedium.copyWith(
                                               fontSize:
                                                   Dimensions.fontSizeLarge),
@@ -136,7 +139,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                     const SizedBox(
                                         height:
                                             Dimensions.paddingSizeExtraSmall),
-                                    Text('this is short description',
+                                    Text(widget.item.description,
                                         style: robotoRegular),
                                     const SizedBox(
                                         height: Dimensions.paddingSizeLarge),

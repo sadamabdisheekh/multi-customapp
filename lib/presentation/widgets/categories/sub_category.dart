@@ -27,12 +27,6 @@ class _SubCategoryState extends State<SubCategory> {
             onTap: () {
               selectedIndex = index;
               setState(() {});
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                builder: (con) => const ItemBottomSheet(),
-              );
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4.0),

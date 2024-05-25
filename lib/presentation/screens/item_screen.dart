@@ -4,11 +4,7 @@ import 'package:multi/data/models/category.dart';
 import 'package:multi/logic/cubit/items_cubit.dart';
 import 'package:multi/logic/cubit/sub_category_cubit.dart';
 import 'package:multi/presentation/widgets/categories/sub_category2.dart';
-import 'package:multi/presentation/widgets/variation.dart';
-
-import '../../constants/dimensions.dart';
 import '../widgets/items/item_section.dart';
-import '../widgets/items/items.dart';
 
 class ItemScreen extends StatefulWidget {
   const ItemScreen({super.key, required this.category});
