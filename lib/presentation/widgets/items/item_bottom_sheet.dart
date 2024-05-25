@@ -6,6 +6,7 @@ import '../../../constants/styles.dart';
 import '../../../data/models/items_model.dart';
 import '../custom_button.dart';
 import '../custom_images.dart';
+import '../variation.dart';
 import 'quantity_button.dart';
 
 class ItemBottomSheet extends StatefulWidget {
@@ -132,19 +133,20 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                 ),
                                 const SizedBox(
                                     height: Dimensions.paddingSizeLarge),
-                                Column(
+                                (widget.item.description != null && widget.item.description!.isNotEmpty) ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('description', style: robotoMedium),
                                     const SizedBox(
                                         height:
                                             Dimensions.paddingSizeExtraSmall),
-                                    Text(widget.item.description,
+                                    Text(widget.item.description!,
                                         style: robotoRegular),
                                     const SizedBox(
                                         height: Dimensions.paddingSizeLarge),
                                   ],
-                                )
+                                ) : const SizedBox(),
+                                NewVariationView(item: [],discount: 0,discountType: null,showOriginalPrice: false,)
                               ],
                             ),
                           ),

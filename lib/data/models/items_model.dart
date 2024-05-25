@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 class ItemsModel extends Equatable {
   final int id;
   final String name;
-  final String description;
+  final String? description;
   final String createdAt;
   final String price;
   final String? discount;
@@ -16,7 +16,7 @@ class ItemsModel extends Equatable {
   const ItemsModel({
     required this.id,
     required this.name,
-    required this.description,
+    this.description,
     required this.createdAt,
     required this.price,
     this.discount,
