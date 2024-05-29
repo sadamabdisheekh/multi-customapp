@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/data/models/modules_model.dart';
 import 'package:multi/data/router_names.dart';
+import 'package:multi/logic/cubit/category_cubit.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
 
 import '../../../constants/app_constants.dart';
@@ -20,25 +22,34 @@ class ModuleWidget extends StatelessWidget {
     if (products.isEmpty) return const Center(child: Text('No Module found'));
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3, mainAxisSpacing: Dimensions.paddingSizeSmall,
-          crossAxisSpacing: Dimensions.paddingSizeSmall, childAspectRatio: (1/1),
+        crossAxisCount: 3,
+        mainAxisSpacing: Dimensions.paddingSizeSmall,
+        crossAxisSpacing: Dimensions.paddingSizeSmall,
+        childAspectRatio: (1 / 1),
       ),
       itemCount: products.length,
       padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-      shrinkWrap: true, physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (BuildContext ctx, index) {
         return InkWell(
           onTap: () {
+            context.read<CategoryCubit>().getCategory();
             Navigator.pushNamed(context, RouteNames.categoryScreen,
                 arguments: products[index]);
           },
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
-                color: Theme.of(context).cardColor,
-                border: Border.all(color: Theme.of(context).primaryColor, width: 0.15),
-                boxShadow: [BoxShadow(color: Theme.of(context).primaryColor.withOpacity(0.1), spreadRadius: 1, blurRadius: 3)],
-              
+              borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
+              color: Theme.of(context).cardColor,
+              border: Border.all(
+                  color: Theme.of(context).primaryColor, width: 0.15),
+              boxShadow: [
+                BoxShadow(
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 3)
+              ],
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
