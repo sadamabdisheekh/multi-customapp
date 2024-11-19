@@ -10,13 +10,14 @@ class CategoryCubit extends Cubit<CategoryState> {
   final CategoryRepository _categoryRepository;
   CategoryCubit({required categoryRepository})
       : _categoryRepository = categoryRepository,
-        super(CategoryInitial()) {
-    getCategory();
-  }
+        super(CategoryInitial()) ;
 
-  getCategory() async {
+  getCategory(dynamic categoryId) async {
     emit(CategoryLoading());
-    final result = await _categoryRepository.getCategory();
+    
+    final parsedCategoryId = (categoryId == 'null' || categoryId == '') ? null : categoryId as int?;
+
+    final result = await _categoryRepository.getCategory(parsedCategoryId);
     
     result.fold(
       (failure) {

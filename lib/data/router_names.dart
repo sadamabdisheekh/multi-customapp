@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/data/models/category.dart';
+import 'package:multi/data/repository/category_repository.dart';
+import 'package:multi/logic/cubit/category_cubit.dart';
 import 'package:multi/presentation/screens/authentication/signup.dart';
 import 'package:multi/presentation/screens/categories.dart';
 import 'package:multi/presentation/screens/home.dart';
@@ -38,11 +41,11 @@ class RouteNames {
         final category = settings.arguments as ModulesModel;
         return MaterialPageRoute(
             settings: settings,
-            builder: (_) => CategoryScreen(category: category));
+            builder: (_) => BlocProvider<CategoryCubit>(create:(context) =>CategoryCubit(categoryRepository: context.read<CategoryRepository>(),),child:  CategoryScreen(category: category)));
       case RouteNames.itemScreen:
       final category = settings.arguments as CategoryModel;
         return MaterialPageRoute(
-            settings: settings, builder: (_) =>  ItemScreen(category: category,));
+            settings: settings, builder: (_) =>  BlocProvider<CategoryCubit>(create:(context) =>CategoryCubit(categoryRepository: context.read<CategoryRepository>(),),child:  ItemScreen(category: category)));
 
       // case RouteNames.dahabScreen:
       //  final invoiceId = settings.arguments as int;

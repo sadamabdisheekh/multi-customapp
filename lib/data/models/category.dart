@@ -10,7 +10,7 @@ class CategoryModel extends Equatable {
   final bool status;
   final String createdAt;
   final int priority;
-  final List<SubCategory> subCategory;
+  final List<CategoryModel> children;
 
   const CategoryModel({
     required this.id,
@@ -19,7 +19,7 @@ class CategoryModel extends Equatable {
     required this.status,
     required this.createdAt,
     required this.priority,
-    required this.subCategory,
+    required this.children,
   });
 
   CategoryModel copyWith({
@@ -29,7 +29,7 @@ class CategoryModel extends Equatable {
     bool? status,
     String? createdAt,
     int? priority,
-    List<SubCategory>? subCategory,
+    List<CategoryModel>? children,
   }) {
     return CategoryModel(
       id: id ?? this.id,
@@ -38,7 +38,7 @@ class CategoryModel extends Equatable {
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       priority: priority ?? this.priority,
-      subCategory: subCategory ?? this.subCategory,
+      children: children ?? this.children,
     );
   }
 
@@ -50,7 +50,7 @@ class CategoryModel extends Equatable {
       'status': status,
       'createdAt': createdAt,
       'priority': priority,
-      'subCategory': subCategory.map((x) {
+      'children': children.map((x) {
         return x.toMap();
       }).toList(growable: false),
     };
@@ -64,10 +64,10 @@ class CategoryModel extends Equatable {
       status: (map["status"] ?? false) as bool,
       createdAt: (map["createdAt"] ?? '') as String,
       priority: (map["priority"] ?? 0) as int,
-      subCategory: List<SubCategory>.from(
-        ((map['subCategory'] ?? const <SubCategory>[]) as List)
-            .map<SubCategory>((x) {
-          return SubCategory.fromMap(
+      children: List<CategoryModel>.from(
+        ((map['children'] ?? const <CategoryModel>[]) as List)
+            .map<CategoryModel>((x) {
+          return CategoryModel.fromMap(
               (x ?? Map<String, dynamic>.from({})) as Map<String, dynamic>);
         }),
       ),
@@ -91,36 +91,8 @@ class CategoryModel extends Equatable {
       status,
       createdAt,
       priority,
-      subCategory,
+      children,
     ];
   }
 }
 
-class SubCategory {
-  final int id;
-  final String name;
-
-  const SubCategory({required this.id, required this.name});
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'name': name,
-    };
-  }
-
-  factory SubCategory.fromMap(Map<String, dynamic> map) {
-    return SubCategory(
-      id: (map["id"] ?? 0) as int,
-      name: (map["name"] ?? '') as String,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory SubCategory.fromJson(String source) =>
-      SubCategory.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() => 'SubCategory(id: $id, name: $name)';
-}

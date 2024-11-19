@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/data/models/category.dart';
+import 'package:multi/logic/cubit/category_cubit.dart';
 import 'package:multi/logic/cubit/items_cubit.dart';
-import 'package:multi/logic/cubit/sub_category_cubit.dart';
-import 'package:multi/presentation/widgets/categories/sub_category2.dart';
 import '../widgets/items/item_section.dart';
 
 class ItemScreen extends StatefulWidget {
@@ -15,46 +14,67 @@ class ItemScreen extends StatefulWidget {
 }
 
 class _ItemScreenState extends State<ItemScreen> {
-  bool get isSubCategory => widget.category.subCategory.isNotEmpty;
+  String appBarTitle = '';
+
+  bool get isSubCategory => widget.category.children.isNotEmpty;
+
   @override
   void initState() {
-    if (isSubCategory) {
-      context.read<SubCategoryCubit>().getSubCategory(widget.category.id);
-    } else {
-      Map<String, dynamic> body = {"categoryId": widget.category.id};
-      context.read<ItemsCubit>().getItems(body);
-    }
     super.initState();
+    appBarTitle = widget.category.name;
+    _fetchInitialData();
+  }
+
+  void _fetchInitialData() {
+    if (isSubCategory) {
+      context.read<CategoryCubit>().getCategory(widget.category.id);
+    } else {
+      context.read<ItemsCubit>().getItems({"categoryId": widget.category.id});
+    }
+  }
+
+  void _updateTitle(String newTitle) {
+    setState(() {
+      appBarTitle = newTitle;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(appBarTitle),
+      ),
       body: isSubCategory
-            ? BlocBuilder<SubCategoryCubit, SubCategoryState>(
-                builder: (context, state) {
-                  if (state is SubCategoryLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is SubCategoryLoaded) {
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          SubCategory2(
-                            category: widget.category,
-                            subCategoryList: state.subCategoryList,
-                          ),
-                          const ItemsSection(),
-                        ],
-                      ),
-                    );
-                  } else if (state is SubCategoryError) {
-                    return const Center(child: Text('Error loading subcategories'));
-                  }
-                  return const SizedBox.shrink();
-                },
-              )
-            :  const ItemsSection(),
+          ? BlocBuilder<CategoryCubit, CategoryState>(
+              builder: (context, state) {
+                if (state is CategoryLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is CategoryLoaded) {
+                  return _buildCategoryList(state.categoryList);
+                } else if (state is CategoryError) {
+                  return const Center(child: Text('Error loading subcategories'));
+                }
+                return const Center(child: Text('No subcategories available'));
+              },
+            )
+          : const ItemsSection(),
+    );
+  }
+
+  Widget _buildCategoryList(List<CategoryModel> categories) {
+    return ListView.builder(
+      itemCount: categories.length,
+      itemBuilder: (context, index) {
+        final category = categories[index];
+        return ListTile(
+          title: Text(category.name),
+          onTap: () {
+            _updateTitle(category.name);
+            context.read<CategoryCubit>().getCategory(category.id);
+          },
+        );
+      },
     );
   }
 }

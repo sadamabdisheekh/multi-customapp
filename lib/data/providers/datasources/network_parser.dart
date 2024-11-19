@@ -52,7 +52,8 @@ class NetworkParser {
         final errorMsg = parsingDoseNotExist(response.body);
         throw UnauthorisedException(errorMsg, 403);
       case 404:
-        throw const UnauthorisedException('Request not found', 404);
+        final errorMsg = parsingDoseNotExist(response.body);
+        throw  UnauthorisedException(errorMsg, 404);
       case 405:
         throw const UnauthorisedException('Method not allowed', 405);
       case 406:
