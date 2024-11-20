@@ -15,9 +15,7 @@ class CategoryCubit extends Cubit<CategoryState> {
   getCategory(dynamic categoryId) async {
     emit(CategoryLoading());
     
-    final parsedCategoryId = (categoryId == 'null' || categoryId == '') ? null : categoryId as int?;
-
-    final result = await _categoryRepository.getCategory(parsedCategoryId);
+    final result = await _categoryRepository.getCategory(categoryId);
     
     result.fold(
       (failure) {

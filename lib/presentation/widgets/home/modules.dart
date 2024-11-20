@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/data/models/modules_model.dart';
 import 'package:multi/data/router_names.dart';
-import 'package:multi/logic/cubit/category_cubit.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
-
 import '../../../constants/app_constants.dart';
 import '../../../constants/dimensions.dart';
 import '../../../constants/styles.dart';
 
 class ModuleWidget extends StatelessWidget {
   const ModuleWidget({
-    Key? key,
+    super.key,
     required this.products,
-  }) : super(key: key);
+  });
 
   final List<ModulesModel> products;
 
@@ -29,6 +26,7 @@ class ModuleWidget extends StatelessWidget {
         mainAxisSpacing: Dimensions.paddingSizeSmall,
         crossAxisSpacing: Dimensions.paddingSizeSmall,
         childAspectRatio: 1,
+
       ),
       itemCount: products.length,
       padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
