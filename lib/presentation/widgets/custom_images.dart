@@ -51,22 +51,27 @@ class CustomImage extends StatelessWidget {
     if (imagePath.startsWith('http') ||
         imagePath.startsWith('https') ||
         imagePath.startsWith('www.')) {
+      // return CachedNetworkImage(
+      //   imageUrl: imagePath,
+      //   height: height,
+      //   width: width,
+      //   fit: fit,
+      //   placeholder: (context, url) => Image.asset(
+      //       placeholder.isNotEmpty ? placeholder : Kimages.logo,
+      //       height: height,
+      //       width: width,
+      //       fit: fit),
+      //   errorWidget: (context, url, error) => Image.asset(
+      //       placeholder.isNotEmpty ? placeholder : Kimages.logo,
+      //       height: height,
+      //       width: width,
+      //       fit: fit),
+      // );
       return CachedNetworkImage(
-        imageUrl: imagePath,
-        height: height,
-        width: width,
-        fit: fit,
-        placeholder: (context, url) => Image.asset(
-            placeholder.isNotEmpty ? placeholder : Kimages.logo,
-            height: height,
-            width: width,
-            fit: fit),
-        errorWidget: (context, url, error) => Image.asset(
-            placeholder.isNotEmpty ? placeholder : Kimages.logo,
-            height: height,
-            width: width,
-            fit: fit),
-      );
+      imageUrl: imagePath, height: height, width: width, fit: fit,
+      placeholder: (context, url) => Image.asset(placeholder.isNotEmpty ? placeholder : Kimages.placeholder, height: height, width: width, fit: fit),
+      errorWidget: (context, url, error) => Image.asset(placeholder.isNotEmpty ? placeholder : Kimages.placeholder, height: height, width: width, fit: fit),
+    );
     }
     return Image.asset(
       imagePath,

@@ -79,7 +79,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          widget.item.name,
+                                          widget.item.item.name,
                                           style: robotoMedium.copyWith(
                                               fontSize:
                                                   Dimensions.fontSizeLarge),
@@ -133,20 +133,20 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                 ),
                                 const SizedBox(
                                     height: Dimensions.paddingSizeLarge),
-                                (widget.item.description != null && widget.item.description!.isNotEmpty) ? Column(
+                                (widget.item.item.description != null && widget.item.item.description!.isNotEmpty) ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('description', style: robotoMedium),
                                     const SizedBox(
                                         height:
                                             Dimensions.paddingSizeExtraSmall),
-                                    Text(widget.item.description!,
+                                    Text(widget.item.item.description ?? '',
                                         style: robotoRegular),
                                     const SizedBox(
                                         height: Dimensions.paddingSizeLarge),
                                   ],
                                 ) : const SizedBox(),
-                                NewVariationView(item: [],discount: 0,discountType: null,showOriginalPrice: false,)
+                                const NewVariationView(item: [],discount: 0,discountType: null,showOriginalPrice: false,)
                               ],
                             ),
                           ),

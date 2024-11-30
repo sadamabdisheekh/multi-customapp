@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/data/models/category.dart';
+import 'package:multi/data/models/items_model.dart';
 import 'package:multi/data/repository/category_repository.dart';
 import 'package:multi/logic/cubit/category_cubit.dart';
 import 'package:multi/presentation/screens/authentication/signup.dart';
 import 'package:multi/presentation/screens/categories.dart';
 import 'package:multi/presentation/screens/home.dart';
 import 'package:multi/presentation/screens/item_screen.dart';
-
 import '../presentation/screens/authentication/signin.dart';
+import '../presentation/screens/item_details.dart';
 import '../presentation/screens/splash_screen.dart';
 import 'models/modules_model.dart';
 
@@ -22,6 +23,8 @@ class RouteNames {
   static const String homeScreen = '/homeScreen';
   static const String categoryScreen = '/categoryScreen';
   static const String itemScreen = '/itemScreen';
+  static const String itemDetailScreen = '/itemDetailScreen';
+
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -46,11 +49,10 @@ class RouteNames {
       final category = settings.arguments as CategoryModel;
         return MaterialPageRoute(
             settings: settings, builder: (_) =>  BlocProvider<CategoryCubit>(create:(context) =>CategoryCubit(categoryRepository: context.read<CategoryRepository>(),),child:  ItemScreen(category: category)));
-
-      // case RouteNames.dahabScreen:
-      //  final invoiceId = settings.arguments as int;
-      //   return MaterialPageRoute(
-      //       settings: settings, builder: (_) =>  Dahabscreen(invoiceId: invoiceId,));
+      case RouteNames.itemDetailScreen:
+      final item = settings.arguments as ItemsModel;
+        return MaterialPageRoute(
+            settings: settings, builder: (_) =>  ItemDetailScreen(item: item));
 
       default:
         return MaterialPageRoute(

@@ -1,5 +1,5 @@
 class RemoteUrls {
-  static const String rootUrl = 'http://0.0.0.0:3000';
+  static const String rootUrl = 'http://192.168.100.5:3000';
   //"http://160.119.251.252:3000";
 
   static const login = '$rootUrl/auth/login';
@@ -9,5 +9,8 @@ class RemoteUrls {
 
   static String subCategory(int categoryId) =>
       '$rootUrl/sub-category/findSubCategory/$categoryId';
-  static const items = '$rootUrl/item/filter';
+  static const items = '$rootUrl/item/getitemsbyfilter';
+
+  static String getItemDetails(int storeItemId) =>
+      '$rootUrl/item/getItemDetailsForMobile?storeItemId=$storeItemId';
 }

@@ -14,6 +14,9 @@ class ItemsSection extends StatelessWidget {
         if (state is ItemsLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is ItemsLoaded) {
+          if (state.itemsList.isEmpty) {
+            return const Center(child: Text('No Item Found'));
+          }
           return Column(
             children: [
               ListView.builder(

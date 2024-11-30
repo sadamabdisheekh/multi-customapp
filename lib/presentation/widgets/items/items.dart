@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:multi/constants/images.dart';
-import 'package:multi/data/models/items_model.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
 import 'package:multi/presentation/widgets/items/item_bottom_sheet.dart';
 import '../../../constants/dimensions.dart';
 import '../../../constants/styles.dart';
+import '../../../data/models/items_model.dart';
 import 'not_available_widet.dart';
 
 class ItemWidget extends StatelessWidget {
@@ -72,7 +72,7 @@ class ItemWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          itemsList.name,
+                          itemsList.item.name,
                           style: robotoMedium.copyWith(
                               fontSize: Dimensions.fontSizeSmall),
                           maxLines: 1,
