@@ -4,6 +4,7 @@ import 'package:multi/data/repository/auth_repository.dart';
 import 'package:multi/data/repository/category_repository.dart';
 import 'package:multi/data/repository/home_repository.dart';
 import 'package:multi/data/repository/item_repository.dart';
+import 'package:multi/logic/cubit/cart_cubit.dart';
 import 'package:multi/logic/cubit/home_cubit.dart';
 import 'package:multi/logic/cubit/item_details_cubit.dart';
 import 'package:multi/logic/cubit/items_cubit.dart';
@@ -92,6 +93,12 @@ class StateInjector {
     ),
     BlocProvider<ItemDetailsCubit>(
       create: (context) => ItemDetailsCubit(
+        itemsRepository: context.read<ItemsRepository>(),
+      ),
+    ),
+
+     BlocProvider<CartCubit>(
+      create: (context) => CartCubit(
         itemsRepository: context.read<ItemsRepository>(),
       ),
     ),

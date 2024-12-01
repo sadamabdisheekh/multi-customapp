@@ -6,7 +6,9 @@ import 'package:multi/constants/app_constants.dart';
 import 'package:multi/data/models/attribute_model.dart';
 import 'package:multi/data/models/item_details_model.dart';
 import 'package:multi/data/models/items_model.dart';
+import 'package:multi/logic/cubit/cart_cubit.dart';
 import 'package:multi/logic/cubit/item_details_cubit.dart';
+import 'package:multi/logic/cubit/signin_cubit.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
 
 class ItemDetailScreen extends StatefulWidget {
@@ -45,7 +47,14 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
           return const SizedBox.shrink();
         },
       ),
-      bottomNavigationBar: _buildBottomBar(context),
+      bottomNavigationBar: BlocBuilder<ItemDetailsCubit, ItemDetailsState>(
+        builder: (context, state) {
+          if (state is ItemDetailsLoadedState) {
+            return _buildBottomBar(context, state.itemDetails); // Pass itemDetails here
+          }
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 
@@ -151,22 +160,33 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
     );
   }
 
-  Widget _buildBottomBar(BuildContext context) {
+  Widget _buildBottomBar(BuildContext context, ItemDetailsModel itemDetails) {
+    final price = itemDetails.itemStore.price; // Get the price from the model
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -2))
       ]),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text('\$${widget.item.price}',
+        Text('\$$price', // Use the price from the server
             style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.green)),
         _buildIconWithBackground(CupertinoIcons.cart, 2),
         ElevatedButton(
-          onPressed: () => ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text('Added to cart!'))),
+          onPressed: () {
+            Map<String,dynamic> body = {
+              "userId": context.read<SigninCubit>().userInfo?.userId,
+              "quantity": 1,
+              "storeId": itemDetails.itemStore.store.id,
+              "itemId": itemDetails.itemStore.item.id,
+              "price": itemDetails.itemStore.price,
+              "storeItemId": itemDetails.itemStore.id
+            };
+            context.read<CartCubit>().addToCart(body);
+          },
           style: ElevatedButton.styleFrom(
               padding:
                   const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
@@ -213,39 +233,39 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
   }
 
   Widget _buildProductVariants(List<Attribute> variants) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Variants',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-      const SizedBox(height: 8),
-      ...variants.map((variant) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              variant.name,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 4),
-            Wrap(
-              spacing: 8.0,
-              children: variant.values
-                  .map(
-                    (value) => Chip(
-                      label: Text(value.name),
-                      backgroundColor: Colors.grey[200],
-                    ),
-                  )
-                  .toList(),
-            ),
-            const SizedBox(height: 8),
-          ],
-        );
-      }),
-    ],
-  );
-}
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Variants',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        ...variants.map((variant) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                variant.name,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 8.0,
+                children: variant.values
+                    .map(
+                      (value) => Chip(
+                        label: Text(value.name),
+                        backgroundColor: Colors.grey[200],
+                      ),
+                    )
+                    .toList(),
+              ),
+              const SizedBox(height: 8),
+            ],
+          );
+        }),
+      ],
+    );
+  }
 }

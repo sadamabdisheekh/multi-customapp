@@ -8,7 +8,9 @@ import '../remote_urls.dart';
 
 abstract class ItemsRepository {
   Future<Either<Failure, List<ItemsModel>>> getItems(Map<String,dynamic> body);
-    Future<Either<Failure, ItemDetailsModel>> getItemDetials(int storeItemId);
+  Future<Either<Failure, ItemDetailsModel>> getItemDetials(int storeItemId);
+
+  Future<Either<Failure, dynamic>> addToCart(Map<String,dynamic> body);
 
 }
 
@@ -37,6 +39,17 @@ class ItemsRepositoryImp extends ItemsRepository {
       final result =
           ItemDetailsModel.fromMap(resp);
       return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, e.statusCode));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, dynamic>> addToCart(Map<String, dynamic> body) async {
+     try {
+      final resp =
+          await remoteDataSource.httpPost(url: RemoteUrls.addToCart,body: body) as Map<String,dynamic>;
+      return Right(resp);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, e.statusCode));
     }

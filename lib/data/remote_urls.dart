@@ -13,4 +13,7 @@ class RemoteUrls {
 
   static String getItemDetails(int storeItemId) =>
       '$rootUrl/item/getItemDetailsForMobile?storeItemId=$storeItemId';
+
+  static const addToCart = '$rootUrl/cart/addtocart';
+
 }
