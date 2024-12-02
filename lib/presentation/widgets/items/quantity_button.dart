@@ -8,7 +8,7 @@ class QuantityButton extends StatelessWidget {
   final bool fromSheet;
   final bool showRemoveIcon;
   final Color? color;
-  const QuantityButton({Key? key, required this.isIncrement, required this.onTap, this.fromSheet = false, this.showRemoveIcon = false, this.color}) : super(key: key);
+  const QuantityButton({super.key, required this.isIncrement, required this.onTap, this.fromSheet = false, this.showRemoveIcon = false, this.color});
 
   @override
   Widget build(BuildContext context) {

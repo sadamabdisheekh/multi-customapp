@@ -10,7 +10,7 @@ class NewVariationView extends StatelessWidget {
   final double? discount;
   final String? discountType;
   final bool showOriginalPrice;
-  const NewVariationView({Key? key, required this.item, required this.discount, required this.discountType, required this.showOriginalPrice}) : super(key: key);
+  const NewVariationView({super.key, required this.item, required this.discount, required this.discountType, required this.showOriginalPrice});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class NewVariationView extends StatelessWidget {
         // }
         return Container(
           padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-          margin: EdgeInsets.only(bottom:  Dimensions.paddingSizeLarge),
+          margin: const EdgeInsets.only(bottom:  Dimensions.paddingSizeLarge),
           decoration: BoxDecoration(
             color:  Theme.of(context).disabledColor.withOpacity(0.05),
             border: Border.all(color: Theme.of(context).disabledColor, width: 0.5),
@@ -165,7 +165,7 @@ class NewVariationView extends StatelessWidget {
 
 class AddonView extends StatelessWidget {
   final List item;
-  const AddonView({Key? key, required this.item}) : super(key: key);
+  const AddonView({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {

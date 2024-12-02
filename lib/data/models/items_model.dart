@@ -93,7 +93,7 @@ class Item extends Equatable {
   final String updatedAt;
   final List<Images>? images;
 
-  Item({
+  const Item({
     required this.id,
     required this.name,
     required this.thumbnail,

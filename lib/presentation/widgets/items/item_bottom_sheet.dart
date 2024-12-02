@@ -208,7 +208,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                           ]),
                           const SizedBox(width: Dimensions.paddingSizeSmall),
 
-                          Expanded(child: CustomButton(buttonText: 'Add to cart')),
+                          const Expanded(child: CustomButton(buttonText: 'Add to cart')),
 
                           ]),
                     ),

@@ -6,7 +6,7 @@ import 'package:multi/constants/app_constants.dart';
 import 'package:multi/data/models/attribute_model.dart';
 import 'package:multi/data/models/item_details_model.dart';
 import 'package:multi/data/models/items_model.dart';
-import 'package:multi/logic/cubit/cart_cubit.dart';
+import 'package:multi/logic/cubit/add_to_cart_cubit.dart';
 import 'package:multi/logic/cubit/item_details_cubit.dart';
 import 'package:multi/logic/cubit/signin_cubit.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
@@ -50,7 +50,8 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
       bottomNavigationBar: BlocBuilder<ItemDetailsCubit, ItemDetailsState>(
         builder: (context, state) {
           if (state is ItemDetailsLoadedState) {
-            return _buildBottomBar(context, state.itemDetails); // Pass itemDetails here
+            return _buildBottomBar(
+                context, state.itemDetails); // Pass itemDetails here
           }
           return const SizedBox.shrink();
         },
@@ -162,7 +163,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
 
   Widget _buildBottomBar(BuildContext context, ItemDetailsModel itemDetails) {
     final price = itemDetails.itemStore.price; // Get the price from the model
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(color: Colors.white, boxShadow: [
@@ -175,24 +176,31 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                 fontWeight: FontWeight.bold,
                 color: Colors.green)),
         _buildIconWithBackground(CupertinoIcons.cart, 2),
-        ElevatedButton(
-          onPressed: () {
-            Map<String,dynamic> body = {
-              "userId": context.read<SigninCubit>().userInfo?.userId,
-              "quantity": 1,
-              "storeId": itemDetails.itemStore.store.id,
-              "itemId": itemDetails.itemStore.item.id,
-              "price": itemDetails.itemStore.price,
-              "storeItemId": itemDetails.itemStore.id
-            };
-            context.read<CartCubit>().addToCart(body);
+        BlocBuilder<AddToCartCubit, AddToCartState>(
+          builder: (context, state) {
+            if (state is AddToCartLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return ElevatedButton(
+              onPressed: () {
+                Map<String, dynamic> body = {
+                  "userId": context.read<SigninCubit>().userInfo?.userId,
+                  "quantity": 1,
+                  "storeId": itemDetails.itemStore.store.id,
+                  "itemId": itemDetails.itemStore.item.id,
+                  "price": itemDetails.itemStore.price,
+                  "storeItemId": itemDetails.itemStore.id
+                };
+                context.read<AddToCartCubit>().addToCart(body);
+              },
+              style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0, vertical: 12.0),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20))),
+              child: const Text('Add to Cart', style: TextStyle(fontSize: 18)),
+            );
           },
-          style: ElevatedButton.styleFrom(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20))),
-          child: const Text('Add to Cart', style: TextStyle(fontSize: 18)),
         ),
       ]),
     );
@@ -247,7 +255,8 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
             children: [
               Text(
                 variant.name,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 4),
               Wrap(
