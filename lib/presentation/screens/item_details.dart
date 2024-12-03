@@ -7,6 +7,7 @@ import 'package:multi/data/models/attribute_model.dart';
 import 'package:multi/data/models/item_details_model.dart';
 import 'package:multi/data/models/items_model.dart';
 import 'package:multi/logic/cubit/add_to_cart_cubit.dart';
+import 'package:multi/logic/cubit/cart_cubit.dart';
 import 'package:multi/logic/cubit/item_details_cubit.dart';
 import 'package:multi/logic/cubit/signin_cubit.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
@@ -50,8 +51,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
       bottomNavigationBar: BlocBuilder<ItemDetailsCubit, ItemDetailsState>(
         builder: (context, state) {
           if (state is ItemDetailsLoadedState) {
-            return _buildBottomBar(
-                context, state.itemDetails); // Pass itemDetails here
+            return _buildBottomBar(state.itemDetails);
           }
           return const SizedBox.shrink();
         },
@@ -161,48 +161,56 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
     );
   }
 
-  Widget _buildBottomBar(BuildContext context, ItemDetailsModel itemDetails) {
-    final price = itemDetails.itemStore.price; // Get the price from the model
+  Widget _buildBottomBar(ItemDetailsModel itemDetails) {
+    final price = itemDetails.itemStore.price;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -2))
       ]),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text('\$$price', // Use the price from the server
-            style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.green)),
-        _buildIconWithBackground(CupertinoIcons.cart, 2),
-        BlocBuilder<AddToCartCubit, AddToCartState>(
-          builder: (context, state) {
-            if (state is AddToCartLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            return ElevatedButton(
-              onPressed: () {
-                Map<String, dynamic> body = {
-                  "userId": context.read<SigninCubit>().userInfo?.userId,
-                  "quantity": 1,
-                  "storeId": itemDetails.itemStore.store.id,
-                  "itemId": itemDetails.itemStore.item.id,
-                  "price": itemDetails.itemStore.price,
-                  "storeItemId": itemDetails.itemStore.id
-                };
-                context.read<AddToCartCubit>().addToCart(body);
-              },
-              style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0, vertical: 12.0),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20))),
-              child: const Text('Add to Cart', style: TextStyle(fontSize: 18)),
-            );
-          },
-        ),
-      ]),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('\$$price',
+              style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green)),
+          BlocBuilder<CartCubit, CartState>(
+            builder: (context, state) {
+              return _buildIconWithBackground(CupertinoIcons.cart, context.read<CartCubit>().cartCount);
+            },
+          ),
+          BlocBuilder<AddToCartCubit, AddToCartState>(
+            builder: (context, state) {
+              if (state is AddToCartLoading) {
+                return const CircularProgressIndicator();
+              }
+              return ElevatedButton(
+                onPressed: () {
+                  Map<String, dynamic> body = {
+                    "userId": context.read<SigninCubit>().userInfo?.userId,
+                    "quantity": 1,
+                    "storeId": itemDetails.itemStore.store.id,
+                    "itemId": itemDetails.itemStore.item.id,
+                    "price": itemDetails.itemStore.price,
+                    "storeItemId": itemDetails.itemStore.id
+                  };
+                  context.read<AddToCartCubit>().addToCart(body);
+                },
+                style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0, vertical: 12.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20))),
+                child:
+                    const Text('Add to Cart', style: TextStyle(fontSize: 18)),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 

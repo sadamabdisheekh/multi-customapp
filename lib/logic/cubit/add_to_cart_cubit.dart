@@ -30,7 +30,7 @@ class AddToCartCubit extends Cubit<AddToCartState> {
         emit(errorState);
       },
       (value) {
-        emit(AddToCartLoaded());
+        emit(const AddToCartLoaded(message: 'loaded succesffully'));
       },
     ); 
     }

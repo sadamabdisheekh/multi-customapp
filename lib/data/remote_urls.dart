@@ -16,4 +16,6 @@ class RemoteUrls {
 
   static const addToCart = '$rootUrl/cart/addtocart';
 
+  static const getCartItems = '$rootUrl/cart/getcartitems';
+
 }

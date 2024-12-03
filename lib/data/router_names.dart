@@ -10,11 +10,13 @@ import 'package:multi/presentation/screens/home.dart';
 import 'package:multi/presentation/screens/item_screen.dart';
 import '../presentation/screens/authentication/signin.dart';
 import '../presentation/screens/item_details.dart';
+import '../presentation/screens/main_page/main_page.dart';
 import '../presentation/screens/splash_screen.dart';
 import 'models/modules_model.dart';
 
 class RouteNames {
   static const String splashScreen = '/splash';
+  static const String mainPage = '/mainPage';
   static const String signinScreen = '/signinScreen';
   static const String signupScreen = '/signupScreen';
   static const String otpScreen = '/otpScreen';
@@ -37,6 +39,9 @@ class RouteNames {
       case RouteNames.signupScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const SignupScreen());
+       case RouteNames.mainPage:
+        return MaterialPageRoute(
+            settings: settings, builder: (_) => const MainPage());
       case RouteNames.homeScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const HomeScreen());

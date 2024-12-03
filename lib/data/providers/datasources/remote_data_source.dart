@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:multi/data/models/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../constants/app_constants.dart';
 import 'network_parser.dart';
 
 abstract class RemoteDataSource {
@@ -18,18 +21,18 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   RemoteDataSourceImpl({required this.client});
 
   Future<String> getToken() async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String? jsonString = prefs.getString(AppConstants.cachedUserResponseKey);
-    // String token = '';
-
-    // if (jsonString != null && jsonString.isEmpty) {
-    //   Map<String, dynamic> jsonMap = jsonDecode(jsonString);
-    //   token = VerifyOtp.fromMap(jsonMap).accessToken;
-    // }
-    // if (kDebugMode) {
-    //   print('token $token');
-    // }
-    return 'appToken';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jsonString = prefs.getString(AppConstants.cachedUserResponseKey);
+    String token = '';
+    print(jsonString);
+    if (jsonString != null && jsonString.isNotEmpty) {
+      Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+      token = UserModel.fromMap(jsonMap).token;
+    }
+    if (kDebugMode) {
+      print('token $token');
+    }
+    return token;
   }
 
   @override
@@ -48,7 +51,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     }
 
     final clientMethod =
-        http.get(uri, headers: headers).timeout(const Duration(seconds: 10));
+        http.get(uri, headers: headers);
     final responseJsonBody =
         await NetworkParser.callClientWithCatchException(() => clientMethod);
     return responseJsonBody;

@@ -12,6 +12,8 @@ abstract class ItemsRepository {
 
   Future<Either<Failure, dynamic>> addToCart(Map<String,dynamic> body);
 
+  Future<Either<Failure, dynamic>> getCartItems();
+
 }
 
 class ItemsRepositoryImp extends ItemsRepository {
@@ -49,6 +51,17 @@ class ItemsRepositoryImp extends ItemsRepository {
      try {
       final resp =
           await remoteDataSource.httpPost(url: RemoteUrls.addToCart,body: body) as Map<String,dynamic>;
+      return Right(resp);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, e.statusCode));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, dynamic>> getCartItems() async {
+    try {
+      final resp =
+          await remoteDataSource.httpGet(url: RemoteUrls.getCartItems) as dynamic;
       return Right(resp);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, e.statusCode));

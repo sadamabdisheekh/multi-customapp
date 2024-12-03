@@ -33,6 +33,7 @@ dependencies:
   dartz: ^0.10.1
   animated_flip_counter: ^0.3.4
   shimmer: ^3.0.0
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:

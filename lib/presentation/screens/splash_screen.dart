@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: BlocConsumer<SplashCubit, SplashState>(
         listener: (context, state) {
           if (userLogin.isLogedIn) {
-            Navigator.pushReplacementNamed(context, RouteNames.homeScreen);
+            Navigator.pushReplacementNamed(context, RouteNames.mainPage);
           } else {
             Navigator.pushReplacementNamed(context, RouteNames.signinScreen);
           }

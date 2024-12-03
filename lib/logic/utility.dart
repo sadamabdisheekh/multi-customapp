@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../constants/colors.dart';
+import '../presentation/widgets/custom_text.dart';
+
 class Utils {
   static loadingDialog(BuildContext context,
       {bool barrierDismissible = false, String message = ''}) {
@@ -48,6 +51,23 @@ class Utils {
       ..hideCurrentSnackBar()
       ..showSnackBar(snackBar);
   }
+
+    static void errorSnackBar(BuildContext context, String errorMsg,
+      [Color textColor = redColor, int duration = 2500]) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          duration: Duration(milliseconds: duration),
+          content: CustomText(
+              text: errorMsg,
+              fontSize: 15.0,
+              fontWeight: FontWeight.w500,
+              color: textColor),
+        ),
+      );
+  }
+
 
   static bool _isDialogShowing(BuildContext context) =>
       ModalRoute.of(context)?.isCurrent != true;
