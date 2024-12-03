@@ -9,6 +9,7 @@ import '../remote_urls.dart';
 abstract class AuthRepository {
   Either<Failure, UserModel> getCashedUserInfo();
   Future<Either<Failure, UserModel>> login(Map<String, dynamic> body);
+  Future<Either<Failure, String>> logOut();
   Future<Either<Failure, UserModel>> signup(Map<String, dynamic> body);
 }
 
@@ -25,6 +26,17 @@ class AuthRepositoryImp extends AuthRepository {
       return Right(result);
     } on DatabaseException catch (e) {
       return Left(DatabaseFailure(e.message));
+    }
+  }
+
+    @override
+  Future<Either<Failure, String>> logOut() async {
+    try {
+      // final result = await remoteDataSource.logOut(token);
+      await localDataSource.clearUserProfile();
+      return const Right('logout successfull');
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, e.statusCode));
     }
   }
 

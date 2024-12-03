@@ -21,3 +21,23 @@ class SigninLoadedState extends SigninState {
 
   const SigninLoadedState({required this.user});
 }
+
+// logout
+
+class SigninStateLogoutLoading extends SigninState {}
+
+class SigninStateLogoutError extends SigninState {
+  final CustomError error;
+
+  const SigninStateLogoutError({required this.error});
+}
+
+class SigninStateLogOut extends SigninState {
+  final String msg;
+  final int statusCode;
+
+  const SigninStateLogOut(this.msg, this.statusCode);
+
+  @override
+  List<Object> get props => [msg, statusCode];
+}

@@ -4,6 +4,8 @@ import 'package:multi/data/models/user_model.dart';
 import 'package:multi/data/providers/error/custom_error.dart';
 import 'package:multi/data/repository/auth_repository.dart';
 
+import '../../data/providers/error/failure.dart';
+
 part 'signin_state.dart';
 
 class SigninCubit extends Cubit<SigninState> {
@@ -43,8 +45,33 @@ class SigninCubit extends Cubit<SigninState> {
                 statusCode: failure.statusCode, message: failure.message));
         emit(errorState);
       },
-      (value) {
-        emit(SigninLoadedState(user: value));
+      (user) {
+        _user = user; 
+        emit(SigninLoadedState(user: user));
+      },
+    );
+  }
+
+  Future<void> logOut() async {
+    emit( SigninStateLogoutLoading());
+
+    final result = await _authRepository.logOut();
+
+    result.fold(
+      (Failure failure) {
+        if (failure.statusCode == 500) {
+          const loadedData = SigninStateLogOut('logout success', 200);
+          emit(loadedData);
+        } else {
+          final error =
+              SigninStateLogOut(failure.message, failure.statusCode);
+          emit( error);
+        }
+      },
+      (String success) {
+        _user = null;
+        final loadedData = SigninStateLogOut(success, 200);
+        emit(loadedData);
       },
     );
   }

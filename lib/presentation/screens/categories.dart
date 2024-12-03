@@ -99,6 +99,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Widget _buildCategoryItem(CategoryModel category) {
     return InkWell(
       onTap: () {
+        print(category);
         Navigator.pushNamed(
           context,
           RouteNames.itemScreen,

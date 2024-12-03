@@ -63,7 +63,7 @@ class _ItemScreenState extends State<ItemScreen> {
         //     current is CategoryLoaded && current.categoryList.isNotEmpty,
         listener: (context, state) {
           if (state is CategoryLoaded && state.categoryList.isEmpty) {
-            context.read<ItemsCubit>().getItems({"categoryId": selectedCategoryId});
+            // context.read<ItemsCubit>().getItems({"categoryId": selectedCategoryId});
           }
         },
         builder: (context, state) {
