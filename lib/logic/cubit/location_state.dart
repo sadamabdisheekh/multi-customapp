@@ -21,7 +21,7 @@ final class LocationError extends LocationState {
 }
 
 final class LocationLoaded extends LocationState {
-  final Position position;
+  final String location;
 
-  const LocationLoaded({required this.position});
+  const LocationLoaded({required this.location});
 }

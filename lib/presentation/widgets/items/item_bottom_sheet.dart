@@ -133,91 +133,110 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                 ),
                                 const SizedBox(
                                     height: Dimensions.paddingSizeLarge),
-                                (widget.item.item.description != null && widget.item.item.description!.isNotEmpty) ? Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('description', style: robotoMedium),
-                                    const SizedBox(
-                                        height:
-                                            Dimensions.paddingSizeExtraSmall),
-                                    Text(widget.item.item.description ?? '',
-                                        style: robotoRegular),
-                                    const SizedBox(
-                                        height: Dimensions.paddingSizeLarge),
-                                  ],
-                                ) : const SizedBox(),
-                                const NewVariationView(item: [],discount: 0,discountType: null,showOriginalPrice: false,)
+                                (widget.item.item.description != null &&
+                                        widget
+                                            .item.item.description!.isNotEmpty)
+                                    ? Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text('description',
+                                              style: robotoMedium),
+                                          const SizedBox(
+                                              height: Dimensions
+                                                  .paddingSizeExtraSmall),
+                                          Text(
+                                              widget.item.item.description ??
+                                                  '',
+                                              style: robotoRegular),
+                                          const SizedBox(
+                                              height:
+                                                  Dimensions.paddingSizeLarge),
+                                        ],
+                                      )
+                                    : const SizedBox(),
+                                const NewVariationView(
+                                  item: [],
+                                  discount: 0,
+                                  discountType: null,
+                                  showOriginalPrice: false,
+                                )
                               ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                    
                   ),
                   Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: const  BorderRadius.all(Radius.circular(0)),
-                    boxShadow: [BoxShadow(color: Colors.grey[300]!, blurRadius: 10)],
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeDefault, vertical: Dimensions.paddingSizeDefault),
-                  child: Column(
-                    children: [
-                         Builder(
-                      builder: (context) {
-                      //  double? cost = PriceConverter.convertWithDiscount((price! * itemController.quantity!), discount, discountType);
-                      //  double withAddonCost = cost! + addonsCost;
-                        return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          Text('Total Amount', style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).primaryColor)),
-                          const SizedBox(width: Dimensions.paddingSizeExtraSmall),
-
-                          // Row(children: [
-                          //   discount! > 0 ? PriceConverter.convertAnimationPrice(
-                          //     (price * itemController.quantity!) + addonsCost,
-                          //     textStyle: robotoMedium.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fontSizeSmall, decoration: TextDecoration.lineThrough),
-                          //   ) : const SizedBox(),
-                          //   const SizedBox(width: Dimensions.paddingSizeExtraSmall),
-
-                          //   PriceConverter.convertAnimationPrice(
-                          //     withAddonCost,
-                          //     textStyle: robotoBold.copyWith(color: Theme.of(context).primaryColor),
-                          //   ),
-                          // ]),
-                        ]);
-                      }
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: const BorderRadius.all(Radius.circular(0)),
+                      boxShadow: [
+                        BoxShadow(color: Colors.grey[300]!, blurRadius: 10)
+                      ],
                     ),
-                    const SizedBox(height: Dimensions.paddingSizeSmall),
-                     SafeArea(
-                      child: Row(children: [
-                          // Quantity
-                          Row(children: [
-                            QuantityButton(
-                              onTap: () {
-                               
-                              },
-                              isIncrement: false,
-                              fromSheet: true,
-                            ),
-                            Text('1', style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge)),
-                            QuantityButton(
-                              onTap: (){},
-                              isIncrement: true,
-                              fromSheet: true,
-                            ),
-                          ]),
-                          const SizedBox(width: Dimensions.paddingSizeSmall),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: Dimensions.paddingSizeDefault,
+                        vertical: Dimensions.paddingSizeDefault),
+                    child: Column(
+                      children: [
+                        Builder(builder: (context) {
+                          //  double? cost = PriceConverter.convertWithDiscount((price! * itemController.quantity!), discount, discountType);
+                          //  double withAddonCost = cost! + addonsCost;
+                          return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Total Amount',
+                                    style: robotoMedium.copyWith(
+                                        fontSize: Dimensions.fontSizeDefault,
+                                        color: Theme.of(context).primaryColor)),
+                                const SizedBox(
+                                    width: Dimensions.paddingSizeExtraSmall),
 
-                          const Expanded(child: CustomButton(buttonText: 'Add to cart')),
+                                // Row(children: [
+                                //   discount! > 0 ? PriceConverter.convertAnimationPrice(
+                                //     (price * itemController.quantity!) + addonsCost,
+                                //     textStyle: robotoMedium.copyWith(color: Theme.of(context).disabledColor, fontSize: Dimensions.fontSizeSmall, decoration: TextDecoration.lineThrough),
+                                //   ) : const SizedBox(),
+                                //   const SizedBox(width: Dimensions.paddingSizeExtraSmall),
 
+                                //   PriceConverter.convertAnimationPrice(
+                                //     withAddonCost,
+                                //     textStyle: robotoBold.copyWith(color: Theme.of(context).primaryColor),
+                                //   ),
+                                // ]),
+                              ]);
+                        }),
+                        const SizedBox(height: Dimensions.paddingSizeSmall),
+                        SafeArea(
+                          child: Row(children: [
+                            // Quantity
+                            Row(children: [
+                              QuantityButton(
+                                onTap: () {},
+                                isIncrement: false,
+                                fromSheet: true,
+                              ),
+                              Text('1',
+                                  style: robotoMedium.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge)),
+                              QuantityButton(
+                                onTap: () {},
+                                isIncrement: true,
+                                fromSheet: true,
+                              ),
+                            ]),
+                            const SizedBox(width: Dimensions.paddingSizeSmall),
+
+                            const Expanded(
+                                child: CustomButton(buttonText: 'Add to cart')),
                           ]),
+                        ),
+                      ],
                     ),
-                 
-                    ],
                   ),
-                  ),
-                    // const SizedBox(height: Dimensions.paddingSizeSmall),
-                    
+                  // const SizedBox(height: Dimensions.paddingSizeSmall),
                 ],
               )
             ],

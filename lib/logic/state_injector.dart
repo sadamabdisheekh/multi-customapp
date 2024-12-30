@@ -4,11 +4,14 @@ import 'package:multi/data/repository/auth_repository.dart';
 import 'package:multi/data/repository/category_repository.dart';
 import 'package:multi/data/repository/home_repository.dart';
 import 'package:multi/data/repository/item_repository.dart';
+import 'package:multi/data/repository/order_repository.dart';
 import 'package:multi/logic/cubit/add_to_cart_cubit.dart';
 import 'package:multi/logic/cubit/cart_cubit.dart';
 import 'package:multi/logic/cubit/home_cubit.dart';
 import 'package:multi/logic/cubit/item_details_cubit.dart';
 import 'package:multi/logic/cubit/items_cubit.dart';
+import 'package:multi/logic/cubit/order_cubit.dart';
+import 'package:multi/logic/cubit/payment_method_cubit.dart';
 import 'package:multi/logic/cubit/splash_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -65,6 +68,11 @@ class StateInjector {
       create: (context) => ItemsRepositoryImp(
         remoteDataSource: context.read<RemoteDataSource>(),
       ),
+    ),
+    RepositoryProvider<OrderRepository>(
+      create: (context) => OrderRepositoryImp(
+        remoteDataSource: context.read<RemoteDataSource>(),
+      ),
     )
   ];
 
@@ -97,16 +105,24 @@ class StateInjector {
         itemsRepository: context.read<ItemsRepository>(),
       ),
     ),
-
-     BlocProvider<AddToCartCubit>(
+    BlocProvider<AddToCartCubit>(
       create: (context) => AddToCartCubit(
         itemsRepository: context.read<ItemsRepository>(),
       ),
     ),
-
-      BlocProvider<CartCubit>(
+    BlocProvider<CartCubit>(
       create: (context) => CartCubit(
         itemsRepository: context.read<ItemsRepository>(),
+      ),
+    ),
+    BlocProvider<PaymentMethodCubit>(
+      create: (context) => PaymentMethodCubit(
+        orderRepository: context.read<OrderRepository>(),
+      ),
+    ),
+    BlocProvider<OrderCubit>(
+      create: (context) => OrderCubit(
+        orderRepository: context.read<OrderRepository>(),
       ),
     ),
   ];

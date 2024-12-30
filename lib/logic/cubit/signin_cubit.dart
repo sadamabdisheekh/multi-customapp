@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multi/data/models/user_model.dart';
+import 'package:multi/data/models/customer_model.dart';
 import 'package:multi/data/providers/error/custom_error.dart';
 import 'package:multi/data/repository/auth_repository.dart';
 
@@ -11,11 +11,11 @@ part 'signin_state.dart';
 class SigninCubit extends Cubit<SigninState> {
   final AuthRepository _authRepository;
 
-  UserModel? _user;
-  bool get isLogedIn => _user != null;
+  CustomerModel? _customer;
+  bool get isLogedIn => _customer != null;
 
-  UserModel? get userInfo => _user;
-  set user(UserModel userData) => _user = userData;
+  CustomerModel? get customerInfo => _customer;
+  set customer(CustomerModel customerData) => _customer = customerData;
 
   SigninCubit({required authRepository})
       : _authRepository = authRepository,
@@ -27,9 +27,9 @@ class SigninCubit extends Cubit<SigninState> {
     final result = _authRepository.getCashedUserInfo();
 
     result.fold(
-      (l) => _user = null,
+      (l) => _customer = null,
       (r) {
-        user = r;
+        customer = r;
       },
     );
   }
@@ -46,14 +46,14 @@ class SigninCubit extends Cubit<SigninState> {
         emit(errorState);
       },
       (user) {
-        _user = user; 
+        _customer = user;
         emit(SigninLoadedState(user: user));
       },
     );
   }
 
   Future<void> logOut() async {
-    emit( SigninStateLogoutLoading());
+    emit(SigninStateLogoutLoading());
 
     final result = await _authRepository.logOut();
 
@@ -63,13 +63,12 @@ class SigninCubit extends Cubit<SigninState> {
           const loadedData = SigninStateLogOut('logout success', 200);
           emit(loadedData);
         } else {
-          final error =
-              SigninStateLogOut(failure.message, failure.statusCode);
-          emit( error);
+          final error = SigninStateLogOut(failure.message, failure.statusCode);
+          emit(error);
         }
       },
       (String success) {
-        _user = null;
+        _customer = null;
         final loadedData = SigninStateLogOut(success, 200);
         emit(loadedData);
       },

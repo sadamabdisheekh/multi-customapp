@@ -16,7 +16,6 @@ final class CategoryError extends CategoryState {
   const CategoryError({required this.error});
 }
 
-
 final class CategoryLoaded extends CategoryState {
   final List<CategoryModel> categoryList;
   const CategoryLoaded({required this.categoryList});

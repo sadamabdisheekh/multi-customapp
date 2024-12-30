@@ -95,4 +95,3 @@ class CategoryModel extends Equatable {
     ];
   }
 }
-

@@ -38,17 +38,21 @@ class Attribute extends Equatable {
     return Attribute(
       id: map['id'] as int,
       name: map['name'] as String,
-      values: List<AttributeValue>.from((map['values'] as List<dynamic>).map<AttributeValue>((x) => AttributeValue.fromMap(x as Map<String,dynamic>),),),
+      values: List<AttributeValue>.from(
+        (map['values'] as List<dynamic>).map<AttributeValue>(
+          (x) => AttributeValue.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Attribute.fromJson(String source) => Attribute.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Attribute.fromJson(String source) =>
+      Attribute.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() => 'Attribute(id: $id, name: $name, values: $values)';
-
 
   @override
   List<Object> get props => [id, name, values];
@@ -89,11 +93,11 @@ class AttributeValue extends Equatable {
 
   String toJson() => json.encode(toMap());
 
-  factory AttributeValue.fromJson(String source) => AttributeValue.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory AttributeValue.fromJson(String source) =>
+      AttributeValue.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() => 'AttributeValue(id: $id, name: $name)';
-
 
   @override
   List<Object> get props => [id, name];

@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:multi/data/models/attribute_model.dart';
 import 'package:multi/data/providers/error/custom_error.dart';
 import 'package:multi/data/repository/item_repository.dart';
 
@@ -12,11 +11,11 @@ part 'items_state.dart';
 class ItemsCubit extends Cubit<ItemsState> {
   final ItemsRepository _itemsRepository;
 
-  ItemsCubit(
-      {required itemsRepository,})
-      : _itemsRepository = itemsRepository,
+  ItemsCubit({
+    required itemsRepository,
+  })  : _itemsRepository = itemsRepository,
         super(ItemsInitial());
-        
+  List<Attribute>? attributes;
 
   getItems(Map<String, dynamic> body) async {
     emit(ItemsLoading());
@@ -35,9 +34,15 @@ class ItemsCubit extends Cubit<ItemsState> {
     );
   }
 
-  @override
-  Future<void> close() {
-    // categoryCubitSubscription.cancel();
-    return super.close();
+  getItemAttributes(Map<String, dynamic> body) async {
+    final result = await _itemsRepository.getItemAttributes(body);
+    result.fold(
+      (failure) {
+      
+      },
+      (value) {
+        attributes = value;
+      },
+    );
   }
 }

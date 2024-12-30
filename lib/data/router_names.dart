@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:multi/data/models/cart/cart_response_model.dart';
 import 'package:multi/data/models/category.dart';
 import 'package:multi/data/models/items_model.dart';
 import 'package:multi/data/repository/category_repository.dart';
 import 'package:multi/logic/cubit/category_cubit.dart';
 import 'package:multi/presentation/screens/authentication/signup.dart';
-import 'package:multi/presentation/screens/categories.dart';
-import 'package:multi/presentation/screens/home.dart';
-import 'package:multi/presentation/screens/item_screen.dart';
+import 'package:multi/presentation/screens/cart/cart_screen.dart';
+import 'package:multi/presentation/screens/category/categories.dart';
+import 'package:multi/presentation/screens/checkout/checkout_screen.dart';
+import 'package:multi/presentation/screens/home/home.dart';
+import 'package:multi/presentation/screens/item/item_screen.dart';
 import '../presentation/screens/authentication/signin.dart';
-import '../presentation/screens/item_details.dart';
+import '../presentation/screens/item/item_details_screen.dart';
 import '../presentation/screens/main_page/main_page.dart';
+import '../presentation/screens/order/order_success_screen.dart';
 import '../presentation/screens/splash_screen.dart';
 import 'models/modules_model.dart';
 
@@ -26,6 +30,9 @@ class RouteNames {
   static const String categoryScreen = '/categoryScreen';
   static const String itemScreen = '/itemScreen';
   static const String itemDetailScreen = '/itemDetailScreen';
+  static const String cartScreen = '/cartScreen';
+  static const String checkoutScreen = '/checkoutScreen';
+  static const String orderSuccessScreen = '/orderSuccessScreen';
 
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -39,7 +46,7 @@ class RouteNames {
       case RouteNames.signupScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const SignupScreen());
-       case RouteNames.mainPage:
+      case RouteNames.mainPage:
         return MaterialPageRoute(
             settings: settings, builder: (_) => const MainPage());
       case RouteNames.homeScreen:
@@ -49,17 +56,35 @@ class RouteNames {
         final category = settings.arguments as ModulesModel;
         return MaterialPageRoute(
             settings: settings,
-            builder: (_) => BlocProvider<CategoryCubit>(create:(context) =>CategoryCubit(categoryRepository: context.read<CategoryRepository>(),),child:  CategoryScreen(category: category)));
+            builder: (_) => BlocProvider<CategoryCubit>(
+                create: (context) => CategoryCubit(
+                      categoryRepository: context.read<CategoryRepository>(),
+                    ),
+                child: CategoryScreen(category: category)));
       case RouteNames.itemScreen:
-      final category = settings.arguments as CategoryModel;
+        final category = settings.arguments as CategoryModel;
         return MaterialPageRoute(
-            settings: settings, builder: (_) =>  BlocProvider<CategoryCubit>(create:(context) =>CategoryCubit(categoryRepository: context.read<CategoryRepository>(),),child:  ItemScreen(category: category)));
+            settings: settings,
+            builder: (_) => BlocProvider<CategoryCubit>(
+                create: (context) => CategoryCubit(
+                      categoryRepository: context.read<CategoryRepository>(),
+                    ),
+                child: ItemScreen(category: category)));
       case RouteNames.itemDetailScreen:
-      final item = settings.arguments as ItemsModel;
+        final item = settings.arguments as ItemsModel;
         return MaterialPageRoute(
-            settings: settings, builder: (_) =>  ItemDetailScreen(item: item));
-
-      default:
+            settings: settings, builder: (_) => ItemDetailScreen(item: item));
+      case RouteNames.cartScreen:
+        return MaterialPageRoute(
+            settings: settings, builder: (_) => const CartScreen());
+        case RouteNames.checkoutScreen:
+        final cartItems = settings.arguments as List<CartResponseModel>;
+        return MaterialPageRoute(
+            settings: settings, builder: (_) =>  CheckoutScreen(cartItem: cartItems));
+        case RouteNames.orderSuccessScreen:
+        return MaterialPageRoute(
+            settings: settings, builder: (_) =>  const OrderSuccessScreen());
+       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
             body: Center(

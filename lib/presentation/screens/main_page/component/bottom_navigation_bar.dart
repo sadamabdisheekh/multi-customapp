@@ -22,20 +22,19 @@ class MyBottomNavigationBar extends StatelessWidget {
             return BottomNavigationBar(
               showUnselectedLabels: true,
               type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).cardColor,
               selectedLabelStyle:
-              const TextStyle(fontSize: 14, color: blackColor),
+                  const TextStyle(fontSize: 14, color: blackColor),
               unselectedLabelStyle:
-              const TextStyle(fontSize: 14, color: grayColor),
+                  const TextStyle(fontSize: 14, color: grayColor),
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home),
                   label: Language.home.capitalizeByWord(),
                 ),
-              
                 BottomNavigationBarItem(
                   tooltip: Language.profile.capitalizeByWord(),
-                  icon: Icon(Icons.person_off_outlined),
+                  icon: Icon(Icons.person),
                   label: Language.profile.capitalizeByWord(),
                 ),
               ],

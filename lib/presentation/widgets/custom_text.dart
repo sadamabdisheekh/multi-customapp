@@ -42,7 +42,6 @@ class CustomText extends StatelessWidget {
       style: GoogleFonts.inter(
         letterSpacing: -0.2,
         fontWeight: fontWeight,
-     
         color: color,
         height: height,
         fontStyle: fontStyle,

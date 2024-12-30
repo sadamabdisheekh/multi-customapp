@@ -68,10 +68,21 @@ class CustomImage extends StatelessWidget {
       //       fit: fit),
       // );
       return CachedNetworkImage(
-      imageUrl: imagePath, height: height, width: width, fit: fit,
-      placeholder: (context, url) => Image.asset(placeholder.isNotEmpty ? placeholder : Kimages.placeholder, height: height, width: width, fit: fit),
-      errorWidget: (context, url, error) => Image.asset(placeholder.isNotEmpty ? placeholder : Kimages.placeholder, height: height, width: width, fit: fit),
-    );
+        imageUrl: imagePath,
+        height: height,
+        width: width,
+        fit: fit,
+        placeholder: (context, url) => Image.asset(
+            placeholder.isNotEmpty ? placeholder : Kimages.placeholder,
+            height: height,
+            width: width,
+            fit: fit),
+        errorWidget: (context, url, error) => Image.asset(
+            placeholder.isNotEmpty ? placeholder : Kimages.placeholder,
+            height: height,
+            width: width,
+            fit: fit),
+      );
     }
     return Image.asset(
       imagePath,

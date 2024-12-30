@@ -7,21 +7,17 @@ import '../../data/repository/item_repository.dart';
 part 'add_to_cart_state.dart';
 
 class AddToCartCubit extends Cubit<AddToCartState> {
-
-      final ItemsRepository _itemsRepository;
-    AddToCartCubit(
-      {required itemsRepository,})
-      : _itemsRepository = itemsRepository,
+  final ItemsRepository _itemsRepository;
+  AddToCartCubit({
+    required itemsRepository,
+  })  : _itemsRepository = itemsRepository,
         super(AddToCartInitial());
 
-    getUserCart() {
 
-    }
+  addToCart(Map<String, dynamic> body) async {
+    emit(AddToCartLoading());
 
-    addToCart(Map<String,dynamic> body) async {
-      emit(AddToCartLoading());
-
-      final result = await _itemsRepository.addToCart(body);
+    final result = await _itemsRepository.addToCart(body);
     result.fold(
       (failure) {
         var errorState = AddToCartError(
@@ -32,6 +28,6 @@ class AddToCartCubit extends Cubit<AddToCartState> {
       (value) {
         emit(const AddToCartLoaded(message: 'loaded succesffully'));
       },
-    ); 
-    }
+    );
+  }
 }

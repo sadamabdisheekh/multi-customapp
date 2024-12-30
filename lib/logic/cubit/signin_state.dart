@@ -17,7 +17,7 @@ class SigninErrorState extends SigninState {
 }
 
 class SigninLoadedState extends SigninState {
-  final UserModel user;
+  final CustomerModel user;
 
   const SigninLoadedState({required this.user});
 }

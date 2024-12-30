@@ -17,6 +17,6 @@ final class SignupErrorState extends SignupState {
 }
 
 final class SignupLoadedState extends SignupState {
-  final UserModel user;
+  final CustomerModel user;
   const SignupLoadedState({required this.user});
 }

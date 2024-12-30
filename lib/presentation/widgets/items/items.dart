@@ -37,7 +37,7 @@ class ItemWidget extends StatelessWidget {
               showModalBottomSheet(
                   context: context,
                   builder: (context) {
-                    return  ItemBottomSheet(
+                    return ItemBottomSheet(
                       item: itemsList,
                     );
                   });

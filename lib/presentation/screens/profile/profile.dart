@@ -7,14 +7,12 @@ import '../../../logic/utility.dart';
 
 class ProfileScreen extends StatelessWidget {
   // Mock user data
-  final String userName = "John Doe";
-  final String userEmail = "johndoe@example.com";
-  final String userPhone = "123-456-7890";
 
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final customerInfo = context.read<SigninCubit>().customerInfo!;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -29,34 +27,31 @@ class ProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                userName,
+                '${customerInfo.firstName} ${customerInfo.lastName}',
                 style:
                     const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               Text(
-                userEmail,
+                customerInfo.mobile,
                 style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
-              Text(
-                userPhone,
-                style: const TextStyle(fontSize: 16, color: Colors.grey),
-              ),
+              
               const SizedBox(height: 30),
               BlocListener<SigninCubit, SigninState>(
                 listener: (context, state) {
-                if (state is SigninStateLogoutLoading) {
-                  Utils.loadingDialog(context);
-                } else {
-                  Utils.closeDialog(context);
-                  if (state is SigninStateLogoutError) {
-                    Utils.errorSnackBar(context, state.error.message);
-                  } else if (state is SigninStateLogOut) {
-                    Navigator.pop(context);
-                    Navigator.pushNamedAndRemoveUntil(context,
-                        RouteNames.signinScreen, (route) => false);
-                    Utils.showSnackBar(context, state.msg);
+                  if (state is SigninStateLogoutLoading) {
+                    Utils.loadingDialog(context);
+                  } else {
+                    Utils.closeDialog(context);
+                    if (state is SigninStateLogoutError) {
+                      Utils.errorSnackBar(context, state.error.message);
+                    } else if (state is SigninStateLogOut) {
+                      Navigator.pop(context);
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, RouteNames.signinScreen, (route) => false);
+                      Utils.showSnackBar(context, state.msg);
+                    }
                   }
-                }
                 },
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(15),

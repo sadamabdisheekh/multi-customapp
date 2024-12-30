@@ -22,7 +22,6 @@ class ModulesModel {
     this.updatedAt,
   });
 
-
   @override
   String toString() {
     return 'ModulesModel(id: $id, moduleName: $moduleName, image: $image, status: $status, icon: $icon, description: $description, createdAt: $createdAt, updatedAt: $updatedAt)';
@@ -70,7 +69,8 @@ class ModulesModel {
       image: map['image'] as String,
       status: map['status'] as bool,
       icon: map['icon'] != null ? map['icon'] as String : null,
-      description: map['description'] != null ? map['description'] as String : null,
+      description:
+          map['description'] != null ? map['description'] as String : null,
       createdAt: map['created_at'] as String,
       updatedAt: map['updated_at'] != null ? map['updated_at'] as String : null,
     );
@@ -78,6 +78,6 @@ class ModulesModel {
 
   String toJson() => json.encode(toMap());
 
-  factory ModulesModel.fromJson(String source) => ModulesModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
+  factory ModulesModel.fromJson(String source) =>
+      ModulesModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }

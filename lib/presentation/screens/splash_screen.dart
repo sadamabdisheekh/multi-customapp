@@ -22,9 +22,11 @@ class _SplashScreenState extends State<SplashScreen> {
       body: BlocConsumer<SplashCubit, SplashState>(
         listener: (context, state) {
           if (userLogin.isLogedIn) {
-            Navigator.pushReplacementNamed(context, RouteNames.mainPage);
+            Navigator.pushNamedAndRemoveUntil(
+                context, RouteNames.mainPage, (route) => false);
           } else {
-            Navigator.pushNamedAndRemoveUntil(context, RouteNames.signinScreen, (route) => false);
+            Navigator.pushNamedAndRemoveUntil(
+                context, RouteNames.signinScreen, (route) => false);
           }
         },
         builder: (context, state) {

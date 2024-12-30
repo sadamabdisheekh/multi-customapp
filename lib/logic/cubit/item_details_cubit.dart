@@ -7,16 +7,16 @@ import '../../data/repository/item_repository.dart';
 part 'item_details_state.dart';
 
 class ItemDetailsCubit extends Cubit<ItemDetailsState> {
-   final ItemsRepository _itemsRepository;
-    ItemDetailsCubit(
-      {required itemsRepository,})
-      : _itemsRepository = itemsRepository,
+  final ItemsRepository _itemsRepository;
+  ItemDetailsCubit({
+    required itemsRepository,
+  })  : _itemsRepository = itemsRepository,
         super(ItemDetailsInitial());
 
-    getItemDetails(int storeItemId) async {
-      emit(ItemDetailsLoadingState());
+  getItemDetails(int storeItemId) async {
+    emit(ItemDetailsLoadingState());
 
-      final result = await _itemsRepository.getItemDetials(storeItemId);
+    final result = await _itemsRepository.getItemDetials(storeItemId);
     result.fold(
       (failure) {
         var errorState = ItemDetailsErrorState(
@@ -28,8 +28,5 @@ class ItemDetailsCubit extends Cubit<ItemDetailsState> {
         emit(ItemDetailsLoadedState(itemDetails: value));
       },
     );
-
-    }
-
-
+  }
 }

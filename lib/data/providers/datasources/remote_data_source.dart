@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:multi/data/models/user_model.dart';
+import 'package:multi/data/models/customer_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../constants/app_constants.dart';
@@ -24,10 +24,9 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? jsonString = prefs.getString(AppConstants.cachedUserResponseKey);
     String token = '';
-    print(jsonString);
     if (jsonString != null && jsonString.isNotEmpty) {
       Map<String, dynamic> jsonMap = jsonDecode(jsonString);
-      token = UserModel.fromMap(jsonMap).token;
+      token = CustomerModel.fromMap(jsonMap).token;
     }
     if (kDebugMode) {
       print('token $token');
@@ -50,8 +49,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       print(uri);
     }
 
-    final clientMethod =
-        http.get(uri, headers: headers);
+    final clientMethod = http.get(uri, headers: headers);
     final responseJsonBody =
         await NetworkParser.callClientWithCatchException(() => clientMethod);
     return responseJsonBody;

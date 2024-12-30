@@ -9,11 +9,13 @@ sealed class CartState extends Equatable {
 
 final class CartInitial extends CartState {}
 
-
 class CartStateLoading extends CartState {
   const CartStateLoading();
 }
 
+class CartStateDecIncrementLoading extends CartState {
+  const CartStateDecIncrementLoading();
+}
 
 class CartStateError extends CartState {
   final String message;
@@ -25,11 +27,36 @@ class CartStateError extends CartState {
   List<Object> get props => [message, statusCode];
 }
 
-class CartStateLoaded extends CartState {
-  final dynamic cartResponse;
+class CartStateDecIncError extends CartState {
+  final String message;
+  final int statusCode;
 
-  const CartStateLoaded(this.cartResponse);
+  const CartStateDecIncError(this.message, this.statusCode);
 
   @override
-  List<Object> get props => [cartResponse];
+  List<Object> get props => [message, statusCode];
+}
+
+class CartDecIncState extends CartState {
+  final String message;
+
+  const CartDecIncState({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class CartStateLoaded extends CartState {
+  final List<CartResponseModel> cartResponse;
+
+  const CartStateLoaded(this.cartResponse);
+}
+
+class CartStateRemove extends CartState {
+  final String message;
+
+  const CartStateRemove(this.message);
+
+  @override
+  List<Object> get props => [message];
 }

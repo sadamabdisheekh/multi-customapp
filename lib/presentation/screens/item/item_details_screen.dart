@@ -6,10 +6,13 @@ import 'package:multi/constants/app_constants.dart';
 import 'package:multi/data/models/attribute_model.dart';
 import 'package:multi/data/models/item_details_model.dart';
 import 'package:multi/data/models/items_model.dart';
+import 'package:multi/data/router_names.dart';
 import 'package:multi/logic/cubit/add_to_cart_cubit.dart';
 import 'package:multi/logic/cubit/cart_cubit.dart';
 import 'package:multi/logic/cubit/item_details_cubit.dart';
 import 'package:multi/logic/cubit/signin_cubit.dart';
+import 'package:multi/logic/utility.dart';
+import 'package:multi/presentation/screens/home/widgets/cart_badge.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
 
 class ItemDetailScreen extends StatefulWidget {
@@ -138,6 +141,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
 
   Widget _buildProductInfo(ItemDetailsModel itemDetails) {
     final item = itemDetails.itemStore.item;
+    final storeItem = itemDetails.itemStore;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,6 +154,45 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: Colors.green)),
+        const SizedBox(height: 16),
+         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+           children: [
+             Row(
+              children: [
+                const Text(
+                  'Availability:',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                Text(
+                  storeItem.availableStock > 0
+                      ? '${storeItem.availableStock} Items Available'
+                      : 'Out Of Stock',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: storeItem.availableStock > 0 ? Colors.black : Colors.red,
+                  ),
+                ),
+              ],
+              ),
+              if (item.itemUnit != null) Container(
+                padding: Utils.symmetric(h: 6.0,v: 4.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(4)
+                ),
+                child: Text(item.itemUnit!.name,
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor
+                ), 
+                ),
+              )
+           ],
+         ),
         const SizedBox(height: 16),
         const Text('Description',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -179,7 +222,13 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                   color: Colors.green)),
           BlocBuilder<CartCubit, CartState>(
             builder: (context, state) {
-              return _buildIconWithBackground(CupertinoIcons.cart, context.read<CartCubit>().cartCount);
+              final cartCount = context.read<CartCubit>().cartCount.toString();
+              return InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, RouteNames.cartScreen);
+              },
+              child: CartBadge(count: cartCount)
+              );
             },
           ),
           BlocBuilder<AddToCartCubit, AddToCartState>(
@@ -190,7 +239,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
               return ElevatedButton(
                 onPressed: () {
                   Map<String, dynamic> body = {
-                    "userId": context.read<SigninCubit>().userInfo?.userId,
+                    "customerId": context.read<SigninCubit>().customerInfo?.id,
                     "quantity": 1,
                     "storeId": itemDetails.itemStore.store.id,
                     "itemId": itemDetails.itemStore.item.id,
@@ -211,40 +260,6 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildIconWithBackground(IconData icon, int? badgeCount) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-              color: const Color(0xFFF5F5F5),
-              borderRadius: BorderRadius.circular(8)),
-          child: Icon(icon, color: Colors.black, size: 24),
-        ),
-        if (badgeCount != null && badgeCount > 0)
-          Positioned(
-            top: 3,
-            right: 3,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  shape: BoxShape.circle),
-              child: Text(
-                badgeCount.toString(),
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-      ],
     );
   }
 

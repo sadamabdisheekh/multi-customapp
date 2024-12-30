@@ -14,10 +14,11 @@ class CategoryRepositoryImp extends CategoryRepository {
   CategoryRepositoryImp({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, List<CategoryModel>>> getCategory(dynamic categoryId) async {
+  Future<Either<Failure, List<CategoryModel>>> getCategory(
+      dynamic categoryId) async {
     try {
-      final resp =
-          await remoteDataSource.httpGet(url: RemoteUrls.category(categoryId)) as List;
+      final resp = await remoteDataSource.httpGet(
+          url: RemoteUrls.category(categoryId)) as List;
       final result =
           List<CategoryModel>.from(resp.map((e) => CategoryModel.fromMap(e)));
       return Right(result);

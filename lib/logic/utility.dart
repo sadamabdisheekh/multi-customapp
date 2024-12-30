@@ -52,7 +52,7 @@ class Utils {
       ..showSnackBar(snackBar);
   }
 
-    static void errorSnackBar(BuildContext context, String errorMsg,
+  static void errorSnackBar(BuildContext context, String errorMsg,
       [Color textColor = redColor, int duration = 2500]) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -68,7 +68,6 @@ class Utils {
       );
   }
 
-
   static bool _isDialogShowing(BuildContext context) =>
       ModalRoute.of(context)?.isCurrent != true;
 
@@ -80,5 +79,35 @@ class Utils {
 
   static void closeKeyBoard(BuildContext context) {
     FocusScope.of(context).requestFocus(FocusNode());
+  }
+
+    static double vPadding({double size = 20.0}) {
+    return size;
+  }
+
+  static double hPadding({double size = 20.0}) {
+    return size;
+  }
+
+  static EdgeInsets symmetric({double h = 20.0, v = 0.0}) {
+    return EdgeInsets.symmetric(
+        horizontal: Utils.hPadding(size: h), vertical: Utils.vPadding(size: v));
+  }
+
+  static double radius(double radius) {
+    return radius;
+  }
+
+  static BorderRadius borderRadius({double r = 10.0}) {
+    return BorderRadius.circular(Utils.radius(r));
+  }
+
+  static EdgeInsets only({
+    double left = 0.0,
+    double top = 0.0,
+    double right = 0.0,
+    double bottom = 0.0,
+  }) {
+    return EdgeInsets.only(left: left, top: top, right: right, bottom: bottom);
   }
 }

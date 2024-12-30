@@ -6,7 +6,6 @@ import 'items.dart';
 class ItemsSection extends StatelessWidget {
   const ItemsSection({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ItemsCubit, ItemsState>(
@@ -29,7 +28,6 @@ class ItemsSection extends StatelessWidget {
                   );
                 },
               ),
-              
             ],
           );
         } else if (state is ItemsError) {

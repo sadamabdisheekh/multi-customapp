@@ -5,12 +5,15 @@ import 'package:get/get.dart';
 import '../../constants/styles.dart';
 
 class PriceConverter {
-
-   static Widget convertAnimationPrice(double? price, {double? discount, String? discountType, bool forDM = false, TextStyle? textStyle}) {
-    if(discount != null && discountType != null){
-      if(discountType == 'amount') {
+  static Widget convertAnimationPrice(double? price,
+      {double? discount,
+      String? discountType,
+      bool forDM = false,
+      TextStyle? textStyle}) {
+    if (discount != null && discountType != null) {
+      if (discountType == 'amount') {
         price = price! - discount;
-      }else if(discountType == 'percent') {
+      } else if (discountType == 'percent') {
         price = price! - ((discount / 100) * price);
       }
     }
@@ -39,5 +42,4 @@ class PriceConverter {
     }
     return retval;
   }
-
 }
