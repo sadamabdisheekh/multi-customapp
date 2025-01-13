@@ -35,7 +35,9 @@ class _ItemScreenState extends State<ItemScreen> {
   void _fetchInitialData() {
     context.read<CategoryCubit>().getCategory(widget.category.id);
     context.read<ItemsCubit>().getItems({"categoryId": widget.category.id});
-    context.read<ItemsCubit>().getItemAttributes({"categoryId": widget.category.id});
+    context
+        .read<ItemsCubit>()
+        .getItemAttributes({"categoryId": widget.category.id});
   }
 
   void _updateTitle(String newTitle) {
@@ -82,23 +84,19 @@ class CategorySection extends StatelessWidget {
   final Function(String) updateTitle;
   final int categoryId;
 
-  const CategorySection({
-    super.key,
-    required this.updateTitle,
-    required this.categoryId
-  });
+  const CategorySection(
+      {super.key, required this.updateTitle, required this.categoryId});
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: BlocConsumer<CategoryCubit, CategoryState>(
-        buildWhen: (previous, current) => current is CategoryLoaded && current.categoryList.isNotEmpty,
+        // buildWhen: (previous, current) => current is CategoryLoaded && current.categoryList.isNotEmpty,
         listener: (context, state) {},
         builder: (context, state) {
           if (state is CategoryLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is CategoryLoaded) {
-            
             return _CategoryList(
               categoryId: categoryId,
               categories: state.categoryList,
@@ -115,7 +113,10 @@ class CategorySection extends StatelessWidget {
 }
 
 class _CategoryList extends StatefulWidget {
-  const _CategoryList({required this.categories, required this.updateTitle, required this.categoryId});
+  const _CategoryList(
+      {required this.categories,
+      required this.updateTitle,
+      required this.categoryId});
 
   final List<CategoryModel> categories;
   final Function(String) updateTitle;
@@ -150,8 +151,11 @@ class _CategoryListState extends State<_CategoryList> {
               onSelected: (selected) {
                 if (selected) {
                   setState(() => selectedCategoryId = index);
-                  final categoryId = category.id == 0 ? widget.categoryId : category.id;
-                  context.read<ItemsCubit>().getItems({"categoryId": categoryId});
+                  final categoryId =
+                      category.id == 0 ? widget.categoryId : category.id;
+                  context
+                      .read<ItemsCubit>()
+                      .getItems({"categoryId": categoryId});
                   widget.updateTitle(category.name);
                 }
               },
@@ -168,55 +172,65 @@ class FilterAndViewOptions extends StatefulWidget {
   final VoidCallback toggleView;
   final int categoryId;
 
- const FilterAndViewOptions({
-    super.key,
-    required this.isListView,
-    required this.toggleView,
-    required this.categoryId
-  });
+  const FilterAndViewOptions(
+      {super.key,
+      required this.isListView,
+      required this.toggleView,
+      required this.categoryId});
 
   @override
   State<FilterAndViewOptions> createState() => _FilterAndViewOptionsState();
 }
 
 class _FilterAndViewOptionsState extends State<FilterAndViewOptions> {
-  List<int> selectedValues = []; 
+  List<int> selectedValues = [];
 
   void _openFullScreenFilter(BuildContext context, int categoryId) {
-  showGeneralDialog(
-    context: context,
-    barrierDismissible: true,
-    barrierLabel: 'Filter',
-    pageBuilder: (context, _, __) {
-      return FilterContent(categoryId: categoryId, selectedValues: selectedValues,);
-    },
-  );
-}
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: 'Filter',
+      pageBuilder: (context, _, __) {
+        return FilterContent(
+          categoryId: categoryId,
+          selectedValues: selectedValues,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          IconTextButton(
-            icon: Icons.filter_list,
-            text: 'Filter By',
-           onTap: () => _openFullScreenFilter(context, widget.categoryId),
-          ),
-          IconTextButton(
-            icon: Icons.sort,
-            text: 'Sort By',
-            onTap: () {},
-          ),
-          IconTextButton(
-            icon: widget.isListView ? Icons.grid_view : Icons.list,
-            text: '',
-            onTap: widget.toggleView,
-          ),
-        ],
-      ),
+    return BlocBuilder<ItemsCubit, ItemsState>(
+      builder: (context, state) {
+        if (state is ItemsLoaded && state.itemsList.isNotEmpty) {
+          return Container(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconTextButton(
+                  icon: Icons.filter_list,
+                  text: 'Filter By',
+                  onTap: () =>
+                      _openFullScreenFilter(context, widget.categoryId),
+                ),
+                IconTextButton(
+                  icon: Icons.sort,
+                  text: 'Sort By',
+                  onTap: () {},
+                ),
+                IconTextButton(
+                  icon: widget.isListView ? Icons.grid_view : Icons.list,
+                  text: '',
+                  onTap: widget.toggleView,
+                ),
+              ],
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }
@@ -236,6 +250,13 @@ class ItemsSection extends StatelessWidget {
             return itemShimmerGrid();
           }
           if (state is ItemsLoaded) {
+            if (state.itemsList.isEmpty) {
+              return const SliverToBoxAdapter(
+                child: Center(
+                  child: Text('No items found'),
+                ),
+              );
+            }
             return isListView
                 ? ItemList(items: state.itemsList)
                 : ItemGrid(items: state.itemsList);
@@ -283,7 +304,7 @@ class ItemGrid extends StatelessWidget {
         maxCrossAxisExtent: 250,
         mainAxisSpacing: 8.0,
         crossAxisSpacing: 8.0,
-        childAspectRatio: 2/3,
+        childAspectRatio: 2 / 3,
       ),
       delegate: SliverChildBuilderDelegate(
         (context, index) => ItemGridView(item: items[index]),
@@ -292,4 +313,3 @@ class ItemGrid extends StatelessWidget {
     );
   }
 }
-

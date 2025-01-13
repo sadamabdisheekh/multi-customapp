@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:multi/data/models/items_model.dart';
 
 import '../../../../constants/app_constants.dart';
@@ -67,7 +65,7 @@ class ItemGridView extends StatelessWidget {
           // Item Name
           Text(
             item.item.name,
-            style: theme.textTheme.subtitle1?.copyWith(fontWeight: FontWeight.bold),
+            // style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -79,7 +77,7 @@ class ItemGridView extends StatelessWidget {
               Flexible(
                 child: Text(
                   item.store.name,
-                  style: theme.textTheme.caption,
+                  // style: theme.textTheme.caption,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -93,7 +91,7 @@ class ItemGridView extends StatelessWidget {
           // Price
           Text(
             '\$${item.price}',
-            style: theme.textTheme.subtitle1?.copyWith(
+            style: theme.textTheme.titleMedium?.copyWith(
               color: theme.primaryColor,
               fontWeight: FontWeight.bold,
             ),
@@ -109,7 +107,7 @@ class ItemGridView extends StatelessWidget {
                 Expanded(
                   child: Text(
                     item.store.address!,
-                    style: theme.textTheme.caption,
+                    // style: theme.textTheme.caption,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

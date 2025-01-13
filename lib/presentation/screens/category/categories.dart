@@ -49,12 +49,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
     sliver: BlocBuilder<CategoryCubit, CategoryState>(
       builder: (context, state) {
         if (state is CategoryLoading) {
-          return const SliverToBoxAdapter(
+          return const SliverFillRemaining(
             child: Center(child: CircularProgressIndicator()),
           );
         }
         if (state is CategoryError) {
-          return SliverToBoxAdapter(
+          return SliverFillRemaining(
             child: Center(
               child: Text(
                 state.error.message,
@@ -64,6 +64,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
           );
         }
         if (state is CategoryLoaded) {
+          if (state.categoryList.isEmpty) {
+            return  SliverFillRemaining(
+              child: Center(
+                child: Text(
+                  'No Categories Found',
+                  style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+                ),
+              ),
+            );
+          }
           return CategoryList(categories: state.categoryList);
           // return _buildGrid(state.categoryList);
         }
