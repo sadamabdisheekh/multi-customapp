@@ -1,5 +1,4 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/constants/app_constants.dart';
@@ -199,7 +198,8 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
         const SizedBox(height: 8),
         Text(item.description ?? '',
             style: const TextStyle(fontSize: 16, height: 1.5)),
-        _buildProductVariants(itemDetails.attributes)
+             const SizedBox(height: 16),
+        if(itemDetails.attributes.isNotEmpty) _buildProductVariants(itemDetails.attributes)
       ],
     );
   }
@@ -263,41 +263,40 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
     );
   }
 
-  Widget _buildProductVariants(List<Attribute> variants) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Variants',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        ...variants.map((variant) {
-          return Column(
+ Widget _buildProductVariants(List<Attribute> variants) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Variants',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+      const SizedBox(height: 8),
+      ...variants.map((variant) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                variant.name,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                '${variant.name}: ',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              const SizedBox(height: 4),
-              Wrap(
-                spacing: 8.0,
-                children: variant.values
-                    .map(
-                      (value) => Chip(
-                        label: Text(value.name),
-                        backgroundColor: Colors.grey[200],
-                      ),
-                    )
-                    .toList(),
+              Expanded(
+                child: Text(
+                  variant.values.map((value) => value.name).join(', '),
+                  style: const TextStyle(fontSize: 16),
+                ),
               ),
-              const SizedBox(height: 8),
             ],
-          );
-        }),
-      ],
-    );
-  }
+          ),
+        );
+      }),
+    ],
+  );
+}
+
 }
