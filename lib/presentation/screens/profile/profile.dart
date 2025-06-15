@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/logic/cubit/signin_cubit.dart';
 
 import '../../../data/router_names.dart';
-import '../../../logic/utility.dart';
+import '../../../logic/utilits/utility.dart';
 
 class ProfileScreen extends StatelessWidget {
   // Mock user data

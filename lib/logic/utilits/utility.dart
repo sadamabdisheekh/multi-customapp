@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../constants/colors.dart';
-import '../presentation/widgets/custom_text.dart';
+import '../../constants/colors.dart';
+import '../../presentation/widgets/custom_text.dart';
 
 class Utils {
   static loadingDialog(BuildContext context,

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/data/models/cart/cart_response_model.dart';
 import 'package:multi/data/router_names.dart';
 import 'package:multi/logic/cubit/order_cubit.dart';
-import 'package:multi/logic/utility.dart';
+import 'package:multi/logic/utilits/utility.dart';
 import 'package:multi/presentation/widgets/capitalized_word.dart';
 import 'package:multi/presentation/widgets/page_refresh.dart';
 

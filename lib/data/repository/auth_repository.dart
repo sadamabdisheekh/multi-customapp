@@ -10,7 +10,7 @@ abstract class AuthRepository {
   Either<Failure, CustomerModel> getCashedUserInfo();
   Future<Either<Failure, CustomerModel>> login(Map<String, dynamic> body);
   Future<Either<Failure, String>> logOut();
-  Future<Either<Failure, CustomerModel>> signup(Map<String, dynamic> body);
+  Future<Either<Failure, dynamic>> signup(Map<String, dynamic> body);
 }
 
 class AuthRepositoryImp extends AuthRepository {
@@ -55,14 +55,12 @@ class AuthRepositoryImp extends AuthRepository {
   }
 
   @override
-  Future<Either<Failure, CustomerModel>> signup(
+  Future<Either<Failure, dynamic>> signup(
       Map<String, dynamic> body) async {
     try {
       final resp =
           await remoteDataSource.httpPost(url: RemoteUrls.signup, body: body);
-      final result = CustomerModel.fromMap(resp);
-      localDataSource.cacheUserResponse(result);
-      return Right(result);
+      return Right(resp);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, e.statusCode));
     }

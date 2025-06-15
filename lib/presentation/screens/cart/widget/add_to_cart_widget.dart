@@ -5,7 +5,7 @@ import 'package:multi/data/models/cart/cart_response_model.dart';
 import 'package:multi/logic/cubit/cart_cubit.dart';
 
 import '../../../../constants/colors.dart';
-import '../../../../logic/utility.dart';
+import '../../../../logic/utilits/utility.dart';
 import '../../../widgets/custom_images.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 

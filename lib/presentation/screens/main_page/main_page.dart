@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:multi/logic/helpers/get_location.dart';
 import 'package:multi/presentation/screens/home/home.dart';
 import 'package:multi/presentation/screens/profile/profile.dart';
 
@@ -16,13 +18,32 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
+
 class _MainPageState extends State<MainPage> {
   final _homeController = MainController();
   late List<Widget> pageList;
+  late final LocationService _locationService;
   @override
   void initState() {
     pageList = [const HomeScreen(), const ProfileScreen()];
     super.initState();
+    _locationService = LocationService(
+    onLocationUpdate: (position) {
+      print('Location: ${position.latitude}, ${position.longitude}');
+    },
+    onError: (error) {
+      print('Error: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error)),
+      );
+    },
+    onServiceStatusChanged: (enabled) {
+      print('Location service is ${enabled ? "enabled" : "disabled"}');
+    },
+  );
+
+  _locationService.initialize();
+
   }
   Future exitDialog(BuildContext context) {
     return showDialog(

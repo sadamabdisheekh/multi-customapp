@@ -10,7 +10,7 @@ import 'package:multi/logic/cubit/add_to_cart_cubit.dart';
 import 'package:multi/logic/cubit/cart_cubit.dart';
 import 'package:multi/logic/cubit/item_details_cubit.dart';
 import 'package:multi/logic/cubit/signin_cubit.dart';
-import 'package:multi/logic/utility.dart';
+import 'package:multi/logic/utilits/utility.dart';
 import 'package:multi/presentation/screens/home/widgets/cart_badge.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
 
@@ -239,7 +239,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
               return ElevatedButton(
                 onPressed: () {
                   Map<String, dynamic> body = {
-                    "customerId": context.read<SigninCubit>().customerInfo?.id,
+                    "customerId": context.read<SigninCubit>().customerInfo?.customerId,
                     "quantity": 1,
                     "storeId": itemDetails.itemStore.store.id,
                     "itemId": itemDetails.itemStore.item.id,

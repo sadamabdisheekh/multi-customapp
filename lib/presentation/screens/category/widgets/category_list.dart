@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multi/data/router_names.dart';
-import 'package:multi/logic/utility.dart';
+import 'package:multi/logic/utilits/utility.dart';
 
 import '../../../../constants/app_constants.dart';
 import '../../../../data/models/category.dart';

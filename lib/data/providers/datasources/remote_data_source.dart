@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:multi/data/models/customer_model.dart';
+import 'package:multi/data/providers/error/exception.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../constants/app_constants.dart';
@@ -49,7 +50,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       print(uri);
     }
 
-    final clientMethod = http.get(uri, headers: headers);
+    final clientMethod = http.get(uri, headers: headers).timeout(
+      const Duration(seconds: 30),
+      onTimeout: () {
+        throw const NetworkException('Request timeout', 408);
+      },
+    );
     final responseJsonBody =
         await NetworkParser.callClientWithCatchException(() => clientMethod);
     return responseJsonBody;
@@ -69,7 +75,12 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       print(json.encode(body));
     }
     final clientMethod =
-        client.post(Uri.parse(url), headers: headers, body: json.encode(body));
+        client.post(Uri.parse(url), headers: headers, body: json.encode(body)).timeout(
+      const Duration(seconds: 30),
+      onTimeout: () {
+        throw const NetworkException('Request timeout', 408);
+      },
+        );
     final responseJsonBody =
         await NetworkParser.callClientWithCatchException(() => clientMethod);
     return responseJsonBody;

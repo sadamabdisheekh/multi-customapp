@@ -2,7 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:multi/constants/app_constants.dart';
+import 'package:multi/data/router_names.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../error/exception.dart';
 import 'remote_data_source.dart';
@@ -44,6 +48,7 @@ class NetworkParser {
         throw BadRequestException(errorMsg, 400);
       case 401:
         final errorMsg = parsingDoseNotExist(response.body);
+        sessionExpired();
         throw UnauthorisedException(errorMsg, 401);
       case 402:
         final errorMsg = parsingDoseNotExist(response.body);
@@ -118,5 +123,16 @@ class NetworkParser {
       log(e.toString(), name: _className);
     }
     return 'uknown error';
+  }
+
+  static Future<void> sessionExpired() async {
+    // get the Get current
+    final currentRoute = Get.currentRoute;
+    if (currentRoute != RouteNames.signinScreen) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove(AppConstants.cachedUserResponseKey);
+      prefs.clear();
+      Get.offAllNamed(RouteNames.signinScreen);
+    }
   }
 }

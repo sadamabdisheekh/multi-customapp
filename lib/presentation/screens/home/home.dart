@@ -9,7 +9,7 @@ import 'package:multi/presentation/screens/home/widgets/cart_badge.dart';
 import 'package:multi/presentation/widgets/page_refresh.dart';
 import '../../../constants/dimensions.dart';
 import '../../../constants/styles.dart';
-import '../../../logic/utility.dart';
+import '../../../logic/utilits/utility.dart';
 import '../../widgets/banner.dart';
 import '../../widgets/home/modules.dart';
 
@@ -33,7 +33,11 @@ class _HomeScreenState extends State<HomeScreen> {
       listener: _handleAddToCartState,
       child: PageRefresh(
         onRefresh: () async {
-          await context.read<CartCubit>().getCartItems();
+          await Future.wait<void>([
+            context.read<CartCubit>().getCartItems() as Future<void>,
+            context.read<HomeCubit>().loadHomeData() as Future<void>,
+          ]);
+
         },
         child: Scaffold(
           body: SafeArea(
@@ -115,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           if (state is HomeLoadingState) {
-            return _buildLoading();
+            return SliverFillRemaining(child: _buildLoading());
           } else if (state is HomeErrorState) {
             return _buildError(state.error.message);
           } else if (state is HomeLoadedState) {

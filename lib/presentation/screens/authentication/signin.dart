@@ -5,7 +5,8 @@ import 'package:multi/constants/dimensions.dart';
 import 'package:multi/constants/images.dart';
 import 'package:multi/data/router_names.dart';
 import 'package:multi/logic/cubit/signin_cubit.dart';
-import 'package:multi/logic/utility.dart';
+import 'package:multi/logic/utilits/utility.dart';
+import 'package:multi/logic/utilits/validators.dart';
 import 'package:multi/presentation/widgets/custom_button.dart';
 import 'package:multi/presentation/widgets/custom_textfield.dart';
 
@@ -19,7 +20,7 @@ class SigninScreen extends StatefulWidget {
 }
 
 class _SigninScreenState extends State<SigninScreen> {
-  final phoneNumberController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -55,11 +56,11 @@ class _SigninScreenState extends State<SigninScreen> {
                     ),
                     const SizedBox(height: Dimensions.paddingSizeDefault),
                     CustomTextField(
-                      hintText: 'phone',
+                      hintText: 'email',
                       maxLines: 1,
-                      inputType: TextInputType.phone,
-                      controller: phoneNumberController,
-                      prefixIcon: Icons.phone,
+                      inputType: TextInputType.emailAddress,
+                      controller: emailController,
+                      prefixIcon: Icons.email,
                     ),
                     const SizedBox(
                       height: Dimensions.paddingSizeDefault,
@@ -121,16 +122,20 @@ class _SigninScreenState extends State<SigninScreen> {
   }
 
   _submit() {
-    if (phoneNumberController.text.trim().isEmpty) {
-      return Utils.showSnackBar(context, 'phone number is required');
+    if (emailController.text.trim().isEmpty) {
+      return Utils.showSnackBar(context, 'email is required');
+    }
+    if (!isValidEmail(emailController.text.trim())) {
+      return Utils.showSnackBar(context, 'invalid email');
     }
     if (passwordController.text.trim().isEmpty) {
       return Utils.showSnackBar(context, 'password is required');
     }
     Utils.closeKeyBoard(context);
     Map<String, dynamic> body = {
-      "mobile": phoneNumberController.text.trim(),
-      "password": passwordController.text.trim()
+      "username": emailController.text.trim(),
+      "password": passwordController.text.trim(),
+      "isCustomerLogin": true
     };
     context.read<SigninCubit>().login(body);
   }

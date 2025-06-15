@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multi/data/models/customer_model.dart';
 import 'package:multi/data/providers/error/custom_error.dart';
 
 import '../../data/repository/auth_repository.dart';
@@ -24,7 +23,7 @@ class SignupCubit extends Cubit<SignupState> {
         emit(errorState);
       },
       (value) {
-        emit(SignupLoadedState(user: value));
+        emit(SignupLoadedState(customer: value));
       },
     );
   }

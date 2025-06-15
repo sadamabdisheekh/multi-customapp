@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:multi/constants/app_constants.dart';
 import 'package:multi/data/models/cart/cart_response_model.dart';
 
-import '../../../../logic/utility.dart';
+import '../../../../logic/utilits/utility.dart';
 import '../../../widgets/custom_images.dart';
 
 class CheckoutSingleItem extends StatelessWidget {

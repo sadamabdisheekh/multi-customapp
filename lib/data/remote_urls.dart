@@ -1,10 +1,10 @@
 class RemoteUrls {
-  static const String rootUrl = 'http://192.168.100.28:3000';
+  static const String rootUrl = 'http://192.168.218.67:3000';
   //"http://160.119.251.252:3000"; 192.168.75.67
 
-  static const login = '$rootUrl/customers/login';
-  static const signup = '$rootUrl/users';
-  static const modulesList = '$rootUrl/modules';
+  static const login = '$rootUrl/auth/login';
+  static const signup = '$rootUrl/customers/create';
+  static const modulesList = '$rootUrl/modules/get-modules';
   static String category(categoryId) =>
       '$rootUrl/item/getcategoryhierarchy?categoryId=$categoryId';
 

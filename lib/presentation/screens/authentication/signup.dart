@@ -7,7 +7,7 @@ import 'package:multi/presentation/widgets/custom_textfield.dart';
 import '../../../constants/dimensions.dart';
 import '../../../constants/images.dart';
 import '../../../constants/styles.dart';
-import '../../../logic/utility.dart';
+import '../../../logic/utilits/utility.dart';
 import '../../widgets/custom_button.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -23,6 +23,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final middleNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final passwordController = TextEditingController();
+  final emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BlocListener<SignupCubit, SignupState>(
@@ -31,7 +32,7 @@ class _SignupScreenState extends State<SignupScreen> {
           Utils.showSnackBar(context, state.error.message);
         }
         if (state is SignupLoadedState) {
-          Navigator.pushReplacementNamed(context, RouteNames.homeScreen);
+          Navigator.pushReplacementNamed(context, RouteNames.signinScreen);
         }
       },
       child: Scaffold(
@@ -56,12 +57,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     const SizedBox(height: Dimensions.paddingSizeDefault),
                     CustomTextField(
-                      hintText: 'Phone number',
-                      inputType: TextInputType.phone,
-                      controller: phoneController,
-                    ),
-                    const SizedBox(height: Dimensions.paddingSizeLarge),
-                    CustomTextField(
                       hintText: 'First name',
                       controller: firstNameController,
                     ),
@@ -74,6 +69,18 @@ class _SignupScreenState extends State<SignupScreen> {
                     CustomTextField(
                       hintText: 'Last name',
                       controller: lastNameController,
+                    ),
+                    const SizedBox(height: Dimensions.paddingSizeLarge),
+                    CustomTextField(
+                      hintText: 'Email',
+                      inputType: TextInputType.emailAddress,
+                      controller: emailController,
+                    ),
+                    const SizedBox(height: Dimensions.paddingSizeLarge),
+                      CustomTextField(
+                      hintText: 'Phone number',
+                      inputType: TextInputType.phone,
+                      controller: phoneController,
                     ),
                     const SizedBox(height: Dimensions.paddingSizeLarge),
                     CustomTextField(
@@ -122,9 +129,6 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   _signupSubmit() {
-    if (phoneController.text.trim().isEmpty) {
-      return Utils.showSnackBar(context, 'phone number is required');
-    }
     if (firstNameController.text.trim().isEmpty) {
       return Utils.showSnackBar(context, 'firt name is required');
     }
@@ -137,13 +141,20 @@ class _SignupScreenState extends State<SignupScreen> {
     if (passwordController.text.trim().isEmpty) {
       return Utils.showSnackBar(context, 'password is required');
     }
+    if (emailController.text.trim().isEmpty) {
+      return Utils.showSnackBar(context, 'email is required');
+    }
+    if (phoneController.text.trim().isEmpty) {
+      return Utils.showSnackBar(context, 'phone number is required');
+    }
     Utils.closeKeyBoard(context);
     Map<String, dynamic> body = {
       "mobile": phoneController.text.trim(),
       "firstName": firstNameController.text.trim(),
       "middleName": middleNameController.text.trim(),
       "lastName": lastNameController.text.trim(),
-      "password": passwordController.text.trim()
+      "password": passwordController.text.trim(),
+      "email": emailController.text.trim(),
     };
 
     context.read<SignupCubit>().signUpUsers(body);

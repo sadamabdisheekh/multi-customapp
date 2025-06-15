@@ -18,9 +18,9 @@ class LocationCubit extends Cubit<LocationState> {
   void _initializeLocation() async {
     emit(LocationLoading());
     try {
-      final position = await UserLocation.getCurrentPosition();
-      await _updateLocation(position);
-      _listenToPositionChanges();
+      // final position = await UserLocation.getCurrentPosition();
+      // await _updateLocation(position);
+      // _listenToPositionChanges();
     } catch (error) {
       _handleLocationError(error);
     }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/logic/cubit/cart_cubit.dart';
-import 'package:multi/logic/utility.dart';
+import 'package:multi/logic/utilits/utility.dart';
 import 'package:multi/presentation/widgets/loading_widget.dart';
 import 'package:multi/presentation/widgets/page_refresh.dart';
 import '../../../data/models/cart/cart_response_model.dart';
