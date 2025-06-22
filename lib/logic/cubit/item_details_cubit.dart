@@ -13,20 +13,26 @@ class ItemDetailsCubit extends Cubit<ItemDetailsState> {
   })  : _itemsRepository = itemsRepository,
         super(ItemDetailsInitial());
 
-  getItemDetails(int storeItemId) async {
-    emit(ItemDetailsLoadingState());
 
-    final result = await _itemsRepository.getItemDetials(storeItemId);
-    result.fold(
-      (failure) {
-        var errorState = ItemDetailsErrorState(
-            error: CustomError(
-                statusCode: failure.statusCode, message: failure.message));
-        emit(errorState);
-      },
-      (value) {
-        emit(ItemDetailsLoadedState(itemDetails: value));
-      },
-    );
-  }
+  Future<ItemDetailsModel?> getItemDetails(int storeItemId) async {
+  emit(ItemDetailsLoadingState());
+
+  final result = await _itemsRepository.getItemDetials(storeItemId);
+  return result.fold(
+    (failure) {
+      emit(ItemDetailsErrorState(
+        error: CustomError(
+          statusCode: failure.statusCode,
+          message: failure.message,
+        ),
+      ));
+      return null;
+    },
+    (value) {
+      emit(ItemDetailsLoadedState(itemDetails: value));
+      return value;
+    },
+  );
+}
+
 }

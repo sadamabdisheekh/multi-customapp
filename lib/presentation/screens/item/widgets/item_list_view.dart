@@ -48,12 +48,19 @@ class ItemListView extends StatelessWidget {
   }
 
   Widget _buildDetails(BuildContext context) {
+     double  price = 0;
+    if (itemInfo.price != null) {
+      price = itemInfo.price!.toDouble();
+    }
+    if(itemInfo.storeItemVariation!.isNotEmpty && itemInfo.storeItemVariation!.first.price != null) {
+      price += itemInfo.storeItemVariation!.first.price!;
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildText(itemInfo.item.name, fontSize: 16, fontWeight: FontWeight.w500),
         const SizedBox(height: 4),
-        _buildText('\$${itemInfo.price}', fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
+        _buildText('\$${price.toStringAsFixed(2)}', fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
         const SizedBox(height: 8),
         if (itemInfo.store.address != null)
           _buildLocation(itemInfo.store.address!),

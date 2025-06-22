@@ -1,8 +1,8 @@
+// item_detail_screen.dart
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/constants/app_constants.dart';
-import 'package:multi/data/models/attribute_model.dart';
 import 'package:multi/data/models/item_details_model.dart';
 import 'package:multi/data/models/items_model.dart';
 import 'package:multi/data/router_names.dart';
@@ -10,8 +10,8 @@ import 'package:multi/logic/cubit/add_to_cart_cubit.dart';
 import 'package:multi/logic/cubit/cart_cubit.dart';
 import 'package:multi/logic/cubit/item_details_cubit.dart';
 import 'package:multi/logic/cubit/signin_cubit.dart';
-import 'package:multi/logic/utilits/utility.dart';
 import 'package:multi/presentation/screens/home/widgets/cart_badge.dart';
+import 'package:multi/presentation/screens/item/widgets/product_variation.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
 
 class ItemDetailScreen extends StatefulWidget {
@@ -24,7 +24,8 @@ class ItemDetailScreen extends StatefulWidget {
 }
 
 class _ItemDetailScreenState extends State<ItemDetailScreen> {
-  int _currentIndex = 0;
+  int _currentImageIndex = 0;
+  Variations? _selectedVariation;
 
   @override
   void initState() {
@@ -35,33 +36,31 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.item.item.name),
-      ),
+      appBar: AppBar(title: Text(widget.item.item.name)),
       body: BlocBuilder<ItemDetailsCubit, ItemDetailsState>(
         builder: (context, state) {
-          if (state is ItemDetailsLoadingState) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ItemDetailsErrorState) {
-            return Center(child: Text(state.error.message));
-          } else if (state is ItemDetailsLoadedState) {
-            return _buildItemDetails(state.itemDetails);
+          if (state is ItemDetailsLoadingState) return const Center(child: CircularProgressIndicator());
+          if (state is ItemDetailsErrorState) return Center(child: Text(state.error.message));
+          if (state is ItemDetailsLoadedState) {
+            final itemDetails = state.itemDetails;
+            final variations = itemDetails.variations ?? [];
+            _selectedVariation = _selectedVariation ?? (variations.isNotEmpty ? variations.first : null);
+            return _buildItemDetails(itemDetails);
           }
           return const SizedBox.shrink();
         },
       ),
       bottomNavigationBar: BlocBuilder<ItemDetailsCubit, ItemDetailsState>(
         builder: (context, state) {
-          if (state is ItemDetailsLoadedState) {
-            return _buildBottomBar(state.itemDetails);
-          }
+          if (state is ItemDetailsLoadedState) return _buildBottomBar(state.itemDetails);
           return const SizedBox.shrink();
         },
       ),
     );
   }
 
-  Widget _buildItemDetails(ItemDetailsModel itemDetails) {
+  Widget _buildItemDetails(ItemDetailsModel item) {
+    final images = item.images?.map((e) => e.imageUrl).toList() ?? [item.thumbnail];
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,60 +68,40 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
           Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              _buildProductCarousel(itemDetails),
-              _buildImageCounter(itemDetails),
+              CarouselSlider(
+                items: images.map(_buildImage).toList(),
+                options: CarouselOptions(
+                  height: 300,
+                  enlargeCenterPage: true,
+                  viewportFraction: 0.9,
+                  enableInfiniteScroll: false,
+                  onPageChanged: (index, _) => setState(() => _currentImageIndex = index),
+                ),
+              ),
+              _buildImageCounter(images.length),
             ],
           ),
-          const SizedBox(height: 16),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: _buildProductInfo(itemDetails),
+            padding: const EdgeInsets.all(16),
+            child: _buildProductInfo(item),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildProductCarousel(ItemDetailsModel itemDetails) {
-    final item = itemDetails.itemStore.item;
-    final images = item.images?.isNotEmpty == true
-        ? item.images!.map((e) => e.imageUrl).toList()
-        : [item.thumbnail];
-
-    return CarouselSlider(
-      items: images.map((img) => _buildCarouselImage(img)).toList(),
-      options: CarouselOptions(
-        height: 300,
-        enableInfiniteScroll: false,
-        enlargeCenterPage: true,
-        viewportFraction: 0.9,
-        autoPlay: false,
-        onPageChanged: (index, reason) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
-    );
-  }
-
-  Widget _buildCarouselImage(String imgUrl) {
+  Widget _buildImage(String url) {
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
       child: CustomImage(
-        path: AppConstants.itemsPath + imgUrl,
+        path: AppConstants.itemsPath + url,
         fit: BoxFit.contain,
         width: double.infinity,
       ),
     );
   }
 
-  Widget _buildImageCounter(ItemDetailsModel itemDetails) {
-    final item = itemDetails.itemStore.item;
-    final images = item.images?.isNotEmpty == true
-        ? item.images!.map((e) => e.imageUrl).toList()
-        : [item.thumbnail];
-
+  Widget _buildImageCounter(int total) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -131,130 +110,88 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        '${_currentIndex + 1}/${images.length}',
-        style: const TextStyle(
-            color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+        '${_currentImageIndex + 1}/$total',
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       ),
     );
   }
 
-  Widget _buildProductInfo(ItemDetailsModel itemDetails) {
-    final item = itemDetails.itemStore.item;
-    final storeItem = itemDetails.itemStore;
+  Widget _buildProductInfo(ItemDetailsModel item) {
+    final price = _selectedVariation?.price ?? item.basePrice ?? 0.0;
+    final stock = _selectedVariation?.stock ?? item.stock ?? 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(item.name,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+        Text(item.name, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
-        Text('\$${itemDetails.itemStore.price}',
-            style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.green)),
+        Text('\$$price', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green)),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            const Text('Availability:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(width: 6),
+            Text(
+              stock > 0 ? '$stock Items Available' : 'Out Of Stock',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: stock > 0 ? Colors.black : Colors.red),
+            ),
+          ],
+        ),
         const SizedBox(height: 16),
-         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-           children: [
-             Row(
-              children: [
-                const Text(
-                  'Availability:',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                Text(
-                  storeItem.availableStock > 0
-                      ? '${storeItem.availableStock} Items Available'
-                      : 'Out Of Stock',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: storeItem.availableStock > 0 ? Colors.black : Colors.red,
-                  ),
-                ),
-              ],
-              ),
-              if (item.itemUnit != null) Container(
-                padding: Utils.symmetric(h: 6.0,v: 4.0),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(4)
-                ),
-                child: Text(item.itemUnit!.name,
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor
-                ), 
-                ),
-              )
-           ],
-         ),
-        const SizedBox(height: 16),
-        const Text('Description',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        const Text('Description', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
-        Text(item.description ?? '',
-            style: const TextStyle(fontSize: 16, height: 1.5)),
-             const SizedBox(height: 16),
-        if(itemDetails.attributes.isNotEmpty) _buildProductVariants(itemDetails.attributes)
+        Text(item.description ?? '', style: const TextStyle(fontSize: 16, height: 1.5)),
+        const SizedBox(height: 16),
+        ProductVariantSelector(
+          attributes: item.attributes ?? [],
+          variants: item.variations ?? [],
+          initialSelectedVariation: _selectedVariation,
+          onVariationSelected: (v) => setState(() => _selectedVariation = v),
+        ),
       ],
     );
   }
 
-  Widget _buildBottomBar(ItemDetailsModel itemDetails) {
-    final price = itemDetails.itemStore.price;
+  Widget _buildBottomBar(ItemDetailsModel item) {
+    final price = _selectedVariation?.price ?? item.basePrice ?? 0.0;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: const BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -2))
       ]),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('\$$price',
-              style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green)),
-          BlocBuilder<CartCubit, CartState>(
-            builder: (context, state) {
-              final cartCount = context.read<CartCubit>().cartCount.toString();
-              return InkWell(
-              onTap: () {
-                Navigator.pushNamed(context, RouteNames.cartScreen);
-              },
-              child: CartBadge(count: cartCount)
-              );
-            },
+          Text('\$$price', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green)),
+          InkWell(
+            onTap: () => Navigator.pushNamed(context, RouteNames.cartScreen),
+            child: CartBadge(count: context.read<CartCubit>().cartCount.toString()),
           ),
           BlocBuilder<AddToCartCubit, AddToCartState>(
             builder: (context, state) {
-              if (state is AddToCartLoading) {
-                return const CircularProgressIndicator();
-              }
+              if (state is AddToCartLoading) return const CircularProgressIndicator();
+
               return ElevatedButton(
-                onPressed: () {
-                  Map<String, dynamic> body = {
-                    "customerId": context.read<SigninCubit>().customerInfo?.customerId,
-                    "quantity": 1,
-                    "storeId": itemDetails.itemStore.store.id,
-                    "itemId": itemDetails.itemStore.item.id,
-                    "price": itemDetails.itemStore.price,
-                    "storeItemId": itemDetails.itemStore.id
-                  };
-                  context.read<AddToCartCubit>().addToCart(body);
-                },
+                onPressed:  () {
+                        final body = {
+                          "userId": context.read<SigninCubit>().customerInfo?.userId,
+                          "quantity": 1,
+                          "storeId": item.store.id,
+                          "itemId": item.itemId,
+                          "price": price,
+                          "storeItemId": item.storeItemId,
+                          if (_selectedVariation != null) "variationId": _selectedVariation!.id,
+
+                        };
+                        print(body);
+                        // context.read<AddToCartCubit>().addToCart(body);
+                      },
                 style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0, vertical: 12.0),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20))),
-                child:
-                    const Text('Add to Cart', style: TextStyle(fontSize: 18)),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                ),
+                child: const Text('Add to Cart', style: TextStyle(fontSize: 18)),
               );
             },
           ),
@@ -262,41 +199,4 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
       ),
     );
   }
-
- Widget _buildProductVariants(List<Attribute> variants) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Variants',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      ),
-      const SizedBox(height: 8),
-      ...variants.map((variant) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${variant.name}: ',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  variant.values.map((value) => value.name).join(', '),
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
-          ),
-        );
-      }),
-    ],
-  );
-}
-
 }

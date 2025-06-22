@@ -5,40 +5,43 @@ import 'package:equatable/equatable.dart';
 
 class ItemsModel extends Equatable {
   final int id;
-  final String price;
-  final int stock;
-  final int availableStock;
-  final bool isAvailable;
+  final double? price;
+  final double? cost;
+  final int? stock;
+  final int? stockAlert;
   final Item item;
   final Store store;
-
+  final List<StoreItemVariation>? storeItemVariation;
   const ItemsModel({
     required this.id,
-    required this.price,
-    required this.stock,
-    required this.availableStock,
-    required this.isAvailable,
+    this.price,
+    this.cost,
+    this.stock,
+    this.stockAlert,
     required this.item,
     required this.store,
+    this.storeItemVariation,
   });
 
   ItemsModel copyWith({
     int? id,
-    String? price,
+    double? price,
+    double? cost,
     int? stock,
-    int? availableStock,
-    bool? isAvailable,
+    int? stockAlert,
     Item? item,
     Store? store,
+    List<StoreItemVariation>? storeItemVariation,
   }) {
     return ItemsModel(
       id: id ?? this.id,
       price: price ?? this.price,
+      cost: cost ?? this.cost,
       stock: stock ?? this.stock,
-      availableStock: availableStock ?? this.availableStock,
-      isAvailable: isAvailable ?? this.isAvailable,
+      stockAlert: stockAlert ?? this.stockAlert,
       item: item ?? this.item,
       store: store ?? this.store,
+      storeItemVariation: storeItemVariation ?? this.storeItemVariation,
     );
   }
 
@@ -46,49 +49,50 @@ class ItemsModel extends Equatable {
     return <String, dynamic>{
       'id': id,
       'price': price,
+      'cost': cost,
       'stock': stock,
-      'availableStock': availableStock,
-      'isAvailable': isAvailable,
+      'stockAlert': stockAlert,
       'item': item.toMap(),
       'store': store.toMap(),
+      'storeItemVariation': storeItemVariation?.map((x) => x.toMap()).toList(),
     };
   }
 
   factory ItemsModel.fromMap(Map<String, dynamic> map) {
     return ItemsModel(
       id: map['id'] as int,
-      price: map['price'] as String,
-      stock: map['stock'] as int,
-      availableStock: map['availableStock'] as int,
-      isAvailable: map['isAvailable'] as bool,
-      item: Item.fromMap(map['item'] as Map<String, dynamic>),
-      store: Store.fromMap(map['store'] as Map<String, dynamic>),
+      price: map['price'] != null ? (map['price'] as num).toDouble(): null,
+      cost: map['cost'] != null ? (map['cost'] as num).toDouble() : null,
+      stock: map['stock'] != null ? map['stock'] as int : null,
+      stockAlert: map['stockAlert'] != null ? map['stockAlert'] as int : null,
+      item: Item.fromMap(map['item'] as Map<String,dynamic>),
+      store: Store.fromMap(map['store'] as Map<String,dynamic>),
+      storeItemVariation: map['storeItemVariation'] != null ? List<StoreItemVariation>.from((map['storeItemVariation'] as List).map<StoreItemVariation?>((x) => StoreItemVariation.fromMap(x as Map<String,dynamic>),),) : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ItemsModel.fromJson(String source) =>
-      ItemsModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ItemsModel.fromJson(String source) => ItemsModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() {
-    return 'ItemsModel(id: $id, price: $price, stock: $stock,availableStock: $availableStock, isAvailable: $isAvailable, item: $item, store: $store)';
-  }
+  bool get stringify => true;
 
   @override
-  List<Object> get props {
+  List<Object?> get props {
     return [
       id,
       price,
+      cost,
       stock,
-      availableStock,
-      isAvailable,
+      stockAlert,
       item,
       store,
+      storeItemVariation,
     ];
   }
 }
+
 
 class Item extends Equatable {
   final int id;
@@ -98,7 +102,8 @@ class Item extends Equatable {
   final String createdAt;
   final String updatedAt;
   final List<Images>? images;
-  final ItemUnit? itemUnit;
+  final Category? category;
+  final Brand? brand;
 
   const Item({
     required this.id,
@@ -108,7 +113,8 @@ class Item extends Equatable {
     required this.createdAt,
     required this.updatedAt,
     this.images,
-    this.itemUnit,
+    this.category,
+    this.brand,
   });
 
   Item copyWith({
@@ -118,8 +124,9 @@ class Item extends Equatable {
     String? description,
     String? createdAt,
     String? updatedAt,
+    Category? category,
+    Brand? brand,
     List<Images>? images,
-    ItemUnit? itemUnit,
   }) {
     return Item(
       id: id ?? this.id,
@@ -129,7 +136,8 @@ class Item extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       images: images ?? this.images,
-      itemUnit: itemUnit ?? this.itemUnit,
+      category: category ?? this.category,
+      brand: brand ?? this.brand,
     );
   }
 
@@ -142,7 +150,8 @@ class Item extends Equatable {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
       'images': images?.map((x) => x.toMap()).toList(),
-      'itemType': itemUnit?.toMap(),
+      'category': category?.toMap(),
+      'brand': brand?.toMap(),
     };
   }
 
@@ -154,8 +163,9 @@ class Item extends Equatable {
       description: map['description'] != null ? map['description'] as String : null,
       createdAt: map['createdAt'] as String,
       updatedAt: map['updatedAt'] as String,
+      category: map['category'] != null ? Category.fromMap(map['category'] as Map<String, dynamic>) : null,
+      brand: map['brand'] != null ? Brand.fromMap(map['brand'] as Map<String, dynamic>) : null,
       images: map['images'] != null ? List<Images>.from((map['images'] as List<dynamic>).map<Images?>((x) => Images.fromMap(x as Map<String,dynamic>),),) : null,
-      itemUnit: map['itemUnit'] != null ? ItemUnit.fromMap(map['itemUnit'] as Map<String,dynamic>) : null,
     );
   }
 
@@ -176,7 +186,8 @@ class Item extends Equatable {
       createdAt,
       updatedAt,
       images ?? [],
-      itemUnit ?? {},
+      category ?? {},
+      brand ?? {},
     ];
   }
 }
@@ -226,19 +237,20 @@ class Images extends Equatable {
   List<Object> get props => [id, imageUrl];
 }
 
-class ItemUnit extends Equatable {
+class Category extends Equatable {
   final int id;
   final String name;
-  const ItemUnit({
+  const Category({
     required this.id,
     required this.name,
   });
 
-  ItemUnit copyWith({
+
+  Category copyWith({
     int? id,
     String? name,
   }) {
-    return ItemUnit(
+    return Category(
       id: id ?? this.id,
       name: name ?? this.name,
     );
@@ -251,8 +263,8 @@ class ItemUnit extends Equatable {
     };
   }
 
-  factory ItemUnit.fromMap(Map<String, dynamic> map) {
-    return ItemUnit(
+  factory Category.fromMap(Map<String, dynamic> map) {
+    return Category(
       id: map['id'] as int,
       name: map['name'] as String,
     );
@@ -260,7 +272,7 @@ class ItemUnit extends Equatable {
 
   String toJson() => json.encode(toMap());
 
-  factory ItemUnit.fromJson(String source) => ItemUnit.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Category.fromJson(String source) => Category.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool get stringify => true;
@@ -268,6 +280,50 @@ class ItemUnit extends Equatable {
   @override
   List<Object> get props => [id, name];
 }
+
+class Brand extends Equatable {
+  final int id;
+  final String name;
+  const Brand({
+    required this.id,
+    required this.name,
+  });
+
+  Brand copyWith({
+    int? id,
+    String? name,
+  }) {
+    return Brand(
+      id: id ?? this.id,
+      name: name ?? this.name,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+    };
+  }
+
+  factory Brand.fromMap(Map<String, dynamic> map) {
+    return Brand(
+      id: map['id'] as int,
+      name: map['name'] as String,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Brand.fromJson(String source) => Brand.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  List<Object> get props => [id, name];
+}
+
 
 class Store extends Equatable {
   final int id;
@@ -359,6 +415,91 @@ class Store extends Equatable {
       latitude ?? '',
       longitude ?? '',
       address ?? '',
+    ];
+  }
+}
+
+
+class StoreItemVariation extends Equatable {
+  final int id;
+  final double? price;
+  final double? cost;
+  final int? stock;
+  final int? stockAlert;
+  final String? availableFrom;
+  final String? availableTo;
+
+  const StoreItemVariation({
+    required this.id,
+    this.price,
+    this.cost,
+    this.stock,
+    this.stockAlert,
+    this.availableFrom,
+    this.availableTo,
+  });
+
+  StoreItemVariation copyWith({
+    int? id,
+    double? price,
+    double? cost,
+    int? stock,
+    int? stockAlert,
+    String? availableFrom,
+    String? availableTo,
+  }) {
+    return StoreItemVariation(
+      id: id ?? this.id,
+      price: price ?? this.price,
+      cost: cost ?? this.cost,
+      stock: stock ?? this.stock,
+      stockAlert: stockAlert ?? this.stockAlert,
+      availableFrom: availableFrom ?? this.availableFrom,
+      availableTo: availableTo ?? this.availableTo,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'price': price,
+      'cost': cost,
+      'stock': stock,
+      'stockAlert': stockAlert,
+      'availableFrom': availableFrom,
+      'availableTo': availableTo,
+    };
+  }
+
+  factory StoreItemVariation.fromMap(Map<String, dynamic> map) {
+    return StoreItemVariation(
+    id: map['id'] as int,
+     price: map['price'] != null ? (map['price'] as num).toDouble() : null,
+    cost: map['cost'] != null ? (map['cost'] as num).toDouble() : null,
+    stock: map['stock'] != null ? map['stock'] as int : null,
+    stockAlert: map['stockAlert'] != null ? map['stockAlert'] as int : null,
+    availableFrom: map['availableFrom'] as String?,
+    availableTo: map['availableTo'] as String?,
+  );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory StoreItemVariation.fromJson(String source) => StoreItemVariation.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  bool get stringify => true;
+
+  @override
+  List<Object> get props {
+    return [
+      id,
+      price ?? 0.0,
+      cost ?? 0.0,
+      stock  ?? 0,
+      stockAlert  ?? 0,
+      availableFrom ??  '',
+      availableTo ?? '',
     ];
   }
 }

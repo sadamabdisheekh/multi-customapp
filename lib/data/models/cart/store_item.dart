@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
@@ -7,7 +6,7 @@ import 'package:multi/data/models/cart/item.dart';
 
 class StoreItem extends Equatable {
   final int id;
-  final String price;
+  final double price;
   final int stock;
   final Item item;
   const StoreItem({
@@ -19,7 +18,7 @@ class StoreItem extends Equatable {
 
   StoreItem copyWith({
     int? id,
-    String? price,
+    double? price,
     int? stock,
     Item? item,
   }) {
@@ -43,8 +42,8 @@ class StoreItem extends Equatable {
   factory StoreItem.fromMap(Map<String, dynamic> map) {
     return StoreItem(
       id: map['id'] as int,
-      price: map['price'] as String,
-      stock: map['stock'] as int,
+      price:map['price'] != null ? (map['price'] as num).toDouble() : 0.0,
+      stock: map['stock'] != null ? map['stock'] as int : 0,
       item: Item.fromMap(map['item'] as Map<String,dynamic>),
     );
   }

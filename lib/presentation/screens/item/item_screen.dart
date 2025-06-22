@@ -33,17 +33,10 @@ class _ItemScreenState extends State<ItemScreen> {
   }
 
   void _fetchInitialData() {
-    context.read<CategoryCubit>().getCategory(widget.category.id);
     context.read<ItemsCubit>().getItems({"categoryId": widget.category.id});
     context
         .read<ItemsCubit>()
         .getItemAttributes({"categoryId": widget.category.id});
-  }
-
-  void _updateTitle(String newTitle) {
-    setState(() {
-      appBarTitle = newTitle;
-    });
   }
 
   @override
@@ -59,10 +52,6 @@ class _ItemScreenState extends State<ItemScreen> {
               floating: true,
               title: Text(appBarTitle),
             ),
-            CategorySection(
-              categoryId: widget.category.id,
-              updateTitle: _updateTitle,
-            ),
             SliverToBoxAdapter(
               child: FilterAndViewOptions(
                 isListView: isListView,
@@ -75,93 +64,6 @@ class _ItemScreenState extends State<ItemScreen> {
             ItemsSection(isListView: isListView),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class CategorySection extends StatelessWidget {
-  final Function(String) updateTitle;
-  final int categoryId;
-
-  const CategorySection(
-      {super.key, required this.updateTitle, required this.categoryId});
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: BlocConsumer<CategoryCubit, CategoryState>(
-        // buildWhen: (previous, current) => current is CategoryLoaded && current.categoryList.isNotEmpty,
-        listener: (context, state) {},
-        builder: (context, state) {
-          if (state is CategoryLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is CategoryLoaded) {
-            return _CategoryList(
-              categoryId: categoryId,
-              categories: state.categoryList,
-              updateTitle: updateTitle,
-            );
-          } else if (state is CategoryError) {
-            return const Center(child: Text('Error loading subcategories'));
-          }
-          return const SizedBox.shrink();
-        },
-      ),
-    );
-  }
-}
-
-class _CategoryList extends StatefulWidget {
-  const _CategoryList(
-      {required this.categories,
-      required this.updateTitle,
-      required this.categoryId});
-
-  final List<CategoryModel> categories;
-  final Function(String) updateTitle;
-  final int categoryId;
-
-  @override
-  State<_CategoryList> createState() => _CategoryListState();
-}
-
-class _CategoryListState extends State<_CategoryList> {
-  int selectedCategoryId = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    final allCategories = [
-      CategoryModel.fromMap(const {"id": 0, "name": 'All'}),
-      ...widget.categories
-    ];
-
-    return SizedBox(
-      height: 60,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: allCategories.length,
-        itemBuilder: (context, index) {
-          final category = allCategories[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: ChoiceChip(
-              label: Text(category.name),
-              selected: selectedCategoryId == index,
-              onSelected: (selected) {
-                if (selected) {
-                  setState(() => selectedCategoryId = index);
-                  final categoryId =
-                      category.id == 0 ? widget.categoryId : category.id;
-                  context
-                      .read<ItemsCubit>()
-                      .getItems({"categoryId": categoryId});
-                  widget.updateTitle(category.name);
-                }
-              },
-            ),
-          );
-        },
       ),
     );
   }
