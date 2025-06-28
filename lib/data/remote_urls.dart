@@ -25,6 +25,9 @@ class RemoteUrls {
   static String removecartitem(int storeItemId) => '$rootUrl/cart/removecartitem/$storeItemId';
 
   static const getPaymentMethods = '$rootUrl/order/paymentmethods';
+  static const getUserOrders = '$rootUrl/order/userorders';
+  static String getOrderDetails(int orderId) => '$rootUrl/order/userorderdetails?orderId=$orderId';
+
 
   static const createOrder = '$rootUrl/order/createorder';
 

@@ -17,6 +17,6 @@ final class ItemsError extends ItemsState {
 }
 
 final class ItemsLoaded extends ItemsState {
-  final List<ItemsModel> itemsList;
+  final List<StoreItemsModel> itemsList;
   const ItemsLoaded({required this.itemsList});
 }

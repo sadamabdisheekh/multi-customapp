@@ -32,6 +32,7 @@ class _SignupScreenState extends State<SignupScreen> {
           Utils.showSnackBar(context, state.error.message);
         }
         if (state is SignupLoadedState) {
+          Utils.showSnackBar(context, 'Signup successful');
           Navigator.pushReplacementNamed(context, RouteNames.signinScreen);
         }
       },

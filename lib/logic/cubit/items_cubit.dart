@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multi/data/models/attribute_model.dart';
 import 'package:multi/data/providers/error/custom_error.dart';
 import 'package:multi/data/repository/item_repository.dart';
 
@@ -15,7 +14,7 @@ class ItemsCubit extends Cubit<ItemsState> {
     required itemsRepository,
   })  : _itemsRepository = itemsRepository,
         super(ItemsInitial());
-  List<Attribute>? attributes;
+  // List<Attribute>? attributes;
 
   getItems(Map<String, dynamic> body) async {
     emit(ItemsLoading());
@@ -34,15 +33,15 @@ class ItemsCubit extends Cubit<ItemsState> {
     );
   }
 
-  getItemAttributes(Map<String, dynamic> body) async {
-    final result = await _itemsRepository.getItemAttributes(body);
-    result.fold(
-      (failure) {
+  // getItemAttributes(Map<String, dynamic> body) async {
+  //   final result = await _itemsRepository.getItemAttributes(body);
+  //   result.fold(
+  //     (failure) {
       
-      },
-      (value) {
-        attributes = value;
-      },
-    );
-  }
+  //     },
+  //     (value) {
+  //       // attributes = value;
+  //     },
+  //   );
+  // }
 }

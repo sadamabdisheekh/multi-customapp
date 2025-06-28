@@ -7,12 +7,14 @@ import '../../../widgets/custom_images.dart';
 class ItemGridView extends StatelessWidget {
   const ItemGridView({super.key, required this.item});
 
-  final ItemsModel item;
+  final StoreItemsModel item;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final store = item.store;
     final price = _getItemPrice();
+    final imageUrl = '${AppConstants.itemsPath}${item.item.thumbnail}';
 
     return GestureDetector(
       onTap: () => Navigator.pushNamed(
@@ -21,13 +23,14 @@ class ItemGridView extends StatelessWidget {
         arguments: item,
       ),
       child: Container(
+        margin: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
-              blurRadius: 6,
+              blurRadius: 5,
               offset: const Offset(0, 3),
             ),
           ],
@@ -35,12 +38,23 @@ class ItemGridView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildProductImage(),
+            // Image section
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              child: CustomImage(
+                path: imageUrl,
+                height: 140,
+                fit: BoxFit.cover,
+              ),
+            ),
+
+            // Info section
             Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Item Name
                   Text(
                     item.item.name,
                     maxLines: 1,
@@ -50,21 +64,26 @@ class ItemGridView extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          item.store.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall,
+
+                  // Store Name + Verified
+                  if (store != null)
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            store.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodySmall,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                      Icon(Icons.verified, size: 16, color: theme.primaryColor),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
+                        const SizedBox(width: 4),
+                        Icon(Icons.verified, size: 16, color: theme.primaryColor),
+                      ],
+                    ),
+                  const SizedBox(height: 6),
+
+                  // Price
                   Text(
                     '\$${price.toStringAsFixed(2)}',
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -72,7 +91,9 @@ class ItemGridView extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  if (item.store.address != null) ...[
+
+                  // Location
+                  if (store?.address != null) ...[
                     const SizedBox(height: 6),
                     Row(
                       children: [
@@ -80,7 +101,7 @@ class ItemGridView extends StatelessWidget {
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
-                            item.store.address!,
+                            store!.address!,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
@@ -98,23 +119,10 @@ class ItemGridView extends StatelessWidget {
     );
   }
 
-  Widget _buildProductImage() {
-    final imageUrl = AppConstants.itemsPath + item.item.thumbnail;
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-      child: CustomImage(
-        path: imageUrl,
-        height: 140,
-        fit: BoxFit.fill,
-      ),
-    );
-  }
-
   double _getItemPrice() {
     double price = item.price?.toDouble() ?? 0.0;
     if (item.storeItemVariation?.isNotEmpty == true) {
-      final variationPrice = item.storeItemVariation!.first.price;
-      if (variationPrice != null) price += variationPrice;
+      price += item.storeItemVariation!.first.price ?? 0.0;
     }
     return price;
   }

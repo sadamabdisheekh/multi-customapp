@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/data/models/category.dart';
 import 'package:multi/data/models/items_model.dart';
-import 'package:multi/logic/cubit/category_cubit.dart';
 import 'package:multi/logic/cubit/items_cubit.dart';
 import 'package:multi/presentation/screens/item/widgets/icon_text_button.dart';
 import 'package:multi/presentation/screens/item/widgets/item_grid_view.dart';
 import 'package:multi/presentation/shimers/item_grid.dart';
 import 'package:multi/presentation/widgets/page_refresh.dart';
-
-import 'widgets/filter_content.dart';
 import 'widgets/item_list_view.dart';
 
 class ItemScreen extends StatefulWidget {
@@ -25,6 +22,7 @@ class _ItemScreenState extends State<ItemScreen> {
   late String appBarTitle;
   bool isListView = false;
 
+
   @override
   void initState() {
     super.initState();
@@ -34,9 +32,6 @@ class _ItemScreenState extends State<ItemScreen> {
 
   void _fetchInitialData() {
     context.read<ItemsCubit>().getItems({"categoryId": widget.category.id});
-    context
-        .read<ItemsCubit>()
-        .getItemAttributes({"categoryId": widget.category.id});
   }
 
   @override
@@ -93,10 +88,11 @@ class _FilterAndViewOptionsState extends State<FilterAndViewOptions> {
       barrierDismissible: true,
       barrierLabel: 'Filter',
       pageBuilder: (context, _, __) {
-        return FilterContent(
-          categoryId: categoryId,
-          selectedValues: selectedValues,
-        );
+        return Container();
+        // FilterContent(
+        //   categoryId: categoryId,
+        //   selectedValues: selectedValues,
+        // );
       },
     );
   }
@@ -179,7 +175,7 @@ class ItemsSection extends StatelessWidget {
 }
 
 class ItemList extends StatelessWidget {
-  final List<ItemsModel> items;
+  final List<StoreItemsModel> items;
 
   const ItemList({super.key, required this.items});
 
@@ -195,7 +191,7 @@ class ItemList extends StatelessWidget {
 }
 
 class ItemGrid extends StatelessWidget {
-  final List<ItemsModel> items;
+  final List<StoreItemsModel> items;
 
   const ItemGrid({super.key, required this.items});
 

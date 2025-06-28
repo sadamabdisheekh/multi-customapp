@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:multi/logic/helpers/get_location.dart';
 import 'package:multi/presentation/screens/home/home.dart';
+import 'package:multi/presentation/screens/order/order_screen.dart';
 import 'package:multi/presentation/screens/profile/profile.dart';
 
 import '../../../constants/images.dart';
@@ -25,7 +25,7 @@ class _MainPageState extends State<MainPage> {
   late final LocationService _locationService;
   @override
   void initState() {
-    pageList = [const HomeScreen(), const ProfileScreen()];
+    pageList = [const HomeScreen(),const OrdersScreen(), const ProfileScreen()];
     super.initState();
     _locationService = LocationService(
     onLocationUpdate: (position) {

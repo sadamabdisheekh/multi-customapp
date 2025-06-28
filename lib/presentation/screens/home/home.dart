@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: PageRefresh(
         onRefresh: () async {
           await Future.wait<void>([
-            // context.read<CartCubit>().getCartItems() as Future<void>,
+            context.read<CartCubit>().getCartItems() as Future<void>,
             context.read<HomeCubit>().loadHomeData() as Future<void>,
           ]);
 

@@ -58,8 +58,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   children: [
                     Image.asset(
                       Kimages.logo,
-                      height: 80,
-                      width: 80,
+                      height: 150,
+                      width: 150,
                     ),
                     const SizedBox(
                       height: 10,

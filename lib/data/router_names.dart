@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/data/models/cart/cart_response_model.dart';
 import 'package:multi/data/models/category.dart';
 import 'package:multi/data/models/items_model.dart';
+import 'package:multi/data/models/orders/order_model.dart';
 import 'package:multi/data/repository/category_repository.dart';
 import 'package:multi/logic/cubit/category_cubit.dart';
 import 'package:multi/presentation/screens/authentication/signup.dart';
@@ -11,6 +12,7 @@ import 'package:multi/presentation/screens/category/categories.dart';
 import 'package:multi/presentation/screens/checkout/checkout_screen.dart';
 import 'package:multi/presentation/screens/home/home.dart';
 import 'package:multi/presentation/screens/item/item_screen.dart';
+import 'package:multi/presentation/screens/order/order_details.dart';
 import '../presentation/screens/authentication/signin.dart';
 import '../presentation/screens/item/item_details_screen.dart';
 import '../presentation/screens/main_page/main_page.dart';
@@ -33,6 +35,7 @@ class RouteNames {
   static const String cartScreen = '/cartScreen';
   static const String checkoutScreen = '/checkoutScreen';
   static const String orderSuccessScreen = '/orderSuccessScreen';
+  static const String orderDetailsScreen = '/orderDetailsScreen';
 
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -71,7 +74,7 @@ class RouteNames {
                     ),
                 child: ItemScreen(category: category)));
       case RouteNames.itemDetailScreen:
-        final item = settings.arguments as ItemsModel;
+        final item = settings.arguments as StoreItemsModel;
         return MaterialPageRoute(
             settings: settings, builder: (_) => ItemDetailScreen(item: item));
       case RouteNames.cartScreen:
@@ -84,6 +87,13 @@ class RouteNames {
         case RouteNames.orderSuccessScreen:
         return MaterialPageRoute(
             settings: settings, builder: (_) =>  const OrderSuccessScreen());
+      case RouteNames.orderDetailsScreen:
+        final order = settings.arguments as OrderModel;
+        return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => OrderDetailsScreen(order: order));
+
+        // Assuming you have an OTP screen, you can add it here
        default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

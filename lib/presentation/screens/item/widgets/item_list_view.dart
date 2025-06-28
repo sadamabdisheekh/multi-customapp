@@ -2,96 +2,114 @@ import 'package:flutter/material.dart';
 import 'package:multi/constants/app_constants.dart';
 import 'package:multi/data/router_names.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
-
 import '../../../../data/models/items_model.dart';
 
 class ItemListView extends StatelessWidget {
   const ItemListView({super.key, required this.itemInfo});
 
-  final ItemsModel itemInfo;
+  final StoreItemsModel itemInfo;
 
   @override
   Widget build(BuildContext context) {
+    final store = itemInfo.store;
+    final imageUrl = '${AppConstants.itemsPath}${itemInfo.item.thumbnail}';
+    double price = (itemInfo.price ?? 0).toDouble();
+
+    if (itemInfo.storeItemVariation?.isNotEmpty ?? false) {
+      price += itemInfo.storeItemVariation!.first.price ?? 0;
+    }
+
     return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, RouteNames.itemDetailScreen,arguments: itemInfo);
-      },
+      onTap: () => Navigator.pushNamed(
+        context,
+        RouteNames.itemDetailScreen,
+        arguments: itemInfo,
+      ),
       child: Container(
-        margin: const EdgeInsets.all(8),
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           boxShadow: const [
-            BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 6,
+              offset: Offset(0, 2),
+            ),
           ],
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Flexible(
-              flex: 2, // Adjust the flex value as needed
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: CustomImage(
-                  path: '${AppConstants.itemsPath}${itemInfo.item.thumbnail}',
-                  fit: BoxFit.cover,
-                ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: CustomImage(
+                path: imageUrl,
+                width: 90,
+                height: 90,
+                fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(flex: 3, child: _buildDetails(context)),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    itemInfo.item.name,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    '\$${price.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.purple,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  if (store?.address != null)
+                    Row(
+                      children: [
+                        const Icon(Icons.location_pin, size: 16, color: Colors.purple),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            store!.address!,
+                            style: const TextStyle(fontSize: 13, color: Colors.grey),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  const SizedBox(height: 4),
+                  if (store != null)
+                    Row(
+                      children: [
+                        const Icon(Icons.store, size: 16, color: Colors.purple),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            store.name,
+                            style: const TextStyle(fontSize: 13, color: Colors.grey),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const Icon(Icons.verified, size: 16, color: Colors.green),
+                      ],
+                    ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildDetails(BuildContext context) {
-     double  price = 0;
-    if (itemInfo.price != null) {
-      price = itemInfo.price!.toDouble();
-    }
-    if(itemInfo.storeItemVariation!.isNotEmpty && itemInfo.storeItemVariation!.first.price != null) {
-      price += itemInfo.storeItemVariation!.first.price!;
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildText(itemInfo.item.name, fontSize: 16, fontWeight: FontWeight.w500),
-        const SizedBox(height: 4),
-        _buildText('\$${price.toStringAsFixed(2)}', fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
-        const SizedBox(height: 8),
-        if (itemInfo.store.address != null)
-          _buildLocation(itemInfo.store.address!),
-        const SizedBox(height: 4),
-        _buildText(itemInfo.store.name, fontSize: 14, color: Colors.grey),
-      ],
-    );
-  }
-
-  Widget _buildText(String text, {double fontSize = 14, FontWeight fontWeight = FontWeight.normal, Color? color}) {
-    return Text(
-      text,
-      style: TextStyle(fontSize: fontSize, fontWeight: fontWeight, color: color),
-      overflow: TextOverflow.ellipsis,
-      maxLines: 1,
-    );
-  }
-
-  Widget _buildLocation(String address) {
-    return Row(
-      children: [
-        const Icon(Icons.location_pin, size: 16, color: Colors.purple),
-        const SizedBox(width: 4),
-        Expanded(
-          child: Text(
-            address,
-            style: const TextStyle(fontSize: 14),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
     );
   }
 }

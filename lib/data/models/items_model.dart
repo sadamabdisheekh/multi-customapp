@@ -3,16 +3,16 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
-class ItemsModel extends Equatable {
+class StoreItemsModel extends Equatable {
   final int id;
   final double? price;
   final double? cost;
   final int? stock;
   final int? stockAlert;
   final Item item;
-  final Store store;
+  final Store? store;
   final List<StoreItemVariation>? storeItemVariation;
-  const ItemsModel({
+  const StoreItemsModel({
     required this.id,
     this.price,
     this.cost,
@@ -23,7 +23,7 @@ class ItemsModel extends Equatable {
     this.storeItemVariation,
   });
 
-  ItemsModel copyWith({
+  StoreItemsModel copyWith({
     int? id,
     double? price,
     double? cost,
@@ -33,7 +33,7 @@ class ItemsModel extends Equatable {
     Store? store,
     List<StoreItemVariation>? storeItemVariation,
   }) {
-    return ItemsModel(
+    return StoreItemsModel(
       id: id ?? this.id,
       price: price ?? this.price,
       cost: cost ?? this.cost,
@@ -53,27 +53,27 @@ class ItemsModel extends Equatable {
       'stock': stock,
       'stockAlert': stockAlert,
       'item': item.toMap(),
-      'store': store.toMap(),
+      'store': store?.toMap(),
       'storeItemVariation': storeItemVariation?.map((x) => x.toMap()).toList(),
     };
   }
 
-  factory ItemsModel.fromMap(Map<String, dynamic> map) {
-    return ItemsModel(
+  factory StoreItemsModel.fromMap(Map<String, dynamic> map) {
+    return StoreItemsModel(
       id: map['id'] as int,
       price: map['price'] != null ? (map['price'] as num).toDouble(): null,
       cost: map['cost'] != null ? (map['cost'] as num).toDouble() : null,
       stock: map['stock'] != null ? map['stock'] as int : null,
       stockAlert: map['stockAlert'] != null ? map['stockAlert'] as int : null,
       item: Item.fromMap(map['item'] as Map<String,dynamic>),
-      store: Store.fromMap(map['store'] as Map<String,dynamic>),
+      store: map['store'] != null ? Store.fromMap(map['store'] as Map<String,dynamic>) : null,
       storeItemVariation: map['storeItemVariation'] != null ? List<StoreItemVariation>.from((map['storeItemVariation'] as List).map<StoreItemVariation?>((x) => StoreItemVariation.fromMap(x as Map<String,dynamic>),),) : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ItemsModel.fromJson(String source) => ItemsModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory StoreItemsModel.fromJson(String source) => StoreItemsModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool get stringify => true;
@@ -99,6 +99,7 @@ class Item extends Equatable {
   final String name;
   final String thumbnail;
   final String? description;
+  final bool hasVariations;
   final String createdAt;
   final String updatedAt;
   final List<Images>? images;
@@ -115,6 +116,7 @@ class Item extends Equatable {
     this.images,
     this.category,
     this.brand,
+    required this.hasVariations,
   });
 
   Item copyWith({
@@ -124,6 +126,7 @@ class Item extends Equatable {
     String? description,
     String? createdAt,
     String? updatedAt,
+    bool? hasVariations,
     Category? category,
     Brand? brand,
     List<Images>? images,
@@ -138,6 +141,7 @@ class Item extends Equatable {
       images: images ?? this.images,
       category: category ?? this.category,
       brand: brand ?? this.brand,
+      hasVariations: hasVariations ?? this.hasVariations,
     );
   }
 
@@ -152,6 +156,7 @@ class Item extends Equatable {
       'images': images?.map((x) => x.toMap()).toList(),
       'category': category?.toMap(),
       'brand': brand?.toMap(),
+      'hasVariations': hasVariations,
     };
   }
 
@@ -163,6 +168,7 @@ class Item extends Equatable {
       description: map['description'] != null ? map['description'] as String : null,
       createdAt: map['createdAt'] as String,
       updatedAt: map['updatedAt'] as String,
+      hasVariations: map['hasVariations'] as bool,
       category: map['category'] != null ? Category.fromMap(map['category'] as Map<String, dynamic>) : null,
       brand: map['brand'] != null ? Brand.fromMap(map['brand'] as Map<String, dynamic>) : null,
       images: map['images'] != null ? List<Images>.from((map['images'] as List<dynamic>).map<Images?>((x) => Images.fromMap(x as Map<String,dynamic>),),) : null,

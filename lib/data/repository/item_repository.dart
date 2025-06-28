@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:multi/data/models/attribute_model.dart';
 import 'package:multi/data/models/cart/cart_response_model.dart';
 import 'package:multi/data/models/item_details_model.dart';
 import 'package:multi/data/models/items_model.dart';
@@ -9,8 +8,8 @@ import '../providers/error/exception.dart';
 import '../remote_urls.dart';
 
 abstract class ItemsRepository {
-  Future<Either<Failure, List<ItemsModel>>> getItems(Map<String, dynamic> body);
-  Future<Either<Failure, List<Attribute>>> getItemAttributes(Map<String, dynamic> body);
+  Future<Either<Failure, List<StoreItemsModel>>> getItems(Map<String, dynamic> body);
+  // Future<Either<Failure, List<Attribute>>> getItemAttributes(Map<String, dynamic> body);
 
   Future<Either<Failure, ItemDetailsModel>> getItemDetials(int storeItemId);
 
@@ -31,32 +30,32 @@ class ItemsRepositoryImp extends ItemsRepository {
   ItemsRepositoryImp({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, List<ItemsModel>>> getItems(
+  Future<Either<Failure, List<StoreItemsModel>>> getItems(
       Map<String, dynamic> body) async {
     try {
       final resp = await remoteDataSource.httpPost(
           url: RemoteUrls.items, body: body) as List;
      final result =
-          List<ItemsModel>.from(resp.map((e) => ItemsModel.fromMap(e)));
+          List<StoreItemsModel>.from(resp.map((e) => StoreItemsModel.fromMap(e)));
       return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, e.statusCode));
     }
   }
 
-  @override
-  Future<Either<Failure, List<Attribute>>> getItemAttributes(
-      Map<String, dynamic> body) async {
-    try {
-      final resp = await remoteDataSource.httpPost(
-          url: RemoteUrls.itemAttributes, body: body) as List;
-     final result =
-          List<Attribute>.from(resp.map((e) => Attribute.fromMap(e)));
-      return Right(result);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message, e.statusCode));
-    }
-  }
+  // @override
+  // Future<Either<Failure, List<Attribute>>> getItemAttributes(
+  //     Map<String, dynamic> body) async {
+  //   try {
+  //     final resp = await remoteDataSource.httpPost(
+  //         url: RemoteUrls.itemAttributes, body: body) as List;
+  //    final result =
+  //         List<Attribute>.from(resp.map((e) => Attribute.fromMap(e)));
+  //     return Right(result);
+  //   } on ServerException catch (e) {
+  //     return Left(ServerFailure(e.message, e.statusCode));
+  //   }
+  // }
 
   @override
   Future<Either<Failure, ItemDetailsModel>> getItemDetials(

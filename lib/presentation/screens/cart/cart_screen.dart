@@ -16,29 +16,16 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  final double height = 120;
-
-  List<CartResponseModel>? cartResponseModel;
-
   @override
   void initState() {
     super.initState();
-    loadCart();
-     context.read<CartCubit>().getCartItems();
-    cartResponseModel = context.read<CartCubit>().cartResponseModel;
-  }
-
-  loadCart() {
     Future.microtask(() => context.read<CartCubit>().getCartItems());
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cart'),
-      ),
+      appBar: AppBar(title: const Text('Your Cart')),
       body: PageRefresh(
         onRefresh: () async {
           context.read<CartCubit>().getCartItems();
@@ -47,90 +34,92 @@ class _CartScreenState extends State<CartScreen> {
           listener: (context, state) {
             if (state is CartStateDecIncrementLoading) {
               Utils.loadingDialog(context);
-            } 
-            if (state is CartStateDecIncError) {
+            } else if (state is CartStateDecIncError) {
               Utils.closeDialog(context);
               Utils.errorSnackBar(context, state.message);
-            }
-            if (state is CartStateRemove) {
+            } else if (state is CartStateRemove) {
               Utils.closeDialog(context);
               Utils.errorSnackBar(context, state.message);
-            }
-            if (state is CartDecIncState) {
+            } else if (state is CartDecIncState) {
               Utils.closeDialog(context);
               Utils.showSnackBar(context, state.message);
             }
+
           },
           builder: (context, state) {
             if (state is CartStateLoading) {
               return const LoadingWidget();
             } else if (state is CartStateError) {
               return Center(child: Text(state.message));
-            } else if (state is CartStateLoaded) {
-              return _LoadedWidget(cartResponseModel: state.cartResponse);
+            } else {
+              final cartItems =
+                  state is CartStateLoaded ? state.cartResponse : context.read<CartCubit>().cartResponseModel ?? [];
+
+              if (cartItems.isEmpty) {
+                return const Center(child: Text("Your cart is empty."));
+              }
+
+              return _CartList(cartItems: cartItems);
             }
-            return  _LoadedWidget(cartResponseModel:  cartResponseModel ?? []);
           },
         ),
       ),
       bottomNavigationBar: BlocBuilder<CartCubit, CartState>(
         builder: (context, state) {
           final total = context.read<CartCubit>().total;
-          return total > 0 ? BottomBarWidget(
-            total: context.read<CartCubit>().total,
-          ): const SizedBox.shrink();
+          return total > 0
+              ? BottomBarWidget(total: total)
+              : const SizedBox.shrink();
         },
       ),
     );
   }
 }
 
-class _LoadedWidget extends StatelessWidget {
-  const _LoadedWidget({required this.cartResponseModel});
+class _CartList extends StatelessWidget {
+  const _CartList({required this.cartItems});
 
-  final List<CartResponseModel> cartResponseModel;
+  final List<CartResponseModel> cartItems;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartCubit, CartState>(
-      builder: (context, state) {
-        return CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 14),
-                child: Row(
-                  children: [
-                    Icon(Icons.shopping_cart_rounded,
-                        color: Theme.of(context).primaryColor),
-                    const SizedBox(width: 10),
-                    Text(
-                      _getText(),
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                return AddToCartComponent(
-                    cartProduct: cartResponseModel[index]);
-              }, childCount: cartResponseModel.length),
-            )
-          ],
-        );
-      },
-    );
-  }
+    final length = cartItems.length;
 
-  String _getText() {
-    final length = cartResponseModel.length;
-    if (length > 1) {
-      return '$length Items';
-    } else {
-      return '$length Item';
-    }
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+            child: Row(
+              children: [
+                Icon(Icons.shopping_cart_outlined,
+                    color: Theme.of(context).primaryColor),
+                const SizedBox(width: 10),
+                Text(
+                  "$length ${length > 1 ? "Items" : "Item"}",
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: AddToCartComponent(cartProduct: cartItems[index]),
+                );
+              },
+              childCount: cartItems.length,
+            ),
+          ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 80)),
+      ],
+    );
   }
 }

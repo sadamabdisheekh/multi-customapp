@@ -12,7 +12,7 @@ import 'quantity_button.dart';
 class ItemBottomSheet extends StatefulWidget {
   const ItemBottomSheet({super.key, required this.item});
 
-  final ItemsModel item;
+  final StoreItemsModel item;
 
   @override
   State<ItemBottomSheet> createState() => _ItemBottomSheetState();

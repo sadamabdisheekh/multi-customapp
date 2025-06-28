@@ -15,7 +15,7 @@ import 'package:multi/presentation/screens/item/widgets/product_variation.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
 
 class ItemDetailScreen extends StatefulWidget {
-  final ItemsModel item;
+  final StoreItemsModel item;
 
   const ItemDetailScreen({super.key, required this.item});
 
@@ -166,7 +166,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
           Text('\$$price', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green)),
           InkWell(
             onTap: () => Navigator.pushNamed(context, RouteNames.cartScreen),
-            child: CartBadge(count: context.read<CartCubit>().cartCount.toString()),
+            child: CartBadge(count: context.watch<CartCubit>().cartCount.toString()),
           ),
           BlocBuilder<AddToCartCubit, AddToCartState>(
             builder: (context, state) {
@@ -184,8 +184,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                           if (_selectedVariation != null) "variationId": _selectedVariation!.id,
 
                         };
-                        print(body);
-                        // context.read<AddToCartCubit>().addToCart(body);
+                        context.read<AddToCartCubit>().addToCart(body);
                       },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),

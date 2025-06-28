@@ -29,12 +29,16 @@ class MyBottomNavigationBar extends StatelessWidget {
                   const TextStyle(fontSize: 14, color: grayColor),
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
+                  icon: const Icon(Icons.home),
                   label: Language.home.capitalizeByWord(),
                 ),
                 BottomNavigationBarItem(
+                  icon: const Icon(Icons.shopping_cart),
+                  label: Language.orders.capitalizeByWord(),
+                ),
+                BottomNavigationBarItem(
                   tooltip: Language.profile.capitalizeByWord(),
-                  icon: Icon(Icons.person),
+                  icon: const Icon(Icons.person),
                   label: Language.profile.capitalizeByWord(),
                 ),
               ],

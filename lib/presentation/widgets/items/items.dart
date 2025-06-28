@@ -10,7 +10,7 @@ import 'not_available_widet.dart';
 class ItemWidget extends StatelessWidget {
   const ItemWidget({super.key, required this.itemsList});
 
-  final ItemsModel itemsList;
+  final StoreItemsModel itemsList;
 
   @override
   Widget build(BuildContext context) {

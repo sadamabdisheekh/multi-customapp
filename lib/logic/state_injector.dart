@@ -11,6 +11,8 @@ import 'package:multi/logic/cubit/home_cubit.dart';
 import 'package:multi/logic/cubit/item_details_cubit.dart';
 import 'package:multi/logic/cubit/items_cubit.dart';
 import 'package:multi/logic/cubit/order_cubit.dart';
+import 'package:multi/logic/cubit/order_details_cubit.dart';
+import 'package:multi/logic/cubit/order_list_cubit.dart';
 import 'package:multi/logic/cubit/payment_method_cubit.dart';
 import 'package:multi/logic/cubit/splash_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -124,6 +126,16 @@ class StateInjector {
       create: (context) => OrderCubit(
         orderRepository: context.read<OrderRepository>(),
       ),
+    ),
+     BlocProvider<OrderListCubit>(
+      create: (context) => OrderListCubit(
+        orderRepository: context.read<OrderRepository>(),
+      )
+    ),
+    BlocProvider<OrderDetailsCubit>(
+      create: (context) => OrderDetailsCubit(
+        orderRepository: context.read<OrderRepository>(),
+      )
     ),
   ];
 }
