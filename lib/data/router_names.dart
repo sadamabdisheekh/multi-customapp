@@ -56,14 +56,14 @@ class RouteNames {
         return MaterialPageRoute(
             settings: settings, builder: (_) => const HomeScreen());
       case RouteNames.categoryScreen:
-        final category = settings.arguments as ModulesModel;
+        final module = settings.arguments as ModulesModel;
         return MaterialPageRoute(
             settings: settings,
             builder: (_) => BlocProvider<CategoryCubit>(
                 create: (context) => CategoryCubit(
                       categoryRepository: context.read<CategoryRepository>(),
                     ),
-                child: CategoryScreen(category: category)));
+                child: CategoryScreen(module: module,)));
       case RouteNames.itemScreen:
         final category = settings.arguments as CategoryModel;
         return MaterialPageRoute(

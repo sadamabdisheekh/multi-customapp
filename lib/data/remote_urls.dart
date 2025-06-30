@@ -5,8 +5,8 @@ class RemoteUrls {
   static const login = '$rootUrl/auth/login';
   static const signup = '$rootUrl/customers/create';
   static const modulesList = '$rootUrl/modules/get-modules';
-  static String category(categoryId) =>
-      '$rootUrl/item/getcategoryhierarchy?categoryId=$categoryId';
+  static String category(categoryId,moduleId) =>
+      '$rootUrl/item/getcategoryhierarchy?categoryId=$categoryId&moduleId=$moduleId';
 
   static String subCategory(int categoryId) =>
       '$rootUrl/sub-category/findSubCategory/$categoryId';

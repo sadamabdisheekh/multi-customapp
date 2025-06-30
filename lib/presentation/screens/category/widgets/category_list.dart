@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:multi/data/models/modules_model.dart';
 import 'package:multi/data/router_names.dart';
 import 'package:multi/logic/cubit/category_cubit.dart';
 import '../../../../constants/app_constants.dart';
@@ -7,8 +8,9 @@ import '../../../../data/models/category.dart';
 import '../../../widgets/custom_images.dart';
 
 class CategoryList extends StatelessWidget {
-  const CategoryList({super.key, required this.categories});
+  const CategoryList({super.key, required this.categories, required this.module});
   final List<CategoryModel> categories;
+  final ModulesModel module;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class CategoryList extends StatelessWidget {
               trailing: const Icon(Icons.chevron_right_rounded, color: Colors.grey),
               onTap: () {
                 if (category.children.isNotEmpty) {
-                  context.read<CategoryCubit>().getCategory(category.id);
+                  context.read<CategoryCubit>().getCategory(category.id,null);
                 }else {
                   Navigator.pushNamed(
                     context,

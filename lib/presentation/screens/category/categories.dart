@@ -5,9 +5,9 @@ import 'package:multi/presentation/screens/category/widgets/category_list.dart';
 import '../../../data/models/modules_model.dart';
 
 class CategoryScreen extends StatefulWidget {
-  final ModulesModel category;
+  final ModulesModel module;
 
-  const CategoryScreen({super.key, required this.category});
+  const CategoryScreen({super.key, required this.module});
 
   @override
   State<CategoryScreen> createState() => _CategoryScreenState();
@@ -17,7 +17,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<CategoryCubit>().getCategory(null);
+    context.read<CategoryCubit>().getCategory(null,widget.module.id);
   }
 
   @override
@@ -32,7 +32,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               elevation: 0,
               backgroundColor: Theme.of(context).colorScheme.background,
               title: Text(
-                widget.category.moduleName,
+                widget.module.moduleName,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
@@ -74,7 +74,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               ),
             );
           }
-          return CategoryList(categories: state.categoryList);
+          return CategoryList(categories: state.categoryList, module: widget.module);
           // return _buildGrid(state.categoryList);
         }
         return const SliverToBoxAdapter(child: SizedBox.shrink());

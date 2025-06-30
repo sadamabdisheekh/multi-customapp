@@ -43,7 +43,7 @@ class AddToCartComponent extends StatelessWidget {
               width: isSmall ? 100 : 120,
               height: isSmall ? 80 : 100,
               path: AppConstants.itemsPath +
-                  (cartProduct.storeItem.item.thumbnail ?? ''),
+                  (cartProduct.storeItem.item.thumbnail),
               fit: BoxFit.cover,
             ),
           ),
