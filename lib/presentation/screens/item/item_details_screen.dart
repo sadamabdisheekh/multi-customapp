@@ -1,4 +1,3 @@
-// item_detail_screen.dart
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,28 +38,36 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
       appBar: AppBar(title: Text(widget.item.item.name)),
       body: BlocBuilder<ItemDetailsCubit, ItemDetailsState>(
         builder: (context, state) {
-          if (state is ItemDetailsLoadingState) return const Center(child: CircularProgressIndicator());
-          if (state is ItemDetailsErrorState) return Center(child: Text(state.error.message));
-          if (state is ItemDetailsLoadedState) {
+          if (state is ItemDetailsLoadingState) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is ItemDetailsErrorState) {
+            return Center(child: Text(state.error.message));
+          } else if (state is ItemDetailsLoadedState) {
             final itemDetails = state.itemDetails;
             final variations = itemDetails.variations ?? [];
             _selectedVariation = _selectedVariation ?? (variations.isNotEmpty ? variations.first : null);
-            return _buildItemDetails(itemDetails);
+            return _buildItemDetails(context, itemDetails);
           }
           return const SizedBox.shrink();
         },
       ),
       bottomNavigationBar: BlocBuilder<ItemDetailsCubit, ItemDetailsState>(
         builder: (context, state) {
-          if (state is ItemDetailsLoadedState) return _buildBottomBar(state.itemDetails);
+          if (state is ItemDetailsLoadedState) {
+            return _buildBottomBar(context, state.itemDetails);
+          }
           return const SizedBox.shrink();
         },
       ),
     );
   }
 
-  Widget _buildItemDetails(ItemDetailsModel item) {
+  Widget _buildItemDetails(BuildContext context, ItemDetailsModel item) {
+    final theme = Theme.of(context);
     final images = item.images?.map((e) => e.imageUrl).toList() ?? [item.thumbnail];
+    final price = _selectedVariation?.price ?? item.basePrice ?? 0.0;
+    final stock = _selectedVariation?.stock ?? item.stock ?? 0;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +90,38 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(16),
-            child: _buildProductInfo(item),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(item.name, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
+                Text('\$$price',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold, color: theme.colorScheme.primary)),
+                const SizedBox(height: 6),
+                Text(
+                  stock > 0 ? '$stock Items Available' : 'Out Of Stock',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                      color: stock > 0 ? theme.colorScheme.onSurface : theme.colorScheme.error),
+                ),
+                const SizedBox(height: 16),
+                Text('Description',
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                Text(item.description ?? 'No description provided.',
+                    style: theme.textTheme.bodyMedium?.copyWith(height: 1.5)),
+                const SizedBox(height: 16),
+                Text('Available Variants',
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
+                ProductVariantSelector(
+                  attributes: item.attributes ?? [],
+                  variants: item.variations ?? [],
+                  initialSelectedVariation: _selectedVariation,
+                  onVariationSelected: (v) => setState(() => _selectedVariation = v),
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -116,86 +154,83 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
     );
   }
 
-  Widget _buildProductInfo(ItemDetailsModel item) {
-    final price = _selectedVariation?.price ?? item.basePrice ?? 0.0;
-    final stock = _selectedVariation?.stock ?? item.stock ?? 0;
+  Widget _buildBottomBar(BuildContext context, ItemDetailsModel item) {
+  final theme = Theme.of(context);
+  final price = _selectedVariation?.price ?? item.basePrice ?? 0.0;
+  final cartCount = context.watch<CartCubit>().cartCount;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  return Container(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+    decoration: BoxDecoration(
+      color: theme.colorScheme.surface,
+      boxShadow: const [
+        BoxShadow(color: Colors.black12, blurRadius: 12, offset: Offset(0, -4)),
+      ],
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(item.name, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        Text('\$$price', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green)),
-        const SizedBox(height: 12),
-        Row(
+        // Price section (takes available width)
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Availability:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(width: 6),
+            const Text('Total Price', style: TextStyle(fontSize: 14, color: Colors.grey)),
+            const SizedBox(height: 4),
             Text(
-              stock > 0 ? '$stock Items Available' : 'Out Of Stock',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: stock > 0 ? Colors.black : Colors.red),
+              '\$${price.toStringAsFixed(2)}',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary,
+              ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
-        const Text('Description', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
-        Text(item.description ?? '', style: const TextStyle(fontSize: 16, height: 1.5)),
-        const SizedBox(height: 16),
-        ProductVariantSelector(
-          attributes: item.attributes ?? [],
-          variants: item.variations ?? [],
-          initialSelectedVariation: _selectedVariation,
-          onVariationSelected: (v) => setState(() => _selectedVariation = v),
+
+        // Cart Badge
+        CartBadge(count: cartCount.toString()),
+
+        const SizedBox(width: 12),
+
+        // Add to Cart Button
+        BlocBuilder<AddToCartCubit, AddToCartState>(
+          builder: (context, state) {
+            if (state is AddToCartLoading) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(height: 28, width: 28, child: CircularProgressIndicator(strokeWidth: 2)),
+              );
+            }
+            
+
+            return ElevatedButton.icon(
+              onPressed: () {
+                final body = {
+                  "userId": context.read<SigninCubit>().customerInfo?.userId,
+                  "quantity": 1,
+                  "storeId": item.store.id,
+                  "itemId": item.itemId,
+                  "price": price,
+                  "storeItemId": item.storeItemId,
+                  if (_selectedVariation != null) "variationId": _selectedVariation!.id,
+                };
+                context.read<AddToCartCubit>().addToCart(body);
+              },
+              icon: const Icon(Icons.shopping_cart_outlined, size: 20),
+              label: const Text('Add to Cart', style: TextStyle(fontSize: 16)),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                backgroundColor: theme.colorScheme.primary,
+                foregroundColor: theme.colorScheme.onPrimary,
+              ),
+            );
+          },
         ),
       ],
-    );
-  }
+    ),
+  );
+}
 
-  Widget _buildBottomBar(ItemDetailsModel item) {
-    final price = _selectedVariation?.price ?? item.basePrice ?? 0.0;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: const BoxDecoration(color: Colors.white, boxShadow: [
-        BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, -2))
-      ]),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('\$$price', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green)),
-          InkWell(
-            onTap: () => Navigator.pushNamed(context, RouteNames.cartScreen),
-            child: CartBadge(count: context.watch<CartCubit>().cartCount.toString()),
-          ),
-          BlocBuilder<AddToCartCubit, AddToCartState>(
-            builder: (context, state) {
-              if (state is AddToCartLoading) return const CircularProgressIndicator();
-
-              return ElevatedButton(
-                onPressed:  () {
-                        final body = {
-                          "userId": context.read<SigninCubit>().customerInfo?.userId,
-                          "quantity": 1,
-                          "storeId": item.store.id,
-                          "itemId": item.itemId,
-                          "price": price,
-                          "storeItemId": item.storeItemId,
-                          if (_selectedVariation != null) "variationId": _selectedVariation!.id,
-
-                        };
-                        context.read<AddToCartCubit>().addToCart(body);
-                      },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                ),
-                child: const Text('Add to Cart', style: TextStyle(fontSize: 18)),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
 }

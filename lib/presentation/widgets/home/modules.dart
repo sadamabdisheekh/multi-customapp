@@ -41,11 +41,19 @@ class ModuleWidget extends StatelessWidget {
   Widget _buildModuleItem(BuildContext context, ModulesModel module) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(
+        if (module.id == 2){
+          Navigator.pushNamed(
+          context,
+          RouteNames.deliveryScreen,
+          arguments: module,
+        );
+        }else {
+          Navigator.pushNamed(
           context,
           RouteNames.categoryScreen,
           arguments: module,
         );
+        }
       },
       borderRadius: BorderRadius.circular(Dimensions.radiusDefault),
       child: Container(

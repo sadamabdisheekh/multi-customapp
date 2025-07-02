@@ -7,6 +7,7 @@ ThemeData light({Color color = const Color(0xFF039D55)}) => ThemeData(
       secondaryHeaderColor: const Color(0xFF1ED7AA),
       disabledColor: const Color(0xFFBABFC4),
       brightness: Brightness.light,
+      useMaterial3: true,
       hintColor: const Color(0xFF9F9F9F),
       cardColor: Colors.white,
       textButtonTheme: TextButtonThemeData(
