@@ -33,7 +33,7 @@ class _CartScreenState extends State<CartScreen> {
         child: BlocConsumer<CartCubit, CartState>(
           listener: (context, state) {
             if (state is CartStateDecIncrementLoading) {
-              Utils.loadingDialog(context);
+              Utils.loadingDialog(context,message: 'loading');
             } else if (state is CartStateDecIncError) {
               Utils.closeDialog(context);
               Utils.errorSnackBar(context, state.message);

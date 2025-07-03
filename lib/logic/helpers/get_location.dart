@@ -1,80 +1,58 @@
-import 'dart:async';
 import 'package:geolocator/geolocator.dart';
 
+class LocationException implements Exception {
+  final int code;
+  final String message;
+  
+  const LocationException(this.code, this.message);
+
+  @override
+  String toString() => 'LocationException: $message (code: $code)';
+}
+
 class LocationService {
-  StreamSubscription<Position>? _positionSubscription;
-  StreamSubscription<ServiceStatus>? _serviceStatusSubscription;
+  static const _highAccuracy = LocationAccuracy.high;
+  static const _distanceFilter = 100; // meters
 
-  /// Callbacks
-  final void Function(Position position) onLocationUpdate;
-  final void Function(String error) onError;
-  final void Function(bool isServiceEnabled) onServiceStatusChanged;
-
-  LocationService({
-    required this.onLocationUpdate,
-    required this.onError,
-    required this.onServiceStatusChanged,
-  });
-
-  /// Start listening to location and service status
-  Future<void> initialize() async {
-    try {
-      await _ensurePermissionAndService();
-
-      // Start listening to position
-      _positionSubscription = Geolocator.getPositionStream(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          distanceFilter: 10,
-        ),
-      ).listen(onLocationUpdate);
-
-      // Start listening to service status changes
-      _serviceStatusSubscription =
-          Geolocator.getServiceStatusStream().listen((status) {
-        final isEnabled = status == ServiceStatus.enabled;
-        onServiceStatusChanged(isEnabled);
-
-        if (!isEnabled) {
-          onError('Location services have been disabled.');
-        }
-      });
-    } catch (e) {
-      onError(e.toString());
-
-      // Optionally prompt the user
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        await Geolocator.openLocationSettings();
-      }
-    }
-  }
-
-  /// Stop all streams
-  void dispose() {
-    _positionSubscription?.cancel();
-    _serviceStatusSubscription?.cancel();
-  }
-
-  /// Check and request necessary permissions and service state
-  Future<void> _ensurePermissionAndService() async {
+  /// Checks and requests location permissions
+  static Future<void> _checkPermissions() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      throw 'Location services are disabled.';
+      throw const LocationException(1, 'Location services are disabled');
     }
 
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        await Geolocator.requestPermission();
-        throw 'Location permissions are denied.';
+        throw const LocationException(2, 'Location permissions denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      throw 'Location permissions are permanently denied.';
+      throw const LocationException(3, 
+        'Location permissions permanently denied. Enable in app settings.');
     }
+  }
+
+  /// Gets current device position
+  static Future<Position> getCurrentLocation() async {
+    await _checkPermissions();
+    return await Geolocator.getCurrentPosition();
+  }
+
+  /// Stream of position updates
+  static Stream<Position> get locationUpdates {
+    return Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: _highAccuracy,
+        distanceFilter: _distanceFilter,
+      ),
+    );
+  }
+
+  /// Stream of service status updates
+  static Stream<ServiceStatus> get serviceStatusUpdates {
+    return Geolocator.getServiceStatusStream();
   }
 }

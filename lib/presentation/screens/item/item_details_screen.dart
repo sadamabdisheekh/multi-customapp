@@ -189,7 +189,11 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
         ),
 
         // Cart Badge
-        CartBadge(count: cartCount.toString()),
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, RouteNames.cartScreen);
+          },
+          child: CartBadge(count: cartCount.toString())),
 
         const SizedBox(width: 12),
 
@@ -202,10 +206,14 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                 child: SizedBox(height: 28, width: 28, child: CircularProgressIndicator(strokeWidth: 2)),
               );
             }
+
+            final stock = _selectedVariation?.stock ?? item.stock ?? 0;
+            final isAvailable = stock > 0;
+            final labelText = isAvailable ? 'Add to Cart Now' : 'Out of Stock';
             
 
             return ElevatedButton.icon(
-              onPressed: () {
+              onPressed: isAvailable ? () {
                 final body = {
                   "userId": context.read<SigninCubit>().customerInfo?.userId,
                   "quantity": 1,
@@ -216,9 +224,9 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                   if (_selectedVariation != null) "variationId": _selectedVariation!.id,
                 };
                 context.read<AddToCartCubit>().addToCart(body);
-              },
+              } : null,
               icon: const Icon(Icons.shopping_cart_outlined, size: 20),
-              label: const Text('Add to Cart', style: TextStyle(fontSize: 16)),
+              label:   Text(labelText, style: const TextStyle(fontSize: 16)),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

@@ -22,27 +22,11 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final _homeController = MainController();
   late List<Widget> pageList;
-  late final LocationService _locationService;
   @override
   void initState() {
     pageList = [const HomeScreen(),const OrdersScreen(), const ProfileScreen()];
     super.initState();
-    _locationService = LocationService(
-    onLocationUpdate: (position) {
-      print('Location: ${position.latitude}, ${position.longitude}');
-    },
-    onError: (error) {
-      print('Error: $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error)),
-      );
-    },
-    onServiceStatusChanged: (enabled) {
-      print('Location service is ${enabled ? "enabled" : "disabled"}');
-    },
-  );
-
-  _locationService.initialize();
+    
 
   }
   Future exitDialog(BuildContext context) {

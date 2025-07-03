@@ -35,11 +35,14 @@ class Utils {
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: child,
           ),
-          child: child,
         );
       },
     );
