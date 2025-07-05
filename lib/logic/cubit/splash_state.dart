@@ -12,13 +12,13 @@ final class SplashInitial extends SplashState {}
 final class SplashLoading extends SplashState {}
 
 final class SplashError extends SplashState {
-  final CustomError error;
+  final String error;
 
   const SplashError({required this.error});
 }
 
 final class SplashLoaded extends SplashState {
-  final dynamic list;
+  final List<Country> addresses;
 
-  const SplashLoaded({required this.list});
+  const SplashLoaded({required this.addresses});
 }

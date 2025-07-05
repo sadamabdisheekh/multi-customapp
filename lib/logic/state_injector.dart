@@ -80,7 +80,9 @@ class StateInjector {
 
   static final blocProviders = <BlocProvider>[
     BlocProvider<SplashCubit>(
-      create: (context) => SplashCubit(),
+      create: (context) => SplashCubit(
+        authRepository: context.read<AuthRepository>()
+      ),
     ),
     BlocProvider<LocationCubit>(
       create: (context) => LocationCubit(),

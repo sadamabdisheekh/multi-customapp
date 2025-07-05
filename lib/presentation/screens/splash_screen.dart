@@ -5,6 +5,7 @@ import 'package:multi/constants/images.dart';
 import 'package:multi/data/router_names.dart';
 import 'package:multi/logic/cubit/signin_cubit.dart';
 import 'package:multi/logic/cubit/splash_cubit.dart';
+import 'package:multi/logic/utilits/utility.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,12 +22,20 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: const Color(0xffE07A5F),
       body: BlocConsumer<SplashCubit, SplashState>(
         listener: (context, state) {
-          if (userLogin.isLogedIn) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, RouteNames.mainPage, (route) => false);
-          } else {
-            Navigator.pushNamedAndRemoveUntil(
-                context, RouteNames.signinScreen, (route) => false);
+          if (state is SplashLoading) {
+             Utils.loadingDialog(context);
+          }
+          if (state is SplashError) {
+            Utils.showSnackBar(context, state.error);
+          }
+          if (state is SplashLoaded) {
+            if (userLogin.isLogedIn) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, RouteNames.mainPage, (route) => false);
+            } else {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, RouteNames.signinScreen, (route) => false);
+            }
           }
         },
         builder: (context, state) {

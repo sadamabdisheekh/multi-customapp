@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:multi/data/models/modules_model.dart';
 import 'package:multi/data/providers/error/custom_error.dart';
 import 'package:multi/data/repository/home_repository.dart';
@@ -13,6 +15,9 @@ class HomeCubit extends Cubit<HomeState> {
         super(HomeStateInitial()) {
     loadHomeData();
   }
+
+  Placemark? userPlaceMark;
+  Position? position;
 
   loadHomeData() async {
     emit(HomeLoadingState());

@@ -1,9 +1,13 @@
-import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:multi/logic/helpers/get_location.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:multi/data/models/address_model.dart';
+import 'package:multi/logic/cubit/home_cubit.dart';
+import 'package:multi/logic/cubit/signin_cubit.dart';
+import 'package:multi/logic/cubit/splash_cubit.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'widgets/delivery_widgets.dart';
+import 'package:collection/collection.dart';
 
 class DeliveryScreen extends StatefulWidget {
   const DeliveryScreen({super.key});
@@ -37,16 +41,13 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   final TextEditingController receiverNameController = TextEditingController();
   final TextEditingController receiverPhoneController = TextEditingController();
 
-  StreamSubscription<Position>? _positionSubscription;
-  StreamSubscription<ServiceStatus>? _serviceStatusSubscription;
-  Position? _currentPosition;
-  ServiceStatus? _currentServiceStatus;
-  String? _locationError;
-
 @override
 void initState() {
   super.initState();
-  _initLocationServices();
+    final customer = context.read<SigninCubit>().customerInfo!;
+    final customerName = '${customer.firstName} ${customer.middleName} ${customer.lastName}';
+    senderNameController.text = customerName;
+    senderPhoneController.text = customer.mobile;
 }
 
 @override
@@ -55,62 +56,9 @@ void dispose() {
   senderPhoneController.dispose();
   receiverNameController.dispose();
   receiverPhoneController.dispose();
-  _positionSubscription?.cancel();
-  _serviceStatusSubscription?.cancel();
   super.dispose();
 }
 
-Future<void> _initLocationServices() async {
-  try {
-    final position = await LocationService.getCurrentLocation();
-    setState(() => _currentPosition = position);
-    _setupLocationListeners();
-  } catch (e) {
-    final location = e as LocationException;
-    if (location.code == 1) {
-      await Geolocator.openLocationSettings();
-    }
-    setState(() => _locationError = e.toString());
-  }
-}
-
-void _setupLocationListeners() {
-  _positionSubscription = LocationService.locationUpdates.listen(
-    (position) => setState(() => _currentPosition = position),
-    onError: (e) => setState(() => _locationError = e.toString()),
-  );
-
-  _serviceStatusSubscription = LocationService.serviceStatusUpdates.listen(
-    (status) => {
-      print(status)
-    }
-  );
-}
-
-  Future<void> _showLocationServiceDialog() async {
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Location Required'),
-        content: const Text(
-            'Location services are disabled. Please enable them to proceed.'),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              Navigator.of(ctx).pop();
-              await Geolocator.openLocationSettings();
-            },
-            child: const Text('Open Settings'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +70,29 @@ void _setupLocationListeners() {
     final destination = destinationLocationId != null
         ? locations.firstWhere((l) => l['id'] == destinationLocationId)
         : null;
+    final homeCubit = context.read<HomeCubit>();
+final splashCubit = context.read<SplashCubit>();
+final placeMark = homeCubit.userPlaceMark;
+final addresses = splashCubit.systemAddreses;
+
+var userAddress;
+Country? country;
+Region? region;
+City? city;
+
+
+if (placeMark != null && addresses?.isNotEmpty == true) {
+  country = addresses?.firstWhereOrNull((co) => co.name == placeMark.country);
+  region = country?.regions?.firstWhereOrNull((r) => r.name == placeMark.administrativeArea);
+  city = region?.cities?.firstWhereOrNull((c) => c.name == placeMark.subAdministrativeArea);
+
+}
+
+  
+
+
+
+
 
     return Scaffold(
       appBar: AppBar(title: const Text('Delivery')),
@@ -154,8 +125,6 @@ void _setupLocationListeners() {
                       }
                     });
                   },
-                  currentPosition: _currentPosition,
-                  locationError: _locationError,
                 ),
                 // Divider
                 Center(

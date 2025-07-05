@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:multi/presentation/widgets/custom_dropdown.dart';
 import 'package:multi/presentation/widgets/custom_textfield.dart';
 
@@ -9,8 +8,6 @@ class SenderSection extends StatelessWidget {
   final int? pickupLocationId;
   final List<Map<String, dynamic>> locations;
   final void Function(int?) onPickupChanged;
-  final Position? currentPosition;
-  final String? locationError;
 
   const SenderSection({
     super.key,
@@ -19,8 +16,6 @@ class SenderSection extends StatelessWidget {
     required this.pickupLocationId,
     required this.locations,
     required this.onPickupChanged,
-    required this.currentPosition,
-    required this.locationError,
   });
 
   @override
@@ -84,29 +79,6 @@ class SenderSection extends StatelessWidget {
                 child: Text(loc['name']),
               );
             }).toList(),
-          ),
-          
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              const Icon(Icons.my_location, color: Colors.blueAccent),
-              const SizedBox(width: 8),
-              Expanded(
-                child: currentPosition != null
-                    ? Text(
-                        'Current location: '
-                        'Lat:  ${currentPosition!.latitude.toStringAsFixed(5)}, '
-                        'Lng:  ${currentPosition!.longitude.toStringAsFixed(5)}',
-                        style: const TextStyle(color: Colors.black87, fontSize: 14),
-                      )
-                    : Text(
-                        locationError != null
-                            ? 'Location error: $locationError'
-                            : 'Current location not available',
-                        style: const TextStyle(color: Colors.redAccent, fontSize: 14),
-                      ),
-              ),
-            ],
           ),
         ],
       ),

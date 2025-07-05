@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/data/router_names.dart';
 import 'package:multi/logic/cubit/add_to_cart_cubit.dart';
 import 'package:multi/logic/cubit/home_cubit.dart';
-import 'package:multi/logic/cubit/location_cubit.dart';
 import 'package:multi/logic/cubit/cart_cubit.dart';
+import 'package:multi/logic/helpers/get_location.dart';
 import 'package:multi/presentation/screens/home/widgets/cart_badge.dart';
 import 'package:multi/presentation/widgets/page_refresh.dart';
 import '../../../constants/dimensions.dart';
@@ -25,7 +25,36 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     context.read<CartCubit>().getCartItems();
+    _initLocationServices();
+    
   }
+  String userAddress = '';
+  
+
+Future<void> _initLocationServices() async {
+  try {
+    final position = await LocationService.getCurrentLocation();
+    final place = await LocationService.getAddressFromLatLng(
+      position.latitude,
+      position.longitude,
+    );
+
+    String country = place?.country ?? '';
+      String region = place?.administrativeArea ?? '';
+      String district = place?.subAdministrativeArea ?? '';
+    String address = '$district, $region $country';
+
+    context.read<HomeCubit>()
+      ..userPlaceMark = place
+      ..position = position;
+
+    setState(() => userAddress = address);
+  } on LocationException catch (e) {
+    Utils.showSnackBar(context, e.message);
+  }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,13 +106,10 @@ class _HomeScreenState extends State<HomeScreen> {
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          BlocBuilder<LocationCubit, LocationState>(
-            builder: (context, state) {
-            if (state is LocationLoaded) {
-              return Row(
+          Row(
                 children: [
                   Text(
-                    state.location,
+                    userAddress,
                     style: robotoMedium.copyWith(
                         fontSize: Dimensions.fontSizeSmall),
                     maxLines: 1,
@@ -91,11 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const Icon(Icons.expand_more, size: 18),
                 ],
-              );
-            }
-            return const Text('');
-            },
-          ),
+              ),
           BlocBuilder<CartCubit, CartState>(
             builder: (context, state) {
               final cartCount = context.read<CartCubit>().cartCount;

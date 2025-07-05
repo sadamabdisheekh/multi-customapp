@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:multi/data/models/address_model.dart';
 import 'package:multi/data/models/customer_model.dart';
 import '../providers/datasources/local_data_source.dart';
 import '../providers/datasources/remote_data_source.dart';
@@ -11,6 +12,7 @@ abstract class AuthRepository {
   Future<Either<Failure, CustomerModel>> login(Map<String, dynamic> body);
   Future<Either<Failure, String>> logOut();
   Future<Either<Failure, dynamic>> signup(Map<String, dynamic> body);
+  Future<Either<Failure, List<Country>>> getAddress();
 }
 
 class AuthRepositoryImp extends AuthRepository {
@@ -61,6 +63,19 @@ class AuthRepositoryImp extends AuthRepository {
       final resp =
           await remoteDataSource.httpPost(url: RemoteUrls.signup, body: body);
       return Right(resp);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message, e.statusCode));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, List<Country>>> getAddress() async {
+     try {
+      final resp = await remoteDataSource.httpGet(
+          url: RemoteUrls.getAddress) as List;
+      final result =
+          List<Country>.from(resp.map((e) => Country.fromMap(e)));
+      return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.message, e.statusCode));
     }
