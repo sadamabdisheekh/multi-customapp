@@ -1,5 +1,5 @@
 class RemoteUrls {
-  static const String rootUrl = 'http://192.168.100.28:3000';
+  static const String rootUrl = 'http://192.168.236.67:3000';
   //"http://160.119.251.252:3000"; 192.168.75.67
 
   static const login = '$rootUrl/auth/login';

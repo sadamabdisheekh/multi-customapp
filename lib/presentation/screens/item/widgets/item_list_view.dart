@@ -11,10 +11,11 @@ class ItemListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
     final store = itemInfo.store;
     final imageUrl = '${AppConstants.itemsPath}${itemInfo.item.thumbnail}';
     double price = (itemInfo.price ?? 0).toDouble();
-
     if (itemInfo.storeItemVariation?.isNotEmpty ?? false) {
       price += itemInfo.storeItemVariation!.first.price ?? 0;
     }
@@ -27,84 +28,90 @@ class ItemListView extends StatelessWidget {
       ),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(0, 2),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 5,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
               child: CustomImage(
                 path: imageUrl,
-                width: 90,
-                height: 90,
-                fit: BoxFit.cover,
+                width: size.width * 0.4,
+                height: size.height * 0.15,
+                fit: BoxFit.fill,
               ),
             ),
             const SizedBox(width: 14),
+            // Main info section
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    itemInfo.item.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Item name
+                    Text(
+                      itemInfo.item.name,
+                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    '\$${price.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.purple,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  if (store?.address != null)
-                    Row(
-                      children: [
-                        const Icon(Icons.location_pin, size: 16, color: Colors.purple),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            store!.address!,
-                            style: const TextStyle(fontSize: 13, color: Colors.grey),
-                            overflow: TextOverflow.ellipsis,
+                    const SizedBox(height: 4),
+                    // Store name and verified
+                    if (store != null)
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              store.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodySmall,
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 4),
+                          Icon(Icons.verified, size: 16, color: theme.primaryColor),
+                        ],
+                      ),
+                    const SizedBox(height: 6),
+                    // Price
+                    Text(
+                      '\$${price.toStringAsFixed(2)}',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: theme.primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  const SizedBox(height: 4),
-                  if (store != null)
-                    Row(
-                      children: [
-                        const Icon(Icons.store, size: 16, color: Colors.purple),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            store.name,
-                            style: const TextStyle(fontSize: 13, color: Colors.grey),
-                            overflow: TextOverflow.ellipsis,
+                    // Location
+                    if (store?.address != null) ...[
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on, size: 14, color: Colors.grey),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              store!.address!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                            ),
                           ),
-                        ),
-                        const Icon(Icons.verified, size: 16, color: Colors.green),
-                      ],
-                    ),
-                ],
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
           ],

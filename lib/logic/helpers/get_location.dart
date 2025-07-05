@@ -1,4 +1,5 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class LocationException implements Exception {
   final int code;
@@ -54,5 +55,21 @@ class LocationService {
   /// Stream of service status updates
   static Stream<ServiceStatus> get serviceStatusUpdates {
     return Geolocator.getServiceStatusStream();
+  }
+
+    static Future<String> getAddressFromLatLng(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+        
+         String district = place.subAdministrativeArea ?? 'Unknown District';
+      String country = place.country ?? 'Unknown Country';
+      return '$district, $country, ${place.name}';
+      }
+      return "No address available";
+    } catch (e) {
+      return "Failed to get address";
+    }
   }
 }

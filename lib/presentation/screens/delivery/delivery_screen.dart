@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:multi/logic/helpers/get_location.dart';
-import 'package:multi/presentation/widgets/custom_button.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'widgets/delivery_widgets.dart';
 
 class DeliveryScreen extends StatefulWidget {
   const DeliveryScreen({super.key});
@@ -19,8 +20,22 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     {"id": 4, "name": "Hodan District"},
   ];
 
+  final List<String> deliveryTypes = [
+    'Electronics',
+    'Bags',
+    'Documents',
+    'Other',
+  ];
+  String? selectedDeliveryType;
+
   int? pickupLocationId;
   int? destinationLocationId;
+
+  // New: Controllers for sender/receiver info
+  final TextEditingController senderNameController = TextEditingController();
+  final TextEditingController senderPhoneController = TextEditingController();
+  final TextEditingController receiverNameController = TextEditingController();
+  final TextEditingController receiverPhoneController = TextEditingController();
 
   StreamSubscription<Position>? _positionSubscription;
   StreamSubscription<ServiceStatus>? _serviceStatusSubscription;
@@ -28,9 +43,21 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   ServiceStatus? _currentServiceStatus;
   String? _locationError;
 
+@override
 void initState() {
   super.initState();
   _initLocationServices();
+}
+
+@override
+void dispose() {
+  senderNameController.dispose();
+  senderPhoneController.dispose();
+  receiverNameController.dispose();
+  receiverPhoneController.dispose();
+  _positionSubscription?.cancel();
+  _serviceStatusSubscription?.cancel();
+  super.dispose();
 }
 
 Future<void> _initLocationServices() async {
@@ -39,6 +66,10 @@ Future<void> _initLocationServices() async {
     setState(() => _currentPosition = position);
     _setupLocationListeners();
   } catch (e) {
+    final location = e as LocationException;
+    if (location.code == 1) {
+      await Geolocator.openLocationSettings();
+    }
     setState(() => _locationError = e.toString());
   }
 }
@@ -50,7 +81,9 @@ void _setupLocationListeners() {
   );
 
   _serviceStatusSubscription = LocationService.serviceStatusUpdates.listen(
-    (status) => setState(() => _currentServiceStatus = status),
+    (status) => {
+      print(status)
+    }
   );
 }
 
@@ -92,146 +125,161 @@ void _setupLocationListeners() {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Delivery')),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_locationError != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  'Location Error: \\${_locationError}',
-                  style: const TextStyle(color: Colors.red),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFF8FAFF), Color(0xFFE3ECFF)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+             
+                // Sender Section
+                SenderSection(
+                  senderNameController: senderNameController,
+                  senderPhoneController: senderPhoneController,
+                  pickupLocationId: pickupLocationId,
+                  locations: locations,
+                  onPickupChanged: (value) {
+                    setState(() {
+                      pickupLocationId = value;
+                      if (destinationLocationId == value) {
+                        destinationLocationId = null;
+                      }
+                    });
+                  },
+                  currentPosition: _currentPosition,
+                  locationError: _locationError,
                 ),
-              ),
-            if (_currentServiceStatus != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text('Service Status: \\${_currentServiceStatus}'),
-              ),
-            if (_currentPosition != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  'Current Position: \\${_currentPosition!.latitude}, \\${_currentPosition!.longitude}',
-                ),
-              ),
-            ElevatedButton(
-              onPressed: () async {
-                try {
-                  final pos = await LocationService.getCurrentLocation();
-                  setState(() {
-                    _currentPosition = pos;
-                    _locationError = null;
-                  });
-                } catch (e) {
-                  setState(() {
-                    _locationError = e.toString();
-                  });
-                }
-              },
-              child: const Text('Get Current Location Once'),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Pickup Location',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            _buildDropdown(
-              label: 'Select pickup location',
-              value: pickupLocationId,
-              onChanged: (value) {
-                setState(() {
-                  pickupLocationId = value;
-                  if (destinationLocationId == value) {
-                    destinationLocationId = null;
-                  }
-                });
-              },
-              items: locations,
-              icon: Icons.location_on,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Destination Location',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            _buildDropdown(
-              label: 'Select destination location',
-              value: destinationLocationId,
-              onChanged: (value) =>
-                  setState(() => destinationLocationId = value),
-              items: destinationOptions,
-              icon: Icons.flag,
-            ),
-            const SizedBox(height: 24),
-            if (pickup != null && destination != null)
-              Card(
-                color: Colors.blue.shade50,
-                margin: const EdgeInsets.only(bottom: 20),
-                child: ListTile(
-                  leading: const Icon(Icons.route, color: Colors.blue),
-                  title: Text('Route Summary'),
-                  subtitle: Text(
-                    'Pickup: \\${pickup['name']}\\nDestination: \\${destination['name']}',
+                // Divider
+                Center(
+                  child: Container(
+                    width: 60,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade100,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-              ),
-            CustomButton(
-              buttonText: 'Submit',
-              width: double.infinity,
-              onPressed: (pickupLocationId == null || destinationLocationId == null)
-                  ? null
-                  : () {
-                      showDialog(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          title: const Text('Success'),
-                          content: Text(
-                            'Delivery from \\${pickup!['name']} to \\${destination!['name']} submitted!',
+                const SizedBox(height: 24),
+                // Receiver Section
+                ReceiverSection(
+                  receiverNameController: receiverNameController,
+                  receiverPhoneController: receiverPhoneController,
+                  destinationLocationId: destinationLocationId,
+                  destinationOptions: destinationOptions,
+                  onDestinationChanged: (value) => setState(() => destinationLocationId = value),
+                ),
+                // Divider
+                Center(
+                  child: Container(
+                    width: 60,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade100,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // Delivery Type Section
+                DeliveryTypeSection(
+                  selectedDeliveryType: selectedDeliveryType,
+                  deliveryTypes: deliveryTypes,
+                  onTypeChanged: (value) => setState(() => selectedDeliveryType = value),
+                ),
+                // Route Summary
+                if (pickup != null && destination != null && selectedDeliveryType != null)
+                  RouteSummarySection(
+                    senderName: senderNameController.text,
+                    senderPhone: senderPhoneController.text,
+                    receiverName: receiverNameController.text,
+                    receiverPhone: receiverPhoneController.text,
+                    pickupName: pickup['name'],
+                    destinationName: destination['name'],
+                    deliveryType: selectedDeliveryType!,
+                  ),
+                // Submit Button
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: SizedBox(
+                    height: 56,
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.check_circle, size: 26),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        elevation: 4,
+                      ),
+                      label: const Text('Submit'),
+                      onPressed: (pickupLocationId == null || destinationLocationId == null ||
+                          senderNameController.text.isEmpty || senderPhoneController.text.isEmpty ||
+                          receiverNameController.text.isEmpty || receiverPhoneController.text.isEmpty ||
+                          selectedDeliveryType == null)
+                          ? null
+                          : () {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (ctx) => Dialog(
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(24.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(Icons.check_circle, color: Colors.green, size: 60),
+                                        const SizedBox(height: 18),
+                                        const Text('Success!', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          'Delivery from ${pickup!['name']} to ${destination!['name']} submitted!\n'
+                                          'Sender: ${senderNameController.text} (${senderPhoneController.text})\n'
+                                          'Receiver: ${receiverNameController.text} (${receiverPhoneController.text})\n'
+                                          'Delivery Type: $selectedDeliveryType',
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const SizedBox(height: 18),
+                                        SpinKitThreeBounce(
+                                          color: Colors.blueAccent,
+                                          size: 24,
+                                        ),
+                                        const SizedBox(height: 10),
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.blueAccent,
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                          ),
+                                          onPressed: () => Navigator.of(ctx).pop(),
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(ctx).pop(),
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                    ),
+                  ),
+                
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
-
-  Widget _buildDropdown({
-    required String label,
-    required int? value,
-    required void Function(int?) onChanged,
-    required List<Map<String, dynamic>> items,
-    IconData? icon,
-  }) {
-    return DropdownButtonFormField<int>(
-      value: value,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: icon != null ? Icon(icon) : null,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-      ),
-      items: items.map((loc) {
-        return DropdownMenuItem<int>(
-          value: loc['id'],
-          child: Text(loc['name']),
-        );
-      }).toList(),
-      onChanged: onChanged,
-    );
-  }
 }
+
+

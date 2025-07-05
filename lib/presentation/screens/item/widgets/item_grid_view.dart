@@ -11,6 +11,7 @@ class ItemGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final store = item.store;
     final price = _getItemPrice();
@@ -43,74 +44,74 @@ class ItemGridView extends StatelessWidget {
               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               child: CustomImage(
                 path: imageUrl,
-                height: 140,
-                fit: BoxFit.cover,
+                height: size.height * 0.15,
+                width: double.infinity,
+                fit: BoxFit.fill,
               ),
             ),
-
             // Info section
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Item Name
-                  Text(
-                    item.item.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Item Name
+                    Text(
+                      item.item.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-
-                  // Store Name + Verified
-                  if (store != null)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            store.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodySmall,
+                    const SizedBox(height: 4),
+                    // Store Name + Verified
+                    if (store != null)
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              store.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodySmall,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 4),
-                        Icon(Icons.verified, size: 16, color: theme.primaryColor),
-                      ],
-                    ),
-                  const SizedBox(height: 6),
-
-                  // Price
-                  Text(
-                    '\$${price.toStringAsFixed(2)}',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: theme.primaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  // Location
-                  if (store?.address != null) ...[
+                          const SizedBox(width: 4),
+                          Icon(Icons.verified, size: 16, color: theme.primaryColor),
+                        ],
+                      ),
                     const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        const Icon(Icons.location_on, size: 14, color: Colors.grey),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            store!.address!,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
-                          ),
-                        ),
-                      ],
+                    // Price
+                    Text(
+                      '\$${price.toStringAsFixed(2)}',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: theme.primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
+                    // Location
+                    if (store?.address != null) ...[
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on, size: 14, color: Colors.grey),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              store!.address!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
           ],
