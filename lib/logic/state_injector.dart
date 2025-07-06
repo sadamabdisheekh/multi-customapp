@@ -2,11 +2,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
 import 'package:multi/data/repository/auth_repository.dart';
 import 'package:multi/data/repository/category_repository.dart';
+import 'package:multi/data/repository/delivery_repository.dart';
 import 'package:multi/data/repository/home_repository.dart';
 import 'package:multi/data/repository/item_repository.dart';
 import 'package:multi/data/repository/order_repository.dart';
 import 'package:multi/logic/cubit/add_to_cart_cubit.dart';
 import 'package:multi/logic/cubit/cart_cubit.dart';
+import 'package:multi/logic/cubit/delivery_types_cubit.dart';
 import 'package:multi/logic/cubit/home_cubit.dart';
 import 'package:multi/logic/cubit/item_details_cubit.dart';
 import 'package:multi/logic/cubit/items_cubit.dart';
@@ -75,6 +77,11 @@ class StateInjector {
       create: (context) => OrderRepositoryImp(
         remoteDataSource: context.read<RemoteDataSource>(),
       ),
+    ),
+    RepositoryProvider<DeliveryRepository>(
+      create: (context) => DeliveryRepositoryImp(
+        remoteDataSource: context.read<RemoteDataSource>(),
+      ),
     )
   ];
 
@@ -137,6 +144,11 @@ class StateInjector {
     BlocProvider<OrderDetailsCubit>(
       create: (context) => OrderDetailsCubit(
         orderRepository: context.read<OrderRepository>(),
+      )
+    ),
+     BlocProvider<DeliveryTypesCubit>(
+      create: (context) => DeliveryTypesCubit(
+        deliveryRepository: context.read<DeliveryRepository>(),
       )
     ),
   ];

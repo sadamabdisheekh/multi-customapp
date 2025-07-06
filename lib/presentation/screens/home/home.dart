@@ -12,6 +12,7 @@ import '../../../constants/styles.dart';
 import '../../../logic/utilits/utility.dart';
 import '../../widgets/banner.dart';
 import '../../widgets/home/modules.dart';
+import 'package:geolocator/geolocator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,43 +22,102 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String userAddress = '';
+  bool _locationReady = false;
+  String? _locationError;
+
   @override
   void initState() {
     super.initState();
     context.read<CartCubit>().getCartItems();
     _initLocationServices();
-    
   }
-  String userAddress = '';
-  
 
-Future<void> _initLocationServices() async {
-  try {
-    final position = await LocationService.getCurrentLocation();
-    final place = await LocationService.getAddressFromLatLng(
-      position.latitude,
-      position.longitude,
-    );
+  Future<void> _initLocationServices() async {
+    try {
+      final position = await LocationService.getCurrentLocation();
+      final place = await LocationService.getAddressFromLatLng(
+        position.latitude,
+        position.longitude,
+      );
 
-    String country = place?.country ?? '';
+      String country = place?.country ?? '';
       String region = place?.administrativeArea ?? '';
       String district = place?.subAdministrativeArea ?? '';
-    String address = '$district, $region $country';
+      String address = '$district, $region $country';
 
-    context.read<HomeCubit>()
-      ..userPlaceMark = place
-      ..position = position;
+      context.read<HomeCubit>()
+        ..userPlaceMark = place
+        ..position = position;
 
-    setState(() => userAddress = address);
-  } on LocationException catch (e) {
-    Utils.showSnackBar(context, e.message);
+      setState(() {
+        userAddress = address;
+        _locationReady = true;
+        _locationError = null;
+      });
+    } on LocationException catch (e) {
+      setState(() {
+        
+        _locationError = e.message;
+        _locationReady = false;
+      });
+
+      _showLocationErrorDialog(e);
+    }
   }
-}
 
-
+  void _showLocationErrorDialog(LocationException status) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('Location Required'),
+        content: Text(status.message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _initLocationServices(); // Retry
+            },
+            child: const Text('Retry'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (status.code == 3) {
+                Geolocator.openAppSettings();
+                return;
+              }
+              Geolocator.openLocationSettings();
+            },
+            child: const Text('Open Settings'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (!_locationReady) {
+      return Scaffold(
+        body: Center(
+          child: _locationError == null
+              ? const CircularProgressIndicator()
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Location access is required to use the app.'),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: _initLocationServices,
+                      child: const Text('Try Again'),
+                    ),
+                  ],
+                ),
+        ),
+      );
+    }
+
     return BlocListener<AddToCartCubit, AddToCartState>(
       listener: _handleAddToCartState,
       child: PageRefresh(
@@ -66,7 +126,6 @@ Future<void> _initLocationServices() async {
             context.read<CartCubit>().getCartItems() as Future<void>,
             context.read<HomeCubit>().loadHomeData() as Future<void>,
           ]);
-
         },
         child: Scaffold(
           body: SafeArea(
@@ -107,17 +166,17 @@ Future<void> _initLocationServices() async {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
-                children: [
-                  Text(
-                    userAddress,
-                    style: robotoMedium.copyWith(
-                        fontSize: Dimensions.fontSizeSmall),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const Icon(Icons.expand_more, size: 18),
-                ],
+            children: [
+              Text(
+                userAddress,
+                style:
+                    robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
+              const Icon(Icons.expand_more, size: 18),
+            ],
+          ),
           BlocBuilder<CartCubit, CartState>(
             builder: (context, state) {
               final cartCount = context.read<CartCubit>().cartCount;
@@ -141,7 +200,7 @@ Future<void> _initLocationServices() async {
       child: BlocBuilder<HomeCubit, HomeState>(
         builder: (context, state) {
           if (state is HomeLoadingState) {
-            return  _buildLoading();
+            return _buildLoading();
           } else if (state is HomeErrorState) {
             return _buildError(state.error.message);
           } else if (state is HomeLoadedState) {

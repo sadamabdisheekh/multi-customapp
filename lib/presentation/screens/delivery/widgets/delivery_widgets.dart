@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:multi/data/models/address_model.dart';
+import 'package:multi/data/models/delivery_types.dart';
 import 'package:multi/presentation/widgets/custom_dropdown.dart';
 import 'package:multi/presentation/widgets/custom_textfield.dart';
 
@@ -6,7 +8,7 @@ class SenderSection extends StatelessWidget {
   final TextEditingController senderNameController;
   final TextEditingController senderPhoneController;
   final int? pickupLocationId;
-  final List<Map<String, dynamic>> locations;
+  final List<Village> locations;
   final void Function(int?) onPickupChanged;
 
   const SenderSection({
@@ -75,8 +77,8 @@ class SenderSection extends StatelessWidget {
             onChanged: onPickupChanged,
             items: locations.map((loc) {
               return DropdownMenuItem<int>(
-                value: loc['id'],
-                child: Text(loc['name']),
+                value: loc.id,
+                child: Text(loc.name),
               );
             }).toList(),
           ),
@@ -90,7 +92,7 @@ class ReceiverSection extends StatelessWidget {
   final TextEditingController receiverNameController;
   final TextEditingController receiverPhoneController;
   final int? destinationLocationId;
-  final List<Map<String, dynamic>> destinationOptions;
+  final List<Village> destinationOptions;
   final void Function(int?) onDestinationChanged;
 
   const ReceiverSection({
@@ -159,8 +161,8 @@ class ReceiverSection extends StatelessWidget {
             onChanged: onDestinationChanged,
             items: destinationOptions.map((loc) {
               return DropdownMenuItem<int>(
-                value: loc['id'],
-                child: Text(loc['name']),
+                value: loc.id,
+                child: Text(loc.name),
               );
             }).toList(),
           ),
@@ -172,9 +174,9 @@ class ReceiverSection extends StatelessWidget {
 }
 
 class DeliveryTypeSection extends StatelessWidget {
-  final String? selectedDeliveryType;
-  final List<String> deliveryTypes;
-  final void Function(String?) onTypeChanged;
+  final DeliveryTypesModel? selectedDeliveryType;
+  final List<DeliveryTypesModel> deliveryTypes;
+  final void Function(DeliveryTypesModel?) onTypeChanged;
 
   const DeliveryTypeSection({
     super.key,
@@ -216,13 +218,13 @@ class DeliveryTypeSection extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 18),
-          CustomDropdown<String>(
+          CustomDropdown<DeliveryTypesModel>(
             value: selectedDeliveryType,
             label: 'Delivery Type',
             hintText: 'Delivery Type',
-            items: deliveryTypes.map((type) => DropdownMenuItem<String>(
+            items: deliveryTypes.map((type) => DropdownMenuItem<DeliveryTypesModel>(
               value: type,
-              child: Text(type),
+              child: Text(type.name),
             )).toList(),
             onChanged: onTypeChanged,
           ),

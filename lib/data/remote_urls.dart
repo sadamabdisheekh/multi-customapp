@@ -33,5 +33,7 @@ class RemoteUrls {
 
   
   static const getAddress = '$rootUrl/address/get-addreses';
+  static const getDeliveryTypes = '$rootUrl/delivery/get-delivery-types';
+
 
 }
