@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multi/data/models/address_model.dart';
-import 'package:multi/data/models/delivery_types.dart';
+import 'package:multi/data/models/parcel_types.dart';
 import 'package:multi/presentation/widgets/custom_dropdown.dart';
 import 'package:multi/presentation/widgets/custom_textfield.dart';
 
@@ -173,15 +173,15 @@ class ReceiverSection extends StatelessWidget {
   }
 }
 
-class DeliveryTypeSection extends StatelessWidget {
-  final DeliveryTypesModel? selectedDeliveryType;
-  final List<DeliveryTypesModel> deliveryTypes;
-  final void Function(DeliveryTypesModel?) onTypeChanged;
+class ParcelTypeSection extends StatelessWidget {
+  final ParcelTypesModel? selectedParcelType;
+  final List<ParcelTypesModel> parcelTypes;
+  final void Function(ParcelTypesModel?) onTypeChanged;
 
-  const DeliveryTypeSection({
+  const ParcelTypeSection({
     super.key,
-    required this.selectedDeliveryType,
-    required this.deliveryTypes,
+    required this.selectedParcelType,
+    required this.parcelTypes,
     required this.onTypeChanged,
   });
 
@@ -212,17 +212,17 @@ class DeliveryTypeSection extends StatelessWidget {
               ),
               const SizedBox(width: 14),
               const Text(
-                'Delivery Type',
+                'Parcel Type',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
               ),
             ],
           ),
           const SizedBox(height: 18),
-          CustomDropdown<DeliveryTypesModel>(
-            value: selectedDeliveryType,
-            label: 'Delivery Type',
-            hintText: 'Delivery Type',
-            items: deliveryTypes.map((type) => DropdownMenuItem<DeliveryTypesModel>(
+          CustomDropdown<ParcelTypesModel>(
+            value: selectedParcelType,
+            label: 'Parcel Type',
+            hintText: 'Parcel Type',
+            items: parcelTypes.map((type) => DropdownMenuItem<ParcelTypesModel>(
               value: type,
               child: Text(type.name),
             )).toList(),
@@ -241,7 +241,7 @@ class RouteSummarySection extends StatelessWidget {
   final String receiverPhone;
   final String pickupName;
   final String destinationName;
-  final String deliveryType;
+  final String parcelType;
 
   const RouteSummarySection({
     super.key,
@@ -251,7 +251,7 @@ class RouteSummarySection extends StatelessWidget {
     required this.receiverPhone,
     required this.pickupName,
     required this.destinationName,
-    required this.deliveryType,
+    required this.parcelType,
   });
 
   @override
@@ -285,7 +285,7 @@ class RouteSummarySection extends StatelessWidget {
                   'Sender: $senderName ($senderPhone)\n'
                   'Receiver: $receiverName ($receiverPhone)\n'
                   'Pickup: $pickupName\nDestination: $destinationName\n'
-                  'Delivery Type: $deliveryType',
+                  'Parcel Type: $parcelType',
                 ),
               ],
             ),

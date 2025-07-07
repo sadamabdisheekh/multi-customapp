@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           theme: light(),
           onGenerateRoute: RouteNames.generateRoute,
           initialRoute: RouteNames.splashScreen,
-        ),
+        ), 
       ),
     );
   }

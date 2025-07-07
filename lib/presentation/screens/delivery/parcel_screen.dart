@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi/data/models/address_model.dart';
-import 'package:multi/data/models/delivery_types.dart';
-import 'package:multi/logic/cubit/delivery_types_cubit.dart';
+import 'package:multi/data/models/parcel_types.dart';
+import 'package:multi/logic/cubit/parcel_types_cubit.dart';
 import 'package:multi/logic/cubit/home_cubit.dart';
 import 'package:multi/logic/cubit/signin_cubit.dart';
 import 'package:multi/logic/cubit/splash_cubit.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:collection/collection.dart';
-import 'widgets/delivery_widgets.dart';
+import 'widgets/parcel_widgets.dart';
 import 'package:geocoding/geocoding.dart';
 
-class DeliveryScreen extends StatefulWidget {
-  const DeliveryScreen({super.key});
+class ParcelScreen extends StatefulWidget {
+  const ParcelScreen({super.key});
 
   @override
-  State<DeliveryScreen> createState() => _DeliveryScreenState();
+  State<ParcelScreen> createState() => _ParcelScreenState();
 }
 
-class _DeliveryScreenState extends State<DeliveryScreen> {
-  final List<String> deliveryTypes = [
+class _ParcelScreenState extends State<ParcelScreen> {
+  final List<String> ParcelTypes = [
     'Electronics',
     'Bags',
     'Documents',
     'Other'
   ];
-  DeliveryTypesModel? selectedDeliveryType;
+  ParcelTypesModel? selectedParcelType;
 
   int? pickupLocationId, destinationLocationId;
 
@@ -41,7 +41,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     senderNameController.text =
         '${customer.firstName} ${customer.middleName} ${customer.lastName}';
     senderPhoneController.text = customer.mobile;
-    context.read<DeliveryTypesCubit>().getDeliveryTypes();
+    context.read<ParcelTypesCubit>().getParcelTypes();
   }
 
   @override
@@ -73,10 +73,10 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
         senderPhoneController.text.isNotEmpty &&
         receiverNameController.text.isNotEmpty &&
         receiverPhoneController.text.isNotEmpty &&
-        selectedDeliveryType != null;
+        selectedParcelType != null;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Delivery')),
+      appBar: AppBar(title: const Text('Parcel')),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -115,20 +115,20 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
               ),
               _buildDivider(Colors.green.shade100),
               const SizedBox(height: 24),
-              BlocBuilder<DeliveryTypesCubit, DeliveryTypesState>(
+              BlocBuilder<ParcelTypesCubit, ParcelTypesState>(
                 builder: (context, state) {   
-                  if (state is DeliveryTypesError) {
+                  if (state is ParcelTypesError) {
                     return Text(state.message);
                   }
-                  if (state is DeliveryTypesLoading) {
+                  if (state is ParcelTypesLoading) {
                     return const CircularProgressIndicator();
                   }
-                  if (state is DeliveryTypesLoaded) {
-                    return DeliveryTypeSection(
-                    selectedDeliveryType: selectedDeliveryType,
-                    deliveryTypes: state.deliverytypes,
+                  if (state is ParcelTypesLoaded) {
+                    return ParcelTypeSection(
+                    selectedParcelType: selectedParcelType,
+                    parcelTypes: state.parcelTypes,
                     onTypeChanged: (value) =>
-                        setState(() => selectedDeliveryType = value),
+                        setState(() => selectedParcelType = value),
                   );
                   }
                   return Container();
@@ -136,7 +136,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
               ),
               if (pickup != null &&
                   destination != null &&
-                  selectedDeliveryType != null)
+                  selectedParcelType != null)
                 RouteSummarySection(
                   senderName: senderNameController.text,
                   senderPhone: senderPhoneController.text,
@@ -144,7 +144,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                   receiverPhone: receiverPhoneController.text,
                   pickupName: pickup.name,
                   destinationName: destination.name,
-                  deliveryType: selectedDeliveryType!.name,
+                  parcelType: selectedParcelType!.name,
                 ),
               const SizedBox(height: 16),
               SizedBox(
@@ -211,10 +211,10 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
               const SizedBox(height: 10),
               Text(
-                'Delivery from ${pickup.name} to ${destination.name} submitted!\n'
+                'Parcel from ${pickup.name} to ${destination.name} submitted!\n'
                 'Sender: ${senderNameController.text} (${senderPhoneController.text})\n'
                 'Receiver: ${receiverNameController.text} (${receiverPhoneController.text})\n'
-                'Delivery Type: $selectedDeliveryType',
+                'Parcel Type: $selectedParcelType',
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 18),

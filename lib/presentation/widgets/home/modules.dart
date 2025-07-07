@@ -44,7 +44,7 @@ class ModuleWidget extends StatelessWidget {
         if (module.id == 2){
           Navigator.pushNamed(
           context,
-          RouteNames.deliveryScreen,
+          RouteNames.parcelScreen,
           arguments: module,
         );
         }else {

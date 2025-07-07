@@ -29,7 +29,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<CartCubit>().getCartItems();
+    loadData();
+  }
+
+  loadData() async {
+    await context.read<CartCubit>().getCartItems();
     _initLocationServices();
   }
 

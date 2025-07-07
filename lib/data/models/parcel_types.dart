@@ -3,20 +3,20 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 
-class DeliveryTypesModel extends Equatable {
+class ParcelTypesModel extends Equatable {
   final int id;
   final String name;
-  const DeliveryTypesModel({
+  const ParcelTypesModel({
     required this.id,
     required this.name,
   });
   
 
-  DeliveryTypesModel copyWith({
+  ParcelTypesModel copyWith({
     int? id,
     String? name,
   }) {
-    return DeliveryTypesModel(
+    return ParcelTypesModel(
       id: id ?? this.id,
       name: name ?? this.name,
     );
@@ -29,8 +29,8 @@ class DeliveryTypesModel extends Equatable {
     };
   }
 
-  factory DeliveryTypesModel.fromMap(Map<String, dynamic> map) {
-    return DeliveryTypesModel(
+  factory ParcelTypesModel.fromMap(Map<String, dynamic> map) {
+    return ParcelTypesModel(
       id: map['id'] as int,
       name: map['name'] as String,
     );
@@ -38,7 +38,7 @@ class DeliveryTypesModel extends Equatable {
 
   String toJson() => json.encode(toMap());
 
-  factory DeliveryTypesModel.fromJson(String source) => DeliveryTypesModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ParcelTypesModel.fromJson(String source) => ParcelTypesModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   bool get stringify => true;

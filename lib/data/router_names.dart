@@ -10,7 +10,7 @@ import 'package:multi/presentation/screens/authentication/signup.dart';
 import 'package:multi/presentation/screens/cart/cart_screen.dart';
 import 'package:multi/presentation/screens/category/categories.dart';
 import 'package:multi/presentation/screens/checkout/checkout_screen.dart';
-import 'package:multi/presentation/screens/delivery/delivery_screen.dart';
+import 'package:multi/presentation/screens/delivery/parcel_screen.dart';
 import 'package:multi/presentation/screens/home/home.dart';
 import 'package:multi/presentation/screens/item/item_screen.dart';
 import 'package:multi/presentation/screens/order/order_details.dart';
@@ -37,7 +37,7 @@ class RouteNames {
   static const String checkoutScreen = '/checkoutScreen';
   static const String orderSuccessScreen = '/orderSuccessScreen';
   static const String orderDetailsScreen = '/orderDetailsScreen';
-  static const String deliveryScreen = '/deliveryScreen';
+  static const String parcelScreen = '/parcelScreen';
 
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -94,10 +94,10 @@ class RouteNames {
         return MaterialPageRoute(
             settings: settings,
             builder: (_) => OrderDetailsScreen(order: order));
-      case RouteNames.deliveryScreen:
+      case RouteNames.parcelScreen:
       return MaterialPageRoute(
             settings: settings,
-            builder: (_) => const DeliveryScreen());
+            builder: (_) => const ParcelScreen());
 
         // Assuming you have an OTP screen, you can add it here
        default:
