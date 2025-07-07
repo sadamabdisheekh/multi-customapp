@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:multi/data/router_names.dart';
 import 'package:multi/logic/cubit/add_to_cart_cubit.dart';
 import 'package:multi/logic/cubit/home_cubit.dart';
 import 'package:multi/logic/cubit/cart_cubit.dart';
 import 'package:multi/logic/helpers/get_location.dart';
 import 'package:multi/presentation/screens/home/widgets/cart_badge.dart';
+import 'package:multi/presentation/screens/home/widgets/location_permission_dialog.dart';
 import 'package:multi/presentation/widgets/page_refresh.dart';
 import '../../../constants/dimensions.dart';
 import '../../../constants/styles.dart';
 import '../../../logic/utilits/utility.dart';
 import '../../widgets/banner.dart';
 import '../../widgets/home/modules.dart';
-import 'package:geolocator/geolocator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,8 +24,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String userAddress = '';
-  bool _locationReady = false;
-  String? _locationError;
 
   @override
   void initState() {
@@ -45,10 +44,11 @@ class _HomeScreenState extends State<HomeScreen> {
         position.longitude,
       );
 
-      String country = place?.country ?? '';
-      String region = place?.administrativeArea ?? '';
-      String district = place?.subAdministrativeArea ?? '';
-      String address = '$district, $region $country';
+      final address = [
+        place?.subAdministrativeArea,
+        place?.administrativeArea,
+        place?.country
+      ].where((e) => e?.isNotEmpty ?? false).join(', ');
 
       context.read<HomeCubit>()
         ..userPlaceMark = place
@@ -56,72 +56,54 @@ class _HomeScreenState extends State<HomeScreen> {
 
       setState(() {
         userAddress = address;
-        _locationReady = true;
-        _locationError = null;
-      });
-    } on LocationException catch (e) {
-      setState(() {
-        
-        _locationError = e.message;
-        _locationReady = false;
       });
 
+      LocationService.locationServiceChange.listen((status) {
+        if (status == ServiceStatus.disabled) {
+          _showLocationErrorDialog(const LocationException(1, ''));
+        }else {
+          Utils.closeDialog(context);
+        }
+      }); 
+    } on LocationException catch (e) {
       _showLocationErrorDialog(e);
     }
   }
 
   void _showLocationErrorDialog(LocationException status) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Location Required'),
-        content: Text(status.message),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _initLocationServices(); // Retry
-            },
-            child: const Text('Retry'),
-          ),
-          TextButton(
-            onPressed: () {
-              if (status.code == 3) {
-                Geolocator.openAppSettings();
-                return;
-              }
-              Geolocator.openLocationSettings();
-            },
-            child: const Text('Open Settings'),
-          ),
-        ],
+      isDismissible: false,
+      enableDrag: false,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).colorScheme.background,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) => LocationPermissionDialog(
+        status: status,
+        onRetry: _initLocationServices,
       ),
     );
   }
 
+  void _handleAddToCartState(BuildContext context, AddToCartState state) {
+    if (state is AddToCartLoading) {
+      Utils.loadingDialog(context);
+    } else {
+      Utils.closeDialog(context);
+
+      if (state is AddToCartLoaded) {
+        context.read<CartCubit>().getCartItems();
+        Utils.showSnackBar(context, state.message);
+      } else if (state is AddToCartError) {
+        Utils.errorSnackBar(context, state.error.message);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (!_locationReady) {
-      return Scaffold(
-        body: Center(
-          child: _locationError == null
-              ? const CircularProgressIndicator()
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Location access is required to use the app.'),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: _initLocationServices,
-                      child: const Text('Try Again'),
-                    ),
-                  ],
-                ),
-        ),
-      );
-    }
-
     return BlocListener<AddToCartCubit, AddToCartState>(
       listener: _handleAddToCartState,
       child: PageRefresh(
@@ -144,21 +126,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  void _handleAddToCartState(BuildContext context, AddToCartState state) {
-    if (state is AddToCartLoading) {
-      Utils.loadingDialog(context);
-    } else {
-      Utils.closeDialog(context);
-
-      if (state is AddToCartLoaded) {
-        context.read<CartCubit>().getCartItems();
-        Utils.showSnackBar(context, state.message);
-      } else if (state is AddToCartError) {
-        Utils.errorSnackBar(context, state.error.message);
-      }
-    }
   }
 
   Widget _buildAppBar() {

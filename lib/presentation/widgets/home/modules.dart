@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:multi/data/models/modules_model.dart';
 import 'package:multi/data/router_names.dart';
+import 'package:multi/logic/helpers/get_location.dart';
 import 'package:multi/presentation/widgets/custom_images.dart';
 import '../../../../constants/app_constants.dart';
 import '../../../../constants/dimensions.dart';
@@ -40,8 +41,10 @@ class ModuleWidget extends StatelessWidget {
 
   Widget _buildModuleItem(BuildContext context, ModulesModel module) {
     return InkWell(
-      onTap: () {
-        if (module.id == 2){
+      onTap: () async {
+        final isLocationRed = await LocationService.isLocationReady();
+        if (isLocationRed) {
+           if (module.id == 2){
           Navigator.pushNamed(
           context,
           RouteNames.parcelScreen,
@@ -53,6 +56,7 @@ class ModuleWidget extends StatelessWidget {
           RouteNames.categoryScreen,
           arguments: module,
         );
+        }
         }
       },
       borderRadius: BorderRadius.circular(Dimensions.radiusDefault),

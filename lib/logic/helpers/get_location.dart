@@ -5,7 +5,7 @@ import 'package:geocoding/geocoding.dart';
 class LocationException implements Exception {
   final int code;
   final String message;
-  
+
   const LocationException(this.code, this.message);
 
   @override
@@ -18,12 +18,13 @@ class LocationService {
 
   /// Checks and requests location permissions
   static Future<void> _checkPermissions() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       throw const LocationException(1, 'Location services are disabled');
     }
 
     LocationPermission permission = await Geolocator.checkPermission();
+
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -32,18 +33,34 @@ class LocationService {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      throw const LocationException(3, 
-        'Location permissions permanently denied. Enable in app settings.');
+      throw const LocationException(
+        3,
+        'Location permissions permanently denied. Enable in app settings.',
+      );
     }
   }
 
   /// Gets current device position
   static Future<Position> getCurrentLocation() async {
     await _checkPermissions();
-    return await Geolocator.getCurrentPosition();
+    return await Geolocator.getCurrentPosition(
+      desiredAccuracy: _highAccuracy,
+    );
   }
 
-  /// Stream of position updates
+  /// Gets address from lat/lng
+  static Future<Placemark?> getAddressFromLatLng(
+      double latitude, double longitude) async {
+    try {
+      final placemarks = await placemarkFromCoordinates(latitude, longitude);
+      return placemarks.isNotEmpty ? placemarks.first : null;
+    } catch (e) {
+      debugPrint('Error getting address: $e');
+      return null;
+    }
+  }
+
+  /// Stream of continuous location updates
   static Stream<Position> get locationUpdates {
     return Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
@@ -53,15 +70,18 @@ class LocationService {
     );
   }
 
-  /// Stream of service status updates
-static Future<Placemark?> getAddressFromLatLng(double latitude, double longitude) async {
-  try {
-    final placemarks = await placemarkFromCoordinates(latitude, longitude);
-    return placemarks.isNotEmpty ? placemarks.first : null;
-  } catch (e) {
-    debugPrint('Error getting address: $e');
-    return null;
+  /// Stream of service status updates (on/off)
+  static Stream<ServiceStatus> get locationServiceChange {
+    return Geolocator.getServiceStatusStream();
   }
-}
 
+  /// Check if permissions and service are enabled
+  static Future<bool> isLocationReady() async {
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    final permission = await Geolocator.checkPermission();
+
+    return serviceEnabled &&
+        (permission == LocationPermission.always ||
+         permission == LocationPermission.whileInUse);
+  }
 }
